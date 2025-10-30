@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Paket";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    TempData.Remove("SuccessMessage");
+}
+
+<div class="card">
+    <div class="row align-items-center">
+        <div class="col-6">
+            <h5 class="card-header">Paket Event</h5>
+        </div>
+        <div class="col-6 p-3 d-flex justify-content-end">
+            <div class="me-2">
+                <div class="d-flex me-2 justify-content-end">
+                    <div class="input-group me-2">
+                        <span class="input-group-text"><i class="tf-icons bx bx-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Search...">
+                    </div>
+                    <!-- Button  create -->
+                    <a asp-action="Create" class="btn btn-primary text-uppercase mt-lg-0 me-2 me-md-2 me-lg-0" id="btn">Tambah</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Card *@
+
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr class="text-nowrap">
+                    <th>No</th>
+                    <th>Nama Paket</th>
+                    <th>Harga</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @{
+                    int no = 1;
+                }
+                @foreach(var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@no</th>
+                        <td>@item.PackageName</td>
+                        <td>@item.BasePrice</td>
+                        <td>@item.Status</td>
+                        <td class="d-flex">
+                            <div class="me-2">
+                                <a class="btn btn-info btn-sm">
+                                    <i class='bx bxs-show text-white'></i>
+                                </a>
+                            </div>
+                            <div class="me-2">
+                                <a asp-action="Edit" asp-route-id="@item.PackageEventId" class="btn btn-warning btn-sm">
+                                    <i class='bx bxs-edit'></i>
+                                </a>
+                            </div>
+                            <div class="me-2">
+                                <form asp-action="Delete" asp-route-id="@item.PackageEventId" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Yakin ingin menghapus paket ini?');">
+                                        <i class='bx bx-trash'></i>
+
+                                    </button>
+                                </form>
+                            </div>
+
+                        </td>
+                    </tr>
+                    no++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

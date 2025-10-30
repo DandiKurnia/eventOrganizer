@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Pemesanan";
+}
+
+<div class="card">
+    <div class="row align-items-center">
+        <div class="col-6">
+            <h5 class="card-header">
+                Pemesanan
+            </h5>
+        </div>
+        <div class="col-6 p-3 d-flex justify-content-end">
+            <div class="me-2">
+                <div class="d-flex flex-wrap me-2 justify-content-end">
+                    <div class="nav-item d-flex align-items-center">
+                        <i class="bx bx-search fs-4 lh-0"></i>
+                        <input type="text" class="form-control border-0 shadow-none" placeholder="Search..."
+                               aria-label="Search...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Card *@
+
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr class="text-nowrap">
+                    <th>No</th>
+                    <th>Nama Client</th>
+                    <th>Tanggal Event</th>
+                    <th>Jenis Paket</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Rasya</td>
+                    <td>13/4/2025</td>
+                    <td>Paket</td>
+                    <td class="d-flex">
+                        <div class="me-2">
+                            <button type="submit" class="btn btn-info btn-sm btndelete">
+                                <i class='bx bxs-show'></i>
+                            </button>
+                        </div>
+                        <div class="me-2">
+                            <button type="submit" class="btn btn-danger btn-sm btndelete">
+                                <i class='bx bx-trash'></i>
+                            </button>
+                        </div>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
