@@ -6,8 +6,8 @@ namespace Models
     {
         public Guid UserId { get; set; }
 
-        [Required(ErrorMessage = "Username wajib diisi")]
-        public string Username { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Name wajib diisi")]
+        public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Email wajib diisi")]
         [EmailAddress]

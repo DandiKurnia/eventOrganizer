@@ -93,7 +93,6 @@ namespace AdminEventOrganizer.Controllers
                     return View();
                 }
 
-                // HANYA ADMIN yang boleh login
                 if (user.Role != "Admin")
                 {
                     TempData["ErrorMessage"] = "Hanya admin yang dapat mengakses sistem ini!";
@@ -109,7 +108,7 @@ namespace AdminEventOrganizer.Controllers
                 // Set session
                 HttpContext.Session.SetString("UserId", user.UserId.ToString());
                 HttpContext.Session.SetString("Role", user.Role);
-                HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("Username", user.Name);
 
                 _logger.LogInformation($"Admin login berhasil: {user.Email}");
 
@@ -119,7 +118,7 @@ namespace AdminEventOrganizer.Controllers
                     return Redirect(returnUrl);
                 }
 
-                TempData["SuccessMessage"] = $"Selamat datang, {user.Username}!";
+                TempData["SuccessMessage"] = $"Selamat datang, {user.Name}!";
                 return RedirectToAction("Index", "Dashboard");
             }
             catch (Exception ex)
@@ -131,7 +130,7 @@ namespace AdminEventOrganizer.Controllers
         }
 
         [HttpPost("logout")]
-        [ValidateAntiForgeryToken] // Opsional untuk keamanan
+        [ValidateAntiForgeryToken]
         public IActionResult Logout()
         {
             try

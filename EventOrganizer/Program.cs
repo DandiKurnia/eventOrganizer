@@ -1,7 +1,23 @@
+using EventOrganizer.DBContext;
+using EventOrganizer.Interface;
+using EventOrganizer.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
+
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
+});
+
+builder.Services.AddTransient<DapperDbContext, DapperDbContext>();
+builder.Services.AddTransient<IUser, UserRepository>();
+
+
 
 var app = builder.Build();
 
@@ -17,11 +33,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "/{controller=Dashboard}/{action=Index}/{id?}");
+    pattern: "/{controller=LandingPage}/{action=Index}/{id?}");
 
 app.Run();

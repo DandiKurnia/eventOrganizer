@@ -25,7 +25,6 @@ D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Ad
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\staticwebassets.build.json.cache
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\staticwebassets.development.json
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\AdminEventOrganizer.dll
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\refint\AdminEventOrganizer.dll
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\AdminEventOrganizer.pdb
@@ -82,3 +81,4 @@ D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Ad
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\AdminEventOrganizer.csproj.AssemblyReference.cache
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\AdminEve.88920518.Up2Date
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\bin\Debug\net8.0\BCrypt.Net-Next.dll
+D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\AdminEventOrganizer\obj\Debug\net8.0\AdminEventOrganizer.sourcelink.json

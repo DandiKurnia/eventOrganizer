@@ -9,3 +9,4 @@ D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Mo
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Models\obj\Debug\net8.0\refint\Models.dll
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Models\obj\Debug\net8.0\Models.pdb
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Models\obj\Debug\net8.0\ref\Models.dll
+D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Models\obj\Debug\net8.0\Models.sourcelink.json

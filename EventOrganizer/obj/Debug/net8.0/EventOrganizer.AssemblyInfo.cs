@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EventOrganizer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3631c8ac2641e2b97250a1784f0d869ecd46460f")]
 [assembly: System.Reflection.AssemblyProductAttribute("EventOrganizer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EventOrganizer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
