@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Daftar Pemesanan";
+}
+
+@model IEnumerable<Models.OrderModel>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    TempData.Remove("SuccessMessage");
+}
+
+<div class="card">
+    <div class="row align-items-center">
+        <div class="col-6">
+            <h5 class="card-header">Daftar Pemesanan</h5>
+        </div>
+        <div class="col-6 p-3 d-flex justify-content-end">
+            <div class="d-flex me-2 justify-content-end">
+                <div class="input-group me-2">
+                    <span class="input-group-text"><i class="tf-icons bx bx-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Search...">
+                </div>
+                <!-- Tombol tambah -->
+                <a asp-action="Create" class="btn btn-primary text-uppercase">Tambah</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr class="text-nowrap">
+                    <th>No</th>
+                    <th>Nama Paket</th>
+                    <th>Harga</th>
+                    <th>Status</th>
+                    <th>Tanggal Pesan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @{
+                    int no = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row">@no</th>
+                            <td>@item.PackageName</td>
+                            <td>@item.OrderDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <span class="badge bg-@(item.Status == "Selesai" ? "success" : "warning")">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>@item.CreatedAt.ToString("dd MMM yyyy")</td>
+                            <td class="d-flex">
+                                <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-info btn-sm me-2">
+                                    <i class='bx bxs-show text-white'></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-warning btn-sm me-2">
+                                    <i class='bx bxs-edit'></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@item.OrderId" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Yakin ingin menghapus pesanan ini?');">
+                                        <i class='bx bx-trash'></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        no++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

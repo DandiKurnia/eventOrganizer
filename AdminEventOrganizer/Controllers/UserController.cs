@@ -16,59 +16,22 @@ namespace AdminEventOrganizer.Controllers
             _logger = logger;
         }
 
-        [HttpGet("register")]
-        public IActionResult Register()
-        {
-            var adminId = HttpContext.Session.GetString("AdminId");
-            if (!string.IsNullOrEmpty(adminId))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-            return View();
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(UserModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View(model);
-                }
-
-                // Cek apakah email sudah terdaftar
-                var existingUser = await _userRepository.GetByEmail(model.Email);
-                if (existingUser != null)
-                {
-                    ModelState.AddModelError("Email", "Email sudah terdaftar.");
-                    return View(model);
-                }
-
-                // Register user baru
-                var newUser = await _userRepository.Register(model);
-
-                _logger.LogInformation($"User berhasil register: {model.Email}");
-
-                TempData["SuccessMessage"] = "Registrasi berhasil! Silakan login.";
-                return RedirectToAction("Login");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error saat register untuk email: {model.Email}");
-                TempData["ErrorMessage"] = "Terjadi kesalahan sistem. Silakan coba lagi.";
-                return View(model);
-            }
-        }
-
         [HttpGet("login")]
         public IActionResult Login()
         {
-            var adminId = HttpContext.Session.GetString("AdminId");
-            if (!string.IsNullOrEmpty(adminId))
+            var userId = HttpContext.Session.GetString("UserId");
+            var role = HttpContext.Session.GetString("Role");
+
+            if (!string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Index", "Dashboard");
+                switch (role)
+                {
+                    case "Admin":
+                        return RedirectToAction("Index", "Dashboard");
+                    default:
+                        HttpContext.Session.Clear();
+                        break;
+                }
             }
 
             return View();
@@ -155,6 +118,51 @@ namespace AdminEventOrganizer.Controllers
         public IActionResult LogoutGet()
         {
             return Logout();
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var users = await _userRepository.GetAllUsers();
+            return View(users);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(UserModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                // Cek apakah email sudah terdaftar
+                var existingUser = await _userRepository.GetByEmail(model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Email sudah terdaftar.");
+                    return View(model);
+                }
+
+                var newUser = await _userRepository.Create(model);
+
+                TempData["SuccessMessage"] = "Akun User berhasil ditambahkan.";
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error saat register untuk email: {model.Email}");
+                TempData["ErrorMessage"] = "Terjadi kesalahan sistem. Silakan coba lagi.";
+                return View(model);
+            }
         }
     }
 }

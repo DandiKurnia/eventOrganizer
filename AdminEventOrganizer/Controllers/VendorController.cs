@@ -1,11 +1,8 @@
-﻿using AdminEventOrganizer.Filters;
-using AdminEventOrganizer.Interface;
+﻿using AdminEventOrganizer.Interface;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AdminEventOrganizer.Controllers
+namespace AdmEventOrganizer.Controllers
 {
-    [TypeFilter(typeof(AuthorizationFilter))]
-
     public class VendorController : Controller
     {
         private readonly IVendor vendorRepository;

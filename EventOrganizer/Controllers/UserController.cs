@@ -64,12 +64,26 @@ namespace EventOrganizer.Controllers
         [HttpGet("login")]
         public IActionResult Login()
         {
-            var adminId = HttpContext.Session.GetString("AdminId");
-            if (!string.IsNullOrEmpty(adminId))
+            // Cek apakah user sudah login
+            var userId = HttpContext.Session.GetString("UserId");
+            var role = HttpContext.Session.GetString("Role");
+
+            if (!string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Index", "Dashboard");
+                // Jika sudah login, arahkan sesuai role-nya
+                switch (role)
+                {
+                    case "Vendor":
+                        return RedirectToAction("Index", "Vendor");
+                    case "Customer":
+                        return RedirectToAction("Index", "Customer");
+                    default:
+                        HttpContext.Session.Clear();
+                        break;
+                }
             }
 
+            // Jika belum login, tampilkan halaman login
             return View();
         }
 
@@ -127,6 +141,34 @@ namespace EventOrganizer.Controllers
                 TempData["ErrorMessage"] = "Terjadi kesalahan sistem. Silakan coba lagi.";
                 return View();
             }
+        }
+
+        [HttpPost("logout")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username");
+
+                HttpContext.Session.Clear();
+
+                _logger.LogInformation($"User logout: {username}");
+
+                TempData["SuccessMessage"] = "Anda telah logout.";
+                return RedirectToAction("Login", "User");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saat logout");
+                return RedirectToAction("Login", "User");
+            }
+        }
+
+        [HttpGet("logout")]
+        public IActionResult LogoutGet()
+        {
+            return Logout();
         }
     }
 }

@@ -1,6 +1,6 @@
 using AdminEventOrganizer.DBContext;
-using AdminEventOrganizer.Filters;
 using AdminEventOrganizer.Interface;
+using AdminEventOrganizer.Middlewares;
 using AdminEventOrganizer.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,9 +20,6 @@ builder.Services.AddTransient<IVendor, VendorRepository>();
 builder.Services.AddTransient<IPackageEvent, PackageEventRepository>();
 builder.Services.AddTransient<IUser, UserRepository>();
 
-builder.Services.AddScoped<AuthorizationFilter>();
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,6 +35,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession();
+
+app.UseMiddleware<AuthorizationMiddleware>();
+
 
 app.UseAuthorization();
 

@@ -1,5 +1,6 @@
-using EventOrganizer.DBContext;
+﻿using EventOrganizer.DBContext;
 using EventOrganizer.Interface;
+using EventOrganizer.Middlewares;
 using EventOrganizer.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,10 +15,11 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddTransient<DapperDbContext, DapperDbContext>();
+// Register dependencies
+builder.Services.AddSingleton<DapperDbContext>();
 builder.Services.AddTransient<IUser, UserRepository>();
-
-
+builder.Services.AddTransient<IVendor, VendorRepository>();
+builder.Services.AddTransient<IOrder, OrderRepository>();
 
 var app = builder.Build();
 
@@ -25,7 +27,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -35,10 +36,14 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 
+// Custom Middleware Authorization
+app.UseMiddleware<AuthorizationMiddleware>();
+
 app.UseAuthorization();
 
+// Default route
 app.MapControllerRoute(
     name: "default",
-    pattern: "/{controller=LandingPage}/{action=Index}/{id?}");
+    pattern: "{controller=LandingPage}/{action=Index}/{id?}");
 
 app.Run();

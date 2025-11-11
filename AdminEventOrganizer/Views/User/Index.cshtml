@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "User";
+}
+
+@model IEnumerable<Models.UserModel>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    TempData.Remove("SuccessMessage");
+}
+
+<div class="card">
+    <div class="row align-items-center">
+        <div class="col-6">
+            <h5 class="card-header">User</h5>
+        </div>
+        <div class="col-6 p-3 d-flex justify-content-end">
+            <div class="me-2">
+                <div class="d-flex me-2 justify-content-end">
+                    <div class="input-group me-2">
+                        <span class="input-group-text"><i class="tf-icons bx bx-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Search...">
+                    </div>
+                    <!-- Button  create -->
+                    <a asp-action="Create" class="btn btn-primary text-uppercase mt-lg-0 me-2 me-md-2 me-lg-0" id="btn">Tambah</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Card *@
+
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr class="text-nowrap">
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @{
+                    int no = 1;
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@no</th>
+                        <td>@item.Name</td>
+                        <td>@item.Email</td>
+                        <td>@item.Role</td>
+                    </tr>
+                    no++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

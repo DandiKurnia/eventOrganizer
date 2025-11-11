@@ -1,11 +1,9 @@
-﻿using AdminEventOrganizer.Filters;
-using AdminEventOrganizer.Interface;
+﻿using AdminEventOrganizer.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
 namespace AdminEventOrganizer.Controllers
 {
-    [TypeFilter(typeof(AuthorizationFilter))]
     public class PackageEventController : Controller
     {
         private readonly IPackageEvent _packageEventRepository;

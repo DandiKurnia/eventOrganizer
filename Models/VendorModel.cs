@@ -5,14 +5,15 @@ namespace Models
 {
     public class VendorModel
     {
-        public Guid VendorId { get; set; }
-
-        [Required(ErrorMessage = "Vendor Name is required")]
-        public string VendorName { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Phone  { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
+        public Guid VendorId { get; set; } = Guid.NewGuid();
+        public Guid UserId { get; set; }
+        public string CompanyName { get; set; } = string.Empty;
+        public string? Category { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public string Status { get; set; } = "available";
+        public string? Address { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
 
     }

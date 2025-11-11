@@ -21,14 +21,13 @@ namespace AdminEventOrganizer.Repository
             return await connection.QuerySingleOrDefaultAsync<UserModel>(sql, new { Email = email });
         }
 
-        public async Task<UserModel> Register(UserModel model)
+        public async Task<UserModel> Create(UserModel model)
         {
-            // Hash password dengan BCrypt sebelum simpan
             model.PasswordHash = HashPassword(model.PasswordHash);
             model.UserId = Guid.NewGuid();
 
-            var sql = @"INSERT INTO Users (UserId, Username, Email, PasswordHash, Role, IsActive, CreatedAt)
-                        VALUES (@UserId, @Username, @Email, @PasswordHash, @Role, @IsActive, @CreatedAt)";
+            var sql = @"INSERT INTO Users (UserId, Name, Email, PasswordHash, Role, IsActive, CreatedAt)
+                        VALUES (@UserId, @Name, @Email, @PasswordHash, @Role, @IsActive, @CreatedAt)";
             using var connection = _context.CreateConnection();
             await connection.ExecuteAsync(sql, model);
             return model;
@@ -44,6 +43,13 @@ namespace AdminEventOrganizer.Repository
 
             // Verifikasi password dengan BCrypt
             return VerifyPassword(password, user.PasswordHash) ? user : null;
+        }
+
+        public async Task<IEnumerable<UserModel>> GetAllUsers()
+        {
+            var sql = "SELECT * FROM Users ORDER BY CreatedAt ASC"; // terbaru di atas
+            using var connection = _context.CreateConnection();
+            return await connection.QueryAsync<UserModel>(sql);
         }
 
         private string HashPassword(string password)

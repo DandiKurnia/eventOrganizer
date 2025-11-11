@@ -91,6 +91,14 @@
             </a>
         </li>
 
+        <!-- User -->
+        <li class="menu-item @(currentPage == "user" ? "active" : "")">
+            <a asp-controller="User" asp-action="Index" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div data-i18n="Vendor">User</div>
+            </a>
+        </li>
+
         <!-- Layouts -->
         @* <li class="menu-item @(currentPage == "vendor" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
