@@ -8,5 +8,7 @@ namespace AdminEventOrganizer.Interface
         Task<UserModel> Create(UserModel model);
         Task<UserModel?> GetByEmail(string email);
         Task<IEnumerable<UserModel>> GetAllUsers();
+        Task<UserModel?> GetById(Guid id);
+        Task<UserModel> Update(UserModel model);
     }
 }

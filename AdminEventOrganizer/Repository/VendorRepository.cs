@@ -17,18 +17,37 @@ namespace AdminEventOrganizer.Repository
         public async Task<IEnumerable<VendorModel>> Get()
         {
             using var connection = _context.CreateConnection();
-
             const string sql = "SELECT * FROM vendor";
+            return await connection.QueryAsync<VendorModel>(sql);
+        }
 
-            try
-            {
-                var result = await connection.QueryAsync<VendorModel>(sql);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error fetching vendor data: {ex.Message}", ex);
-            }
+        public async Task<VendorModel?> GetById(Guid id)
+        {
+            using var connection = _context.CreateConnection();
+            const string sql = "SELECT * FROM vendor WHERE VendorId = @Id";
+            return await connection.QuerySingleOrDefaultAsync<VendorModel>(sql, new { Id = id });
+        }
+
+        public async Task<VendorModel> Update(VendorModel model)
+        {
+            using var connection = _context.CreateConnection();
+            const string sql = @"UPDATE vendor 
+                                 SET CompanyName = @CompanyName, 
+                                     Category = @Category,
+                                     Email = @Email,
+                                     Phone = @Phone,
+                                     Status = @Status,
+                                     Address = @Address
+                                 WHERE VendorId = @VendorId";
+            await connection.ExecuteAsync(sql, model);
+            return model;
+        }
+
+        public async Task Delete(Guid id)
+        {
+            using var connection = _context.CreateConnection();
+            const string sql = "DELETE FROM vendor WHERE VendorId = @Id";
+            await connection.ExecuteAsync(sql, new { Id = id });
         }
     }
 }

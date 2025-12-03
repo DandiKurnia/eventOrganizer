@@ -1,0 +1,39 @@
+﻿@model Models.PackageEventModel
+@{
+    ViewData["Title"] = "Detail Paket Event";
+}
+
+<h2>Detail Paket Event</h2>
+<hr />
+
+<div class="card mb-3 p-3">
+    <h4>@Model.PackageName</h4>
+
+    <p><strong>Deskripsi</strong></p>
+    <p>@Html.Raw(Model.Description.Replace("\n", "<br/>"))</p>
+
+    <p><strong>Harga Dasar:</strong> @Model.BasePrice.ToString("C0")</p>
+    <p><strong>Status:</strong> @Model.Status</p>
+</div>
+
+<h4>Foto Paket</h4>
+@if (Model.Photos != null && Model.Photos.Any())
+{
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        @foreach (var photo in Model.Photos)
+        {
+            <img src="@Url.Action("getFile", "File", new { id = photo.PhotoId })"
+                 class="img-thumbnail"
+                 width="150" height="150" />
+
+            @* <img src="@photo.PhotoUrl" class="img-thumbnail" width="150" height="150" style="object-fit:cover;" /> *@
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">Belum ada foto untuk paket ini.</p>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Kembali</a>
+<a asp-action="Edit" asp-route-id="@Model.PackageEventId" class="btn btn-warning">Edit</a>

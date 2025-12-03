@@ -19,6 +19,7 @@ builder.Services.AddTransient<DapperDbContext, DapperDbContext>();
 builder.Services.AddTransient<IVendor, VendorRepository>();
 builder.Services.AddTransient<IPackageEvent, PackageEventRepository>();
 builder.Services.AddTransient<IUser, UserRepository>();
+builder.Services.AddTransient<IPackagePhoto, PackagePhotoRepository>();
 
 var app = builder.Build();
 
@@ -58,10 +59,6 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "/{controller=Vendor}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "/{controller=PackageEvent}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

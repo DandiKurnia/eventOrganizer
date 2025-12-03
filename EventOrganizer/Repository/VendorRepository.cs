@@ -52,5 +52,68 @@ namespace EventOrganizer.Repository
             using var connection = context.CreateConnection();
             await connection.ExecuteAsync(sql, new { VendorId = vendorId, Status = status });
         }
+
+        public async Task<IEnumerable<OrderModel>> GetOrders(Guid vendorId, string? search)
+        {
+            var sql = @"
+        SELECT 
+            o.OrderId,
+            o.UserId,
+            o.PackageEventId,
+            o.AdditionalRequest,
+            o.OrderDate,
+            o.Status,
+            o.CreatedAt,
+            p.PackageName
+        FROM Orders AS o
+        INNER JOIN eventPackage AS p 
+            ON o.PackageEventId = p.PackageEventId
+        WHERE o.VendorId = @VendorId
+        ORDER BY o.CreatedAt DESC";
+
+            using var connection = context.CreateConnection();
+            var data = await connection.QueryAsync<OrderModel>(sql, new { VendorId = vendorId });
+
+            // Apply Search (C# filtering)
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+                data = data.Where(o =>
+                    o.PackageName.ToLower().Contains(search) ||
+                    o.Status.ToLower().Contains(search));
+            }
+
+            return data;
+        }
+
+        public async Task<OrderModel?> GetOrderDetail(Guid orderId)
+        {
+            var sql = @"
+        SELECT 
+            o.OrderId,
+            o.UserId,
+            o.PackageEventId,
+            o.AdditionalRequest,
+            o.OrderDate,
+            o.Status,
+            o.CreatedAt,
+            p.PackageName
+        FROM Orders AS o
+        INNER JOIN eventPackage AS p 
+            ON o.PackageEventId = p.PackageEventId
+        WHERE o.OrderId = @OrderId";
+
+            using var connection = context.CreateConnection();
+            return await connection.QuerySingleOrDefaultAsync<OrderModel>(sql, new { OrderId = orderId });
+        }
+
+        public async Task<IEnumerable<VendorModel>> GetAvailableVendors()
+        {
+            using var conn = context.CreateConnection();
+            var sql = "SELECT * FROM Vendor WHERE Status = 'available'";
+            return await conn.QueryAsync<VendorModel>(sql);
+        }
+
+
     }
 }

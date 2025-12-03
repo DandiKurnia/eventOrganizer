@@ -1,0 +1,20 @@
+﻿@model Models.OrderModel
+@{
+    ViewData["Title"] = "Detail Pesanan";
+}
+
+<div class="card p-3">
+    <h4>Detail Pesanan</h4>
+    <hr />
+
+    <p><strong>Nama Client:</strong> @Model.ClientName</p>
+    <p><strong>Paket Event:</strong> @Model.PackageName</p>
+    <p><strong>Tanggal Event:</strong> @Model.EventDate.ToString("dd MMM yyyy")</p>
+    <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Permintaan Tambahan:</strong></p>
+    <div class="border p-2" style="white-space:pre-line;">
+        @Model.AdditionalRequest
+    </div>
+
+    <a asp-action="Pemesanan" class="btn btn-secondary mt-3">Kembali</a>
+</div>

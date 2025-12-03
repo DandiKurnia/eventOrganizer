@@ -59,21 +59,41 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        <!-- Dashboard -->
-        <li class="menu-item @(currentPage == "/vendor" ? "active" : "")">
-            <a asp-controller="Vendor" asp-action="Index" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Dashboard">Dashboard</div>
-            </a>
-        </li>
+        @if (Context.Session.GetString("Role") == "Vendor")
+        {
+            <li class="menu-item @(currentPage == "/vendor" ? "active" : "")">
+                <a asp-controller="Vendor" asp-action="Index" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Dashboard">Dashboard</div>
+                </a>
+            </li>
 
-        <!-- Pemesanan -->
-        <li class="menu-item @(currentPage.StartsWith("/vendor/pemesanan") ? "active" : "")">
-            <a href="/vendor/pemesanan" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-book"></i>
-                <div data-i18n="Pemesanan">Pemesanan</div>
-            </a>
-        </li>
+            <li class="menu-item @(currentPage.StartsWith("/vendor/pemesanan") ? "active" : "")">
+                <a href="/vendor/pemesanan" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-book"></i>
+                    <div data-i18n="Pemesanan">Pemesanan</div>
+                </a>
+            </li>
+        }
+
+        @if (Context.Session.GetString("Role") == "Staff")
+        {
+            <li class="menu-item @(currentPage == "/staff" ? "active" : "")">
+                <a asp-controller="Staff" asp-action="Index" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Dashboard">Dashboard</div>
+                </a>
+            </li>
+
+            <li class="menu-item @(currentPage.StartsWith("/staff/pemesanan") ? "active" : "")">
+                <a href="/staff/pemesanan" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-book"></i>
+                    <div data-i18n="Pemesanan">Pemesanan</div>
+                </a>
+            </li>
+        }
+
+
 
         <!-- Layouts -->
         @* <li class="menu-item @(currentPage == "vendor" ? "active" : "")">

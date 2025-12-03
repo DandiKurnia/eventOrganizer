@@ -77,6 +77,8 @@ namespace EventOrganizer.Controllers
                         return RedirectToAction("Index", "Vendor");
                     case "Customer":
                         return RedirectToAction("Index", "Customer");
+                    case "Staff":
+                        return RedirectToAction("Index", "Staff");
                     default:
                         HttpContext.Session.Clear();
                         break;
@@ -129,6 +131,9 @@ namespace EventOrganizer.Controllers
                     case "Vendor":
                         TempData["SuccessMessage"] = $"Selamat datang Vendor, {user.Name}!";
                         return RedirectToAction("Index", "Vendor");
+                    case "Staff":
+                        TempData["SuccessMessage"] = $"Selamat datang Staff, {user.Name}!";
+                        return RedirectToAction("Index", "Staff");
 
                     default:
                         TempData["ErrorMessage"] = "Role tidak dikenal. Hubungi administrator.";

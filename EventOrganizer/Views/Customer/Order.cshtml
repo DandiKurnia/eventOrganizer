@@ -1,190 +1,88 @@
-﻿@{
-    Layout = null;
+﻿@model IEnumerable<Models.OrderModel>
+@{
+    Layout = "_LayoutCustomer";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Order</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-          rel="stylesheet" />
+<div class="container py-5">
 
-    <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="/vendor/fonts/boxicons.css" />
+    <h1 class="mb-4">Pesanan Saya</h1>
 
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="/css/demo.css" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-
-    <!-- Page CSS -->
-    <!-- Page -->
-    <link rel="stylesheet" href="/vendor/css/pages/page-auth.css" />
-    <!-- Helpers -->
-    <script src="/vendor/js/helpers.js"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="/js/config.js"></script>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .table-responsive {
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .badge.bg-purple {
-            background-color: #6f42c1; /* Bootstrap's purple */
-            color: white;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #0d6efd !important;
-        }
-
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s, transform 0.5s;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-            .card.is-visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-    </style>
-</head>
-<body>
-    @* navbar *@
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand text-dark" href="#">EventPro</a>
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto d-md-flex align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark " href="/customer">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <form asp-controller="User" asp-action="Logout" method="post" class="dropdown-item p-0">
-                            <button class="btn nav-link text-dark " type="submit">
-                                <span class="fw-bold">
-                                    Logout
-                                </span>
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    @* End Navbar *@
-
-
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success alert-dismissible" role="alert">
-                @TempData["SuccessMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            TempData.Remove("SuccessMessage");
-        }
-    <div class="container py-5">
-        <h1 class="mb-4">Pesanan Saya</h1>
-
+    <form method="get" asp-action="Order">
         <div class="row mb-4">
             <div class="col-md-8 mb-3">
-                <input type="search" class="form-control" placeholder="Cari pesanan..." aria-label="Search">
+                <input type="search"
+                       name="search"
+                       value="@ViewBag.Search"
+                       class="form-control"
+                       placeholder="Cari pesanan berdasarkan paket..." />
             </div>
+
             <div class="col-md-4 mb-3">
-                <select class="form-select" aria-label="Filter Status">
-                    <option selected>Filter Status</option>
-                    <option value="confirmed">Booking Confirmed</option>
-                    <option value="vendor">Vendor Confirmation</option>
-                    <option value="waiting">Waiting Validation</option>
-                    <option value="consultation">Consultation</option>
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="all">Semua Status</option>
+                    <option value="booking confirmed" selected="@(ViewBag.Status == "booking confirmed")">Booking Confirmed</option>
+                    <option value="vendor confirmation" selected="@(ViewBag.Status == "vendor confirmation")">Vendor Confirmation</option>
+                    <option value="waiting validation" selected="@(ViewBag.Status == "waiting validation")">Waiting Validation</option>
+                    <option value="consultation" selected="@(ViewBag.Status == "consultation")">Consultation</option>
                 </select>
             </div>
         </div>
+    </form>
 
-        <div class="order-list">
-            <!-- Dummy Order 1 -->
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start flex-wrap">
-                        <div class="mb-2">
-                            <h5 class="card-title mb-1">Diamond Wedding</h5>
-                            <h6 class="card-subtitle text-muted d-flex gap-2 align-items-center pt-2">
-                                <i class="bx bxs-calendar-event"></i> 
-                                <span> 28 Oktober 2023</span>
-                            </h6>
-                        </div>
-                        <span class="badge bg-success rounded-pill fs-6">Booking Confirmed</span>
-                    </div>
-                    <hr>
-                    <p class="card-text mt-2">
-                        <strong><i class="bi bi-chat-left-text"></i> Catatan Tambahan:</strong>
-                        <span class="text-muted"> Tidak ada catatan.</span>
-                    </p>
-                </div>
+    <div class="order-list">
+
+        @if (!Model.Any())
+        {
+            <div class="text-center text-muted fs-5 py-5">
+                <i class="bx bx-info-circle"></i> Tidak ada pesanan ditemukan.
             </div>
-        </div>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap">
+                            <div class="mb-2">
+                                <a class="card-title mb-1 fs-5 fw-bold" asp-action="DetailOrder" asp-route-id="@item.OrderId">@item.PackageName</A>
+
+                                <h6 class="card-subtitle text-muted d-flex gap-2 align-items-center pt-2">
+                                    <i class="bx bxs-calendar-event"></i>
+                                    <span>@item.EventDate.ToString("dd MMMM yyyy")</span>
+                                </h6>
+                            </div>
+
+                            @{
+                                string badgeClass = item.Status switch
+                                {
+                                    "waiting validation" => "bg-warning text-dark",
+                                    "consultation" => "bg-info text-dark",
+                                    "vendor confirmation" => "bg-primary",
+                                    "confirmed" => "bg-success",
+                                    "cancelled" => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @badgeClass rounded-pill fs-6">
+                                @item.Status.Replace("_", " ").ToUpper()
+                            </span>
+
+
+                        </div>
+
+                        <hr />
+
+                        <p class="card-text mt-2">
+                            <strong><i class="bi bi-chat-left-text"></i> Catatan Tambahan:</strong>
+                            <span class="text-muted">
+                                @(!string.IsNullOrEmpty(item.AdditionalRequest) ? item.AdditionalRequest : "Tidak ada catatan.")
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            }
+        }
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const cards = document.querySelectorAll(".order-list .card"); // Target cards within .order-list
-
-          cards.forEach((card, index) => {
-            setTimeout(() => {
-              card.classList.add("is-visible");
-            }, index * 100);
-          });
-        });
-    </script>
-
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="/vendor/libs/jquery/jquery.js"></script>
-    <script src="/vendor/libs/popper/popper.js"></script>
-    <script src="/vendor/js/bootstrap.js"></script>
-    <script src="/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-
-    <script src="/vendor/js/menu.js"></script>
-    <!-- endbuild -->
-    <!-- Vendors JS -->
-    <!-- Main JS -->
-    <script src="/js/main.js"></script>
-
-    <!-- Page JS -->
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-</body>
-
-
-</html>
+</div>

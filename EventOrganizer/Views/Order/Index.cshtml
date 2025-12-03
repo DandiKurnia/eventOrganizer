@@ -50,7 +50,7 @@
                         <tr>
                             <th scope="row">@no</th>
                             <td>@item.PackageName</td>
-                            <td>@item.OrderDate.ToString("dd MMM yyyy")</td>
+                            <td>@item.EventDate.ToString("dd MMM yyyy")</td>
                             <td>
                                 <span class="badge bg-@(item.Status == "Selesai" ? "success" : "warning")">
                                     @item.Status

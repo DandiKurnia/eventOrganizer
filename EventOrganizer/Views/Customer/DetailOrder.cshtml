@@ -1,0 +1,55 @@
+﻿@model Models.OrderModel
+@{
+    Layout = "_LayoutCustomer";
+}
+
+<div class="container py-4">
+
+    <a href="/customer/order" class="btn btn-secondary mb-3">← Kembali</a>
+
+    <div class="card shadow">
+        <div class="card-body">
+
+            <h3 class="mb-3">@Model.PackageName</h3>
+
+            <h6 class="text-muted">
+                <i class="bx bxs-calendar-event"></i>
+                Tanggal Event: @Model.EventDate.ToString("dd MMMM yyyy")
+            </h6>
+
+            <hr>
+
+            <p>
+                <strong>Catatan Tambahan:</strong><br />
+                @Model.AdditionalRequest
+            </p>
+
+            <p>
+                <strong>Status Pemesanan:</strong>
+                <span class="badge bg-primary">@Model.Status</span>
+            </p>
+
+            <p>
+                <strong>Konfirmasi Client:</strong>
+                @if (Model.ConfirmClient == 1)
+                {
+                    <span class="badge bg-success">Sudah Dikonfirmasi</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">Belum Dikonfirmasi</span>
+                }
+            </p>
+
+            @if (Model.ConfirmClient == 0)
+            {
+                <form method="post" asp-action="ConfirmClient">
+                    <input type="hidden" name="orderId" value="@Model.OrderId" />
+                    <button class="btn btn-success mt-3">
+                        <i class="bx bx-check-circle"></i> Konfirmasi Pesanan
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

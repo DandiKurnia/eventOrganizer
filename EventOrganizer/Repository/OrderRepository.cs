@@ -22,7 +22,7 @@ namespace EventOrganizer.Repository
             o.UserId,
             o.PackageEventId,
             o.AdditionalRequest,
-            o.OrderDate,
+            o.EventDate,
             o.Status,
             o.CreatedAt,
             p.PackageName AS PackageName
@@ -43,14 +43,75 @@ namespace EventOrganizer.Repository
             return result;
         }
 
+        public async Task<IEnumerable<OrderModel>> GetAll()
+        {
+            var sql = @"
+        SELECT 
+            o.OrderId,
+            o.UserId,
+            o.PackageEventId,
+            o.AdditionalRequest,
+            o.EventDate,
+            o.Status,
+            o.CreatedAt,
+            p.PackageName,
+            u.Name AS ClientName
+        FROM Orders o
+        INNER JOIN eventPackage p ON o.PackageEventId = p.PackageEventId
+        INNER JOIN Users u ON o.UserId = u.UserId
+        ORDER BY o.CreatedAt DESC";
+
+            using var connection = context.CreateConnection();
+            return await connection.QueryAsync<OrderModel>(sql);
+        }
 
 
 
-        public async Task<OrderModel> GetById(Guid orderId)
+
+
+        public async Task<OrderModel?> GetById(Guid orderId)
         {
             var sql = "SELECT * FROM Orders WHERE OrderId = @OrderId";
             using var connection = context.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<OrderModel>(sql, new { OrderId = orderId });
         }
+
+
+        public async Task Create(OrderModel model)
+        {
+            var sql = @"
+        INSERT INTO Orders
+        (OrderId, UserId, PackageEventId, AdditionalRequest, EventDate, Status, CreatedAt)
+        VALUES
+        (@OrderId, @UserId, @PackageEventId, @AdditionalRequest, @EventDate, @Status, @CreatedAt)
+    ";
+
+            using var connection = context.CreateConnection();
+            await connection.ExecuteAsync(sql, model);
+        }
+
+        public async Task<bool> ConfirmOrder(Guid orderId)
+        {
+            var sql = @"UPDATE Orders 
+                SET ConfirmClient = 1 
+                WHERE OrderId = @OrderId";
+
+            using var connection = context.CreateConnection();
+            var rows = await connection.ExecuteAsync(sql, new { OrderId = orderId });
+
+            return rows > 0;
+        }
+
+        public async Task UpdateStatus(Guid orderId, string status)
+        {
+            var sql = @"UPDATE Orders SET Status = @Status WHERE OrderId = @OrderId";
+
+            using var conn = context.CreateConnection();
+            await conn.ExecuteAsync(sql, new { Status = status, OrderId = orderId });
+        }
+
+
+
+
     }
 }

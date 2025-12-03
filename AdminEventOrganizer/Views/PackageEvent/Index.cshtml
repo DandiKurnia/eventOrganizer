@@ -2,6 +2,9 @@
     ViewData["Title"] = "Paket";
 }
 
+@model IEnumerable<Models.PackageEventModel>
+
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success alert-dismissible" role="alert">
@@ -16,22 +19,30 @@
         <div class="col-6">
             <h5 class="card-header">Paket Event</h5>
         </div>
+
         <div class="col-6 p-3 d-flex justify-content-end">
             <div class="me-2">
                 <div class="d-flex me-2 justify-content-end">
-                    <div class="input-group me-2">
-                        <span class="input-group-text"><i class="tf-icons bx bx-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Search...">
-                    </div>
-                    <!-- Button  create -->
-                    <a asp-action="Create" class="btn btn-primary text-uppercase mt-lg-0 me-2 me-md-2 me-lg-0" id="btn">Tambah</a>
+                    <!-- 🔍 Form Search -->
+                    <form asp-action="Index" method="get" class="d-flex">
+                        <div class="input-group me-2">
+                            <span class="input-group-text"><i class="tf-icons bx bx-search"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Search..."
+                                   value="@ViewBag.Search" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cari</button>
+                    </form>
+
+                    <!-- ➕ Tombol Create -->
+                    <a asp-action="Create"
+                       class="btn btn-primary text-uppercase mt-lg-0 ms-2"
+                       id="btn">Tambah</a>
                 </div>
             </div>
         </div>
     </div>
 
-    @* Card *@
-
+    <!-- 🧾 Data Table -->
     <div class="table-responsive text-nowrap">
         <table class="table">
             <thead>
@@ -45,41 +56,96 @@
             </thead>
             <tbody class="table-border-bottom-0">
                 @{
-                    int no = 1;
+                    int no = (ViewBag.CurrentPage - 1) * 10 + 1;
                 }
-                @foreach(var item in Model)
+
+                @if (!Model.Any())
                 {
                     <tr>
-                        <th scope="row">@no</th>
-                        <td>@item.PackageName</td>
-                        <td>@item.BasePrice</td>
-                        <td>@item.Status</td>
-                        <td class="d-flex">
-                            <div class="me-2">
-                                <a class="btn btn-info btn-sm">
-                                    <i class='bx bxs-show text-white'></i>
-                                </a>
-                            </div>
-                            <div class="me-2">
-                                <a asp-action="Edit" asp-route-id="@item.PackageEventId" class="btn btn-warning btn-sm">
-                                    <i class='bx bxs-edit'></i>
-                                </a>
-                            </div>
-                            <div class="me-2">
-                                <form asp-action="Delete" asp-route-id="@item.PackageEventId" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Yakin ingin menghapus paket ini?');">
-                                        <i class='bx bx-trash'></i>
-
-                                    </button>
-                                </form>
-                            </div>
-
-                        </td>
+                        <td colspan="5" class="text-center text-muted">Data tidak ditemukan</td>
                     </tr>
-                    no++;
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row">@no</th>
+                            <td>@item.PackageName</td>
+                            <td>@item.BasePrice.ToString("C0")</td>
+                            <td>@item.Status</td>
+                            <td class="d-flex">
+                                <div class="me-2">
+                                    <a class="btn btn-info btn-sm" asp-action="Detail" asp-route-id="@item.PackageEventId">
+                                        <i class='bx bxs-show text-white'></i>
+                                    </a>
+                                </div>
+                                <div class="me-2">
+                                    <a asp-action="Edit" asp-route-id="@item.PackageEventId" class="btn btn-warning btn-sm">
+                                        <i class='bx bxs-edit'></i>
+                                    </a>
+                                </div>
+                                <div class="me-2">
+                                    <form asp-action="Delete" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.PackageEventId" />
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Yakin ingin menghapus paket ini?');">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        no++;
+                    }
                 }
             </tbody>
         </table>
     </div>
+
+    <!-- 📄 Pagination -->
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center my-3">
+                @{
+                    int currentPage = ViewBag.CurrentPage;
+                    int totalPages = ViewBag.TotalPages;
+                    string search = ViewBag.Search;
+                }
+
+                <!-- Tombol Previous -->
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(currentPage - 1)"
+                       asp-route-search="@search">
+                        Previous
+                    </a>
+                </li>
+
+                <!-- Nomor halaman -->
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-search="@search">@i</a>
+                    </li>
+                }
+
+                <!-- Tombol Next -->
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(currentPage + 1)"
+                       asp-route-search="@search">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>

@@ -1,477 +1,108 @@
-﻿@{
-    Layout = null;
+﻿@model IEnumerable<Models.PackageEventModel>
+
+
+@{
+    Layout = "_LayoutCustomer";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-          rel="stylesheet" />
 
-    <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="/vendor/fonts/boxicons.css" />
 
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="/css/demo.css" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-
-    <!-- Page CSS -->
-    <!-- Page -->
-    <link rel="stylesheet" href="/vendor/css/pages/page-auth.css" />
-    <!-- Helpers -->
-    <script src="/vendor/js/helpers.js"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="/js/config.js"></script>
-    <style>
-        :root {
-            --bs-primary: #0d6efd;
-        }
-
-        body {
-            background-color: #f0f2f5;
-        }
-
-        .header-section {
-            position: relative;
-            background-image: linear-gradient( to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) ), url("https://images.unsplash.com/photo-1505238680356-667803448bb6?q=80&w=2070&auto=format&fit=crop");
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 5rem 0;
-            text-align: center;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-            .header-section h1 {
-                animation: fadeInUp 0.8s ease-out;
-            }
-
-            .header-section p {
-                animation: fadeInUp 1s ease-out;
-            }
-
-        .shape-divider {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            overflow: hidden;
-            line-height: 0;
-            transform: rotate(180deg);
-        }
-
-            .shape-divider svg {
-                position: relative;
-                display: block;
-                width: calc(100% + 1.3px);
-                height: 75px;
-            }
-
-            .shape-divider .shape-fill {
-                fill: #f0f2f5;
-            }
-        @@keyframes fadeInUp {
-            from
-
-        {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        }
-
-        .filter-nav .btn {
-            margin: 0 5px;
-        }
-
-        .card {
-            position: relative; /* Added for label positioning */
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s, transform 0.5s;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .card-label {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: #ffc107; /* Bootstrap warning color */
-            color: #343a40; /* Dark text for contrast */
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .card.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-img-top {
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-        }
-
-        .card-title {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .card-price {
-            color: #2575fc;
-            font-weight: bold;
-        }
-
-        .no-results {
-            display: none;
-            text-align: center;
-            padding: 50px;
-            font-size: 1.2rem;
-            color: #888;
-        }
-
-        .navbar-nav .nav-link {
-            transition: color 0.3s ease;
-        }
-
-            .navbar-nav .nav-link:hover {
-                color: #2575fc !important; /* Primary blue on hover */
-            }
-    </style>
-</head>
-<body>
-    @* navbar *@
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand text-dark" href="#">EventPro</a>
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark " href="/customer/order">Pesanan Saya</a>
-                    </li>
-                    <li class="nav-item">
-                        <form asp-controller="User" asp-action="Logout" method="post" class="dropdown-item p-0">
-                            <button class="btn nav-link text-dark " type="submit">
-                                <span class="fw-bold">
-                                Logout
-                                </span>
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+<header class="header-section">
+    <div class="container">
+        <h1 class="display-4">Wujudkan Event Sempurna Bersama Kami</h1>
+        <p class="lead">
+            Jadikan setiap acara tak terlupakan dengan pilihan paket eksklusif
+            kami.
+        </p>
+    </div>
+    <div class="shape-divider">
+        <svg data-name="Layer 1"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 1200 120"
+             preserveAspectRatio="none">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                  class="shape-fill"></path>
+        </svg>
+    </div>
+</header>
+@* End Header *@
+<div class="container py-5">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    </nav>
-    @* End Navbar *@
-
-    @* Header *@
-    <header class="header-section">
-        <div class="container">
-            <h1 class="display-4">Wujudkan Event Sempurna Bersama Kami</h1>
-            <p class="lead">
-                Jadikan setiap acara tak terlupakan dengan pilihan paket eksklusif
-                kami.
-            </p>
-        </div>
-        <div class="shape-divider">
-            <svg data-name="Layer 1"
-                 xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 1200 120"
-                 preserveAspectRatio="none">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
-                      class="shape-fill"></path>
-            </svg>
-        </div>
-    </header>
-    @* End Header *@
-
-
-
-    <div class="container py-5">
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success alert-dismissible" role="alert">
-                @TempData["SuccessMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            TempData.Remove("SuccessMessage");
-        }
-        <div class="row mb-4">
-            <div class="col-md-6 mb-3">
+        TempData.Remove("SuccessMessage");
+    }
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <form method="get" asp-action="Index" class="d-flex">
                 <input type="search"
+                       name="search"
                        class="form-control"
                        placeholder="Cari paket..."
+                       value="@ViewBag.Search"
                        aria-label="Search" />
-            </div>
-            <div class="col-md-4 mb-3">
-                <select class="form-select" aria-label="Pilih Kategori">
-                    <option selected>Pilih Kategori</option>
-                    <option value="1">Wedding</option>
-                    <option value="2">Corporate</option>
-                    <option value="3">Birthday</option>
-                    <option value="4">Concert</option>
-                </select>
-            </div>
-        </div>
+            </form>
 
-        <div class="container py-5">
-            <h2 class="text-center mb-4">Our Event Gallery</h2>
-            <div class="row g-4 mb-5">
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100">
-                        <img src="https://placehold.co/600x400/E0BBE4/FFFFFF/png?text=Event+1"
-                             class="card-img-top"
-                             alt="Event Image 1" />
-                        <div class="card-body">
-                            <h5 class="card-title">Beautiful Wedding</h5>
-                            <p class="card-text">
-                                A memorable day filled with joy and love.
-                            </p>
-                            <p class="card-price mb-3">Mulai dari Rp 125,000,00</p>
-                            <button type="button"
-                                    class="btn btn-primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#bookingModal">
-                                <i class="bx bx-check-circle"></i> Pilih Paket
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100">
-                        <img src="https://placehold.co/600x400/E0BBE4/FFFFFF/png?text=Event+1"
-                             class="card-img-top"
-                             alt="Event Image 1" />
-                        <div class="card-body">
-                            <h5 class="card-title">Beautiful Wedding</h5>
-                            <p class="card-text">
-                                A memorable day filled with joy and love.
-                            </p>
-                            <p class="card-price mb-3">Mulai dari Rp 125,000,00</p>
-                            <button type="button"
-                                    class="btn btn-primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#bookingModal">
-                                <i class="bx bx-check-circle"></i> Pilih Paket
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100">
-                        <img src="https://placehold.co/600x400/E0BBE4/FFFFFF/png?text=Event+1"
-                             class="card-img-top"
-                             alt="Event Image 1" />
-                        <div class="card-body">
-                            <h5 class="card-title">Beautiful Wedding</h5>
-                            <p class="card-text">
-                                A memorable day filled with joy and love.
-                            </p>
-                            <p class="card-price mb-3">Mulai dari Rp 125,000,00</p>
-                            <button type="button"
-                                    class="btn btn-primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#bookingModal">
-                                <i class="bx bx-check-circle"></i> Pilih Paket
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100">
-                        <img src="https://placehold.co/600x400/E0BBE4/FFFFFF/png?text=Event+1"
-                             class="card-img-top"
-                             alt="Event Image 1" />
-                        <div class="card-body">
-                            <h5 class="card-title">Beautiful Wedding</h5>
-                            <p class="card-text">
-                                A memorable day filled with joy and love.
-                            </p>
-                            <p class="card-price mb-3">Mulai dari Rp 125,000,00</p>
-                            <button type="button"
-                                    class="btn btn-primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#bookingModal">
-                                <i class="bx bx-check-circle"></i> Pilih Paket
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100">
-                        <img src="https://placehold.co/600x400/E0BBE4/FFFFFF/png?text=Event+1"
-                             class="card-img-top"
-                             alt="Event Image 1" />
-                        <div class="card-body">
-                            <h5 class="card-title">Beautiful Wedding</h5>
-                            <p class="card-text">
-                                A memorable day filled with joy and love.
-                            </p>
-                            <p class="card-price mb-3">Mulai dari Rp 125,000,00</p>
-                            <button type="button"
-                                    class="btn btn-primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#bookingModal">
-                                <i class="bx bx-check-circle"></i> Pilih Paket
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100">
-                        <img src="https://placehold.co/600x400/E0BBE4/FFFFFF/png?text=Event+1"
-                             class="card-img-top"
-                             alt="Event Image 1" />
-                        <div class="card-body">
-                            <h5 class="card-title">Beautiful Wedding</h5>
-                            <p class="card-text">
-                                A memorable day filled with joy and love.
-                            </p>
-                            <p class="card-price mb-3">Mulai dari Rp 125,000,00</p>
-                            <button type="button"
-                                    class="btn btn-primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#bookingModal">
-                                <i class="bx bx-check-circle"></i> Pilih Paket
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-
-        <!-- Package Cards Grid -->
-        <div id="package-container" class="row g-4">
-            <!-- Package cards will be dynamically inserted here -->
-        </div>
-
-        <!-- No Results Message -->
-        <div id="no-results" class="no-results">
-            <i class="bi bi-emoji-frown fs-1"></i>
-            <p>Tidak ada paket ditemukan. Coba pencarian atau filter lain.</p>
+        <div class="col-md-4 mb-3">
+            <select class="form-select" aria-label="Pilih Kategori">
+                <option selected>Pilih Kategori</option>
+                <option value="1">Wedding</option>
+                <option value="2">Corporate</option>
+                <option value="3">Birthday</option>
+                <option value="4">Concert</option>
+            </select>
         </div>
     </div>
 
-    <!-- Modal Form Pemesanan -->
-    <div class="modal fade"
-         id="bookingModal"
-         tabindex="-1"
-         aria-labelledby="bookingModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bookingModalLabel">Form Pemesanan</h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="packageName" class="form-label">Nama Paket</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="packageName"
-                                   readonly />
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Our Event Gallery</h2>
+        <div class="row g-4 mb-5">
+            <div id="package-container" class="row g-4">
+                @if (!Model.Any())
+                {
+                    <p class="text-center text-muted fs-5 py-5">Tidak ada paket ditemukan.</p>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card h-100">
+                                <div class="card-label">@item.Status</div>
+
+                                <img src="@(item.Photos?.FirstOrDefault()?.PhotoUrl ?? "/img/no-image.png")"
+                                     class="card-img-top"
+                                     alt="@item.PackageName" />
+
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.PackageName</h5>
+                                    <div class="d-block h-25 mb-2">
+
+                                        <p class="card-text">@item.Description.Substring(0, Math.Min(100, item.Description.Length))...</p>
+                                    </div>
+
+                                    <p class="card-price mb-3">Mulai dari Rp @item.BasePrice.ToString("N0")</p>
+
+                                    <a class="btn btn-primary w-100" asp-action="Detail" asp-route-id="@item.PackageEventId">
+                                        <i class="bx bx-check-circle"></i> Pilih Paket
+                                    </a>
+
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="additionalRequest" class="form-label">Permintaan Tambahan</label>
-                            <textarea class="form-control"
-                                      id="additionalRequest"
-                                      rows="4"
-                                      placeholder="Contoh: tambahan kursi, permintaan menu khusus, dll."></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-outline-primary"
-                            data-bs-dismiss="modal">
-                        Batal
-                    </button>
-                    <button type="button" class="btn btn-success">
-                        Pesan Sekarang
-                    </button>
-                </div>
+                    }
+                }
             </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          // Select all cards
-          const cards = document.querySelectorAll(".card");
-
-          // Add is-visible class to each card after a small delay
-          cards.forEach((card, index) => {
-            setTimeout(() => {
-              card.classList.add("is-visible");
-            }, index * 100); // Adds 100ms delay between each card animation
-          });
-        });
-    </script>
-
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="/vendor/libs/jquery/jquery.js"></script>
-    <script src="/vendor/libs/popper/popper.js"></script>
-    <script src="/vendor/js/bootstrap.js"></script>
-    <script src="/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-
-    <script src="/vendor/js/menu.js"></script>
-    <!-- endbuild -->
-    <!-- Vendors JS -->
-    <!-- Main JS -->
-    <script src="/js/main.js"></script>
-
-    <!-- Page JS -->
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-</body>
-
-
-</html>
+    <!-- No Results Message -->
+    <div id="no-results" class="no-results">
+        <i class="bi bi-emoji-frown fs-1"></i>
+        <p>Tidak ada paket ditemukan. Coba pencarian atau filter lain.</p>
+    </div>
+</div>

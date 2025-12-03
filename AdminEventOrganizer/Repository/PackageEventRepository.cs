@@ -51,17 +51,25 @@ namespace AdminEventOrganizer.Repository
         public async Task<PackageEventModel> Update(PackageEventModel model)
         {
             var sql = @"UPDATE eventPackage 
-                        SET PackageName = @PackageName, 
-                            Description = @Description, 
-                            BasePrice = @BasePrice,
-                            [Status] = @Status
-                        WHERE PackageEventId = @PackageEventId";
+                SET PackageName = @PackageName, 
+                    Description = @Description, 
+                    BasePrice = @BasePrice,
+                    [Status] = @Status
+                WHERE PackageEventId = @PackageEventId";
 
             using var connection = context.CreateConnection();
-            Console.WriteLine($"UPDATE untuk ID: {model.PackageEventId}");
-            await connection.ExecuteAsync(sql, model);
+            await connection.ExecuteAsync(sql, new
+            {
+                PackageName = model.PackageName,
+                Description = model.Description,
+                BasePrice = model.BasePrice,
+                Status = model.Status,
+                PackageEventId = model.PackageEventId
+            });
+
             return model;
         }
+
 
         public async Task Delete(Guid id)
         {
@@ -69,6 +77,7 @@ namespace AdminEventOrganizer.Repository
             var sql = "DELETE FROM eventPackage WHERE PackageEventId = @Id";
             await connection.ExecuteAsync(sql, new { Id = id });
         }
+
 
 
     }

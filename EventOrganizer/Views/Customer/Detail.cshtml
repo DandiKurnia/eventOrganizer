@@ -1,0 +1,84 @@
+﻿@model Models.PackageEventModel
+
+@{
+    Layout = "_LayoutCustomer";
+}
+
+
+<div class="container py-5">
+    <h1>@Model.PackageName</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@(Model.Photos?.FirstOrDefault()?.PhotoUrl ?? "/img/no-image.png")"
+                 class="img-fluid rounded" />
+        </div>
+
+        <div class="col-md-6">
+            <h3>Harga: Rp @Model.BasePrice.ToString("N0")</h3>
+
+            <p>@Model.Description</p>
+
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCenter">
+                Pesan Sekarang
+            </button>
+        </div>
+    </div>
+
+    <hr />
+
+    <h3>Foto Lainnya</h3>
+    <div class="d-flex gap-2 flex-wrap">
+        @foreach (var photo in Model.Photos)
+        {
+            <img src="@photo.PhotoUrl" width="150" class="rounded" />
+        }
+    </div>
+</div>
+
+@* MODAL FORM ORDER *@
+<div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form asp-action="OrderPackage" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pemesanan Paket @Model.PackageName</h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label class="form-label">Tanggal Event</label>
+                            <input type="date" name="eventDate" class="form-control" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <input type="hidden" name="packageEventId" value="@Model.PackageEventId" />
+
+                            <label>Permintaan Tambahan</label>
+                            <textarea rows="7" name="additionalRequest" class="form-control" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Pesan Sekarang
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+

@@ -20,6 +20,8 @@ builder.Services.AddSingleton<DapperDbContext>();
 builder.Services.AddTransient<IUser, UserRepository>();
 builder.Services.AddTransient<IVendor, VendorRepository>();
 builder.Services.AddTransient<IOrder, OrderRepository>();
+builder.Services.AddTransient<IPackageEvent, PackageEventRepository>();
+builder.Services.AddTransient<IVendorConfirmation, VendorConfirmationRepository>();
 
 var app = builder.Build();
 

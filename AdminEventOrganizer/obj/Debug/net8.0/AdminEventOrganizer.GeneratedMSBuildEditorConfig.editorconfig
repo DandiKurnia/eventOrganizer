@@ -36,6 +36,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFja2FnZUV2ZW50XENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Gunadarma/SEMESTER/semester_5/tugas/analisisData/projectTwo/EventOrganizer/AdminEventOrganizer/Views/PackageEvent/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFja2FnZUV2ZW50XERldGFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Gunadarma/SEMESTER/semester_5/tugas/analisisData/projectTwo/EventOrganizer/AdminEventOrganizer/Views/PackageEvent/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFja2FnZUV2ZW50XEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -74,6 +78,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/Gunadarma/SEMESTER/semester_5/tugas/analisisData/projectTwo/EventOrganizer/AdminEventOrganizer/Views/User/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Gunadarma/SEMESTER/semester_5/tugas/analisisData/projectTwo/EventOrganizer/AdminEventOrganizer/Views/Vendor/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yXERldGFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Gunadarma/SEMESTER/semester_5/tugas/analisisData/projectTwo/EventOrganizer/AdminEventOrganizer/Views/Vendor/Index.cshtml]

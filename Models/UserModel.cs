@@ -17,7 +17,7 @@ namespace Models
         public string PasswordHash { get; set; } = string.Empty;
 
         [Required]
-        public string Role { get; set; } = "Customer"; // default
+        public string Role { get; set; } = "Customer";
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;

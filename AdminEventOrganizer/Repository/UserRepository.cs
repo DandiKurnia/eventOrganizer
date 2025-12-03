@@ -52,6 +52,27 @@ namespace AdminEventOrganizer.Repository
             return await connection.QueryAsync<UserModel>(sql);
         }
 
+        public async Task<UserModel?> GetById(Guid id)
+        {
+            var sql = "SELECT * FROM Users WHERE UserId = @Id";
+            using var connection = _context.CreateConnection();
+            return await connection.QuerySingleOrDefaultAsync<UserModel>(sql, new { Id = id });
+        }
+
+        public async Task<UserModel> Update(UserModel model)
+        {
+            var sql = @"UPDATE Users 
+                SET Name = @Name,
+                    Email = @Email,
+                    Role = @Role,
+                    IsActive = @IsActive
+                WHERE UserId = @UserId";
+            using var connection = _context.CreateConnection();
+            await connection.ExecuteAsync(sql, model);
+            return model;
+        }
+
+
         private string HashPassword(string password)
         {
             // Work factor 12 (default) - semakin tinggi semakin aman tapi lebih lambat

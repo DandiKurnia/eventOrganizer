@@ -1,33 +1,38 @@
-﻿@{
+﻿@model IEnumerable<Models.VendorModel>
+@{
     ViewData["Title"] = "Vendor";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    TempData.Remove("SuccessMessage");
 }
 
 <div class="card">
     <div class="row align-items-center">
         <div class="col-6">
-            <h5 class="card-header">
-                Vendor
-            </h5>
+            <h5 class="card-header">Vendor</h5>
         </div>
         <div class="col-6 p-3 d-flex justify-content-end">
-            <div class="me-2">
-                <div class="d-flex flex-wrap me-2 justify-content-end">
-                    <div class="nav-item d-flex align-items-center">
-                        <i class="bx bx-search fs-4 lh-0"></i>
-                        <input type="text" class="form-control border-0 shadow-none" placeholder="Search..."
-                               aria-label="Search...">
-                    </div>
+            <form asp-action="Index" method="get" class="d-flex">
+                <div class="input-group me-2">
+                    <span class="input-group-text"><i class="bx bx-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Cari vendor..."
+                           value="@ViewBag.Search" />
                 </div>
-            </div>
+                <button type="submit" class="btn btn-primary">Cari</button>
+            </form>
         </div>
     </div>
-
-    @* Card *@
 
     <div class="table-responsive text-nowrap">
         <table class="table">
             <thead>
-                <tr class="text-nowrap">
+                <tr>
                     <th>No</th>
                     <th>Nama Vendor</th>
                     <th>Email</th>
@@ -37,37 +42,83 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody class="table-border-bottom-0">
+            <tbody>
                 @{
-                    int no = 1;
+                    int no = (ViewBag.CurrentPage - 1) * 10 + 1;
                 }
-                @foreach (var item in Model)
+                @if (!Model.Any())
                 {
-                    <tr>
-                        <th scope="row">@no</th>
-                        <td>@item.VendorName</td>
-                        <td>@item.Email</td>
-                        <td>@item.Phone</td>
-                        <td>@item.Category</td>
-                        <td>@item.Status</td>
-                        <td class="d-flex">
-                            <div class="me-2">
-                                <button type="submit" class="btn btn-info btn-sm btndelete">
-                                    <i class='bx bxs-show'></i>
-                                </button>
-                            </div>
-                            <div class="me-2">
-                                <button type="submit" class="btn btn-danger btn-sm btndelete">
-                                    <i class='bx bx-trash'></i>
-                                </button>
-                            </div>
-
-                        </td>
-                    </tr>
-                    no++;
-
+                    <tr><td colspan="7" class="text-center text-muted">Data tidak ditemukan</td></tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@no</td>
+                            <td>@item.CompanyName</td>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+                            <td>@item.Category</td>
+                            <td>@item.Status</td>
+                            <td>
+                                <a asp-action="Detail" asp-route-id="@item.VendorId" class="btn btn-info btn-sm">
+                                    <i class="bx bxs-show text-white"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.VendorId" class="btn btn-warning btn-sm">
+                                    <i class="bx bxs-edit"></i>
+                                </a>
+                                <form asp-action="Delete" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.VendorId" />
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Yakin ingin menghapus vendor ini?');">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        no++;
+                    }
                 }
             </tbody>
         </table>
     </div>
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+                @{
+                    int currentPage = ViewBag.CurrentPage;
+                    int totalPages = ViewBag.TotalPages;
+                    string search = ViewBag.Search;
+                }
+
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(currentPage - 1)"
+                       asp-route-search="@search">Previous</a>
+                </li>
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-search="@search">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(currentPage + 1)"
+                       asp-route-search="@search">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>

@@ -120,10 +120,33 @@ namespace AdminEventOrganizer.Controllers
             return Logout();
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? search, int page = 1)
         {
+            const int pageSize = 10;
             var users = await _userRepository.GetAllUsers();
-            return View(users);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+                users = users.Where(u =>
+                    u.Name.ToLower().Contains(search) ||
+                    u.Email.ToLower().Contains(search) ||
+                    u.Role.ToLower().Contains(search));
+            }
+
+            var totalItems = users.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var data = users
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Search = search;
+
+            return View(data);
         }
 
         [HttpGet]
@@ -163,6 +186,43 @@ namespace AdminEventOrganizer.Controllers
                 TempData["ErrorMessage"] = "Terjadi kesalahan sistem. Silakan coba lagi.";
                 return View(model);
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var user = await _userRepository.GetById(id);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User tidak ditemukan.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Guid id, UserModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var existing = await _userRepository.GetById(id);
+            if (existing == null)
+            {
+                TempData["ErrorMessage"] = "User tidak ditemukan.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            existing.Name = model.Name;
+            existing.Email = model.Email;
+            existing.Role = model.Role;
+            existing.IsActive = model.IsActive;
+
+            await _userRepository.Update(existing);
+
+            TempData["SuccessMessage"] = "Data user berhasil diperbarui.";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

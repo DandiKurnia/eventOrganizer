@@ -1,28 +1,32 @@
-﻿@{
+﻿@model Models.PackageEventModel
+@{
     ViewData["Title"] = "Edit Paket";
 }
 
-@model Models.PackageEventModel
 <div class="row">
     <div class="col-xl">
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Create Customer</h5>
+                <h5 class="mb-0">Edit Paket Event</h5>
             </div>
             <div class="card-body">
-                <form asp-action="Edit" asp-route-id="@Model.PackageEventId" method="post">
+                <form asp-action="Edit" asp-route-id="@Model.PackageEventId" method="post" enctype="multipart/form-data">
+                    <!-- penting: agar ID paket dikirim -->
+                    <input type="hidden" asp-for="PackageEventId" />
+
                     <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Nama Paket</label>
-                        <input type="text" asp-for="PackageName" class="form-control" placeholder="Nama Paket" required>
+                        <label class="form-label">Nama Paket</label>
+                        <input asp-for="PackageName" class="form-control" placeholder="Nama Paket" required />
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Harga Mulai</label>
-                        <input type="number" asp-for="BasePrice" class="form-control" placeholder="Harga Mulai" required>
+                        <label class="form-label">Harga Mulai</label>
+                        <input asp-for="BasePrice" type="number" class="form-control" placeholder="Harga Mulai" required />
                     </div>
+
                     <div class="mb-3">
                         <label asp-for="Status" class="form-label"></label>
                         <select asp-for="Status" class="form-select" id="Status">
-                            <option value="">-- Pilih Status --</option>
                             <option value="Aktif">Aktif</option>
                             <option value="Tidak Aktif">Tidak Aktif</option>
                         </select>
@@ -30,9 +34,47 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Deskripsi Paket</label>
-                        <textarea asp-for="Description" id="basic-default-message" class="form-control" placeholder="Deskripsi Paket" rows="6"></textarea>
+                        <label class="form-label">Deskripsi Paket</label>
+                        <textarea asp-for="Description" class="form-control" rows="6" placeholder="Deskripsi Paket"></textarea>
                     </div>
+
+                    <hr />
+                    <h5>Foto Saat Ini</h5>
+                    @if (Model.Photos != null && Model.Photos.Any())
+                    {
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            @foreach (var photo in Model.Photos)
+                            {
+                                <div class="position-relative">
+                                    <img src="@Url.Action("getFile", "File", new { id = photo.PhotoId })"
+                                         class="img-thumbnail"
+                                         width="150"
+                                         height="150"
+                                         style="object-fit:cover;" />
+                                    <button type="button"
+                                            class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                                            onclick="deletePhoto('@photo.PhotoId', '@Model.PackageEventId')">
+                                        &times;
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Belum ada foto.</p>
+                    }
+
+                    <div class="mb-3">
+                        <label class="form-label">Tambah Foto Baru</label>
+                        <input type="file" id="photoInput" name="PhotoFiles" class="form-control" multiple accept="image/*" />
+                    </div>
+
+                    <!-- Preview foto baru -->
+                    <div id="photoPreview" class="d-flex flex-wrap gap-2 mb-3 border rounded p-3">
+                        <p class="text-muted" id="previewPlaceholder">Belum ada foto baru dipilih.</p>
+                    </div>
+
                     <div class="d-flex justify-content-end mt-2 gap-2">
                         <a asp-action="Index" class="btn btn-secondary mt-3">Kembali</a>
                         <button type="submit" class="btn btn-success mt-3">Simpan</button>
@@ -42,3 +84,68 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const photoInput = document.getElementById('photoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        const placeholder = document.getElementById('previewPlaceholder');
+
+        let selectedFiles = [];
+
+        photoInput.addEventListener('change', function (event) {
+            const files = Array.from(event.target.files);
+            selectedFiles = [...selectedFiles, ...files];
+            updatePreview();
+        });
+
+        function updatePreview() {
+            photoPreview.innerHTML = '';
+            if (selectedFiles.length === 0) {
+                photoPreview.appendChild(placeholder);
+                return;
+            }
+
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const div = document.createElement('div');
+                    div.classList.add('position-relative');
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="${file.name}" class="img-thumbnail" width="150" height="150" style="object-fit:cover;">
+                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" onclick="removePhoto(${index})">&times;</button>
+                    `;
+                    photoPreview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removePhoto(index) {
+            selectedFiles.splice(index, 1);
+            updateFileInput();
+            updatePreview();
+        }
+
+        function updateFileInput() {
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => dataTransfer.items.add(file));
+            photoInput.files = dataTransfer.files;
+        }
+
+        async function deletePhoto(photoId, packageEventId) {
+            if (!confirm('Hapus foto ini?')) return;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            await fetch('/PackageEvent/DeletePhoto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: `photoId=${photoId}&packageEventId=${packageEventId}`
+            });
+            location.reload();
+        }
+    </script>
+}
+
