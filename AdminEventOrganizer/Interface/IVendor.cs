@@ -6,7 +6,8 @@ namespace AdminEventOrganizer.Interface
     {
         Task<IEnumerable<VendorModel>> Get();
         Task<VendorModel?> GetById(Guid id);
-        Task<VendorModel> Update(VendorModel model);
-        Task Delete(Guid id);
+
+        Task UpdateStatus(Guid vendorId, string status);
     }
+
 }

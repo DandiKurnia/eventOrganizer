@@ -26,8 +26,8 @@ namespace AdminEventOrganizer.Repository
             model.PasswordHash = HashPassword(model.PasswordHash);
             model.UserId = Guid.NewGuid();
 
-            var sql = @"INSERT INTO Users (UserId, Name, Email, PasswordHash, Role, IsActive, CreatedAt)
-                        VALUES (@UserId, @Name, @Email, @PasswordHash, @Role, @IsActive, @CreatedAt)";
+            var sql = @"INSERT INTO Users (UserId, Name, Email, PasswordHash, Role, IsActive, CreatedAt, PhoneNumber)
+                        VALUES (@UserId, @Name, @Email, @PasswordHash, @Role, @IsActive, @CreatedAt, @PhoneNumber)";
             using var connection = _context.CreateConnection();
             await connection.ExecuteAsync(sql, model);
             return model;
@@ -63,10 +63,11 @@ namespace AdminEventOrganizer.Repository
         {
             var sql = @"UPDATE Users 
                 SET Name = @Name,
-                    Email = @Email,
                     Role = @Role,
-                    IsActive = @IsActive
+                    IsActive = @IsActive,
+                    PhoneNumber = @PhoneNumber
                 WHERE UserId = @UserId";
+
             using var connection = _context.CreateConnection();
             await connection.ExecuteAsync(sql, model);
             return model;
@@ -75,7 +76,6 @@ namespace AdminEventOrganizer.Repository
 
         private string HashPassword(string password)
         {
-            // Work factor 12 (default) - semakin tinggi semakin aman tapi lebih lambat
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
 

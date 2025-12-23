@@ -166,7 +166,6 @@ namespace AdminEventOrganizer.Controllers
                     return View(model);
                 }
 
-                // Cek apakah email sudah terdaftar
                 var existingUser = await _userRepository.GetByEmail(model.Email);
                 if (existingUser != null)
                 {
@@ -197,17 +196,29 @@ namespace AdminEventOrganizer.Controllers
                 TempData["ErrorMessage"] = "User tidak ditemukan.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+
+            var vm = new EditUserViewModel
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role,
+                IsActive = user.IsActive
+            };
+
+            return View(vm);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, UserModel model)
+        public async Task<IActionResult> Edit(EditUserViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var existing = await _userRepository.GetById(id);
+            var existing = await _userRepository.GetById(model.UserId);
             if (existing == null)
             {
                 TempData["ErrorMessage"] = "User tidak ditemukan.";
@@ -215,7 +226,7 @@ namespace AdminEventOrganizer.Controllers
             }
 
             existing.Name = model.Name;
-            existing.Email = model.Email;
+            existing.PhoneNumber = model.PhoneNumber;
             existing.Role = model.Role;
             existing.IsActive = model.IsActive;
 
@@ -224,5 +235,7 @@ namespace AdminEventOrganizer.Controllers
             TempData["SuccessMessage"] = "Data user berhasil diperbarui.";
             return RedirectToAction(nameof(Index));
         }
+
+
     }
 }

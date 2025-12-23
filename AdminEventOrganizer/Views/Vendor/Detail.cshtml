@@ -32,7 +32,20 @@
             </div>
             <div class="col-md-6">
                 <label class="fw-bold">Telepon:</label>
-                <p class="form-control-plaintext">@Model.Phone</p>
+                <p class="form-control-plaintext">
+                    @if (string.IsNullOrEmpty(Model.PhoneNumber))
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        <a href="https://wa.me/@Model.PhoneNumber"
+                           target="_blank"
+                           class="text-decoration-none">
+                            @Model.PhoneNumber
+                        </a>
+                    }
+                </p>
             </div>
         </div>
 

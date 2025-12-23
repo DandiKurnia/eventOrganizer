@@ -1,0 +1,128 @@
+﻿@{
+    ViewData["Title"] = "Edit User";
+}
+
+@model Models.EditUserViewModel
+
+<div class="row">
+    <div class="col-xl">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Edit User</h5>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+
+                    <!-- ID (Hidden) -->
+                    <input type="hidden" asp-for="UserId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Nama Vendor / Nama Pemilik</label>
+                        <input type="text"
+                               asp-for="Name"
+                               class="form-control"
+                               placeholder="Nama Lengkap"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email"
+                               asp-for="Email"
+                               class="form-control"
+                               placeholder="Email"
+                               readonly />
+                        <small class="text-muted">
+                            Email tidak dapat diubah
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Handphone</label>
+                        <br />
+                        <label class="form-label">contoh 6289603098131</label>
+                        <input type="text"
+                               asp-for="PhoneNumber"
+                               id="phoneInput"
+                               class="form-control"
+                               placeholder="Nomor Handphone"
+                               required
+                               pattern="^[1-9][0-9]*$"
+                               title="Nomor HP tidak boleh diawali angka 0" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password (opsional)</label>
+                        <input type="password"
+                               name="NewPassword"
+                               class="form-control"
+                               placeholder="Kosongkan jika tidak diubah" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Role" class="form-label">Role</label>
+                        <select asp-for="Role" class="form-select">
+                            <option value="Admin">Admin</option>
+                            <option value="Vendor">Vendor</option>
+                            <option value="Staff">Staff</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Status User</label>
+                        <select asp-for="IsActive" class="form-select">
+                            <option value="true">Active</option>
+                            <option value="false">Tidak Active</option>
+                        </select>
+                    </div>
+
+
+                    <div class="d-flex justify-content-end mt-2 gap-2">
+                        <a asp-action="Index" class="btn btn-secondary mt-3">
+                            Kembali
+                        </a>
+                        <button type="submit" class="btn btn-warning mt-3">
+                            Update
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const phoneInput = document.getElementById("phoneInput");
+
+    phoneInput.addEventListener("input", function () {
+        // hanya angka
+        this.value = this.value.replace(/\D/g, "");
+
+        // tidak boleh diawali 0
+        if (this.value.startsWith("0")) {
+            this.value = this.value.substring(1);
+        }
+    });
+</script>
+}

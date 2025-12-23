@@ -1,23 +1,27 @@
 ﻿using EventOrganizer.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using System.Linq;
 
 namespace EventOrganizer.Controllers
 {
     public class CustomerController : Controller
     {
-        private readonly IPackageEvent _packageRepo;
+        private readonly IPackageEvent _packageEventRepository;
+        private readonly IPackagePhoto _packagePhotoRepository;
         private readonly IOrder _orderRepo;
 
-        public CustomerController(IPackageEvent packageRepo, IOrder orderRepo)
+
+        public CustomerController(IPackageEvent packageEventRepository, IOrder orderRepo, IPackagePhoto packagePhotoRepository)
         {
-            _packageRepo = packageRepo;
+            _packageEventRepository = packageEventRepository;
             _orderRepo = orderRepo;
+            _packagePhotoRepository = packagePhotoRepository;
         }
 
         public async Task<IActionResult> Index(string search)
         {
-            var packages = await _packageRepo.Get();
+            var packages = await _packageEventRepository.Get();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -26,13 +30,24 @@ namespace EventOrganizer.Controllers
                     .ToList();
             }
 
+            foreach (var package in packages)
+            {
+                var photos = await _packagePhotoRepository.GetByPackageId(package.PackageEventId);
+
+                var firstPhoto = photos.FirstOrDefault();
+                if (firstPhoto != null)
+                {
+                    package.ThumbnailUrl = Url.Action("getFile", "File", new { id = firstPhoto.PhotoId });
+                }
+            }
+
             return View(packages);
         }
 
-        // 🔥 DETAIL
+
         public async Task<IActionResult> Detail(Guid id)
         {
-            var package = await _packageRepo.GetById(id);
+            var package = await _packageEventRepository.GetById(id);
 
             if (package == null)
                 return NotFound();
@@ -81,7 +96,6 @@ namespace EventOrganizer.Controllers
             // Ambil semua order milik user
             var orders = await _orderRepo.Get(Guid.Parse(userId));
 
-            // 🔍 Search
             if (!string.IsNullOrWhiteSpace(search))
             {
                 orders = orders

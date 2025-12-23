@@ -16,38 +16,63 @@ namespace AdminEventOrganizer.Repository
 
         public async Task<IEnumerable<VendorModel>> Get()
         {
+            const string sql = @"
+        SELECT 
+            v.VendorId,
+            v.UserId,
+            v.CompanyName,
+            v.Category,
+            u.Email,
+            u.PhoneNumber,
+            v.Status,
+            v.Address,
+            v.CreatedAt
+        FROM Vendor v
+        LEFT JOIN Users u ON v.UserId = u.UserId
+        ORDER BY v.CreatedAt DESC";
+
             using var connection = _context.CreateConnection();
-            const string sql = "SELECT * FROM vendor";
             return await connection.QueryAsync<VendorModel>(sql);
         }
 
+
+
         public async Task<VendorModel?> GetById(Guid id)
         {
+            const string sql = @"
+                SELECT 
+                    v.VendorId,
+                    v.UserId,
+                    v.CompanyName,
+                    v.Category,
+                    u.Email,
+                    u.PhoneNumber,
+                    v.Status,
+                    v.Address,
+                    v.CreatedAt
+                FROM Vendor v
+                LEFT JOIN Users u ON v.UserId = u.UserId
+                WHERE v.VendorId = @Id";
+
             using var connection = _context.CreateConnection();
-            const string sql = "SELECT * FROM vendor WHERE VendorId = @Id";
             return await connection.QuerySingleOrDefaultAsync<VendorModel>(sql, new { Id = id });
         }
 
-        public async Task<VendorModel> Update(VendorModel model)
-        {
-            using var connection = _context.CreateConnection();
-            const string sql = @"UPDATE vendor 
-                                 SET CompanyName = @CompanyName, 
-                                     Category = @Category,
-                                     Email = @Email,
-                                     Phone = @Phone,
-                                     Status = @Status,
-                                     Address = @Address
-                                 WHERE VendorId = @VendorId";
-            await connection.ExecuteAsync(sql, model);
-            return model;
-        }
 
-        public async Task Delete(Guid id)
+
+        public async Task UpdateStatus(Guid vendorId, string status)
         {
+            const string sql = @"
+                UPDATE Vendor
+                SET Status = @Status
+                WHERE VendorId = @VendorId";
+
             using var connection = _context.CreateConnection();
-            const string sql = "DELETE FROM vendor WHERE VendorId = @Id";
-            await connection.ExecuteAsync(sql, new { Id = id });
+            await connection.ExecuteAsync(sql, new
+            {
+                VendorId = vendorId,
+                Status = status
+            });
         }
     }
 }

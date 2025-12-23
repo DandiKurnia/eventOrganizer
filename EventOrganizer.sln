@@ -15,6 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminEventOrganizer", "Admi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{6D17F78A-78B4-4163-8F17-86CB52923E0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffEventOrganizer", "StaffEventOrganizer\StaffEventOrganizer.csproj", "{BEC67C63-6788-412E-B172-DC034AED396E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D17F78A-78B4-4163-8F17-86CB52923E0A} = {6D17F78A-78B4-4163-8F17-86CB52923E0A}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +38,10 @@ Global
 		{6D17F78A-78B4-4163-8F17-86CB52923E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D17F78A-78B4-4163-8F17-86CB52923E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D17F78A-78B4-4163-8F17-86CB52923E0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC67C63-6788-412E-B172-DC034AED396E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC67C63-6788-412E-B172-DC034AED396E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC67C63-6788-412E-B172-DC034AED396E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC67C63-6788-412E-B172-DC034AED396E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

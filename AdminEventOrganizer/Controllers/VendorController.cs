@@ -64,43 +64,27 @@ namespace AdminEventOrganizer.Controllers
                 TempData["ErrorMessage"] = "Vendor tidak ditemukan.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(vendor);
+
+            return View(new EditVendorStatusViewModel
+            {
+                VendorId = vendor.VendorId,
+                Status = vendor.Status
+            });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, VendorModel model)
+        public async Task<IActionResult> Edit(EditVendorStatusViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var existing = await _vendorRepository.GetById(id);
-            if (existing == null)
-            {
-                TempData["ErrorMessage"] = "Vendor tidak ditemukan.";
-                return RedirectToAction(nameof(Index));
-            }
+            await _vendorRepository.UpdateStatus(model.VendorId, model.Status);
 
-            existing.CompanyName = model.CompanyName;
-            existing.Category = model.Category;
-            existing.Email = model.Email;
-            existing.Phone = model.Phone;
-            existing.Status = model.Status;
-            existing.Address = model.Address;
-
-            await _vendorRepository.Update(existing);
-
-            TempData["SuccessMessage"] = "Data vendor berhasil diperbarui.";
+            TempData["SuccessMessage"] = "Status vendor berhasil diperbarui.";
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            await _vendorRepository.Delete(id);
-            TempData["SuccessMessage"] = "Vendor berhasil dihapus.";
-            return RedirectToAction(nameof(Index));
-        }
     }
 }

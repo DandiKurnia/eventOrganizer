@@ -74,27 +74,31 @@
                             <div class="card h-100">
                                 <div class="card-label">@item.Status</div>
 
-                                <img src="@(item.Photos?.FirstOrDefault()?.PhotoUrl ?? "/img/no-image.png")"
+                                <img src="@(item.ThumbnailUrl ?? "/img/no-image.png")"
                                      class="card-img-top"
                                      alt="@item.PackageName" />
 
                                 <div class="card-body">
                                     <h5 class="card-title">@item.PackageName</h5>
-                                    <div class="d-block h-25 mb-2">
 
-                                        <p class="card-text">@item.Description.Substring(0, Math.Min(100, item.Description.Length))...</p>
+                                    <div class="d-block h-25 mb-2">
+                                        <p class="card-text">
+                                            @item.Description.Substring(0, Math.Min(100, item.Description.Length))...
+                                        </p>
                                     </div>
 
                                     <p class="card-price mb-3">Mulai dari Rp @item.BasePrice.ToString("N0")</p>
 
-                                    <a class="btn btn-primary w-100" asp-action="Detail" asp-route-id="@item.PackageEventId">
+                                    <a class="btn btn-primary w-100"
+                                       asp-action="Detail"
+                                       asp-route-id="@item.PackageEventId">
                                         <i class="bx bx-check-circle"></i> Pilih Paket
                                     </a>
-
                                 </div>
                             </div>
                         </div>
                     }
+
                 }
             </div>
         </div>

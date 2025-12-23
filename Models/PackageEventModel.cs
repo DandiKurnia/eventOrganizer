@@ -10,6 +10,8 @@ namespace Models
         public string Description { get; set; } = string.Empty;
         public int BasePrice { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string? ThumbnailUrl { get; set; }
+
 
         public List<PackagePhoto> Photos { get; set; } = new();
 

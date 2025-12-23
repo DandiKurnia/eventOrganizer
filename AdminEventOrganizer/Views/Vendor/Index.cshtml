@@ -58,7 +58,7 @@
                             <td>@no</td>
                             <td>@item.CompanyName</td>
                             <td>@item.Email</td>
-                            <td>@item.Phone</td>
+                            <td>@(string.IsNullOrEmpty(item.PhoneNumber) ? "-" : item.PhoneNumber)</td>
                             <td>@item.Category</td>
                             <td>@item.Status</td>
                             <td>
@@ -68,14 +68,7 @@
                                 <a asp-action="Edit" asp-route-id="@item.VendorId" class="btn btn-warning btn-sm">
                                     <i class="bx bxs-edit"></i>
                                 </a>
-                                <form asp-action="Delete" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@item.VendorId" />
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Yakin ingin menghapus vendor ini?');">
-                                        <i class="bx bx-trash"></i>
-                                    </button>
-                                </form>
+ 
                             </td>
                         </tr>
                         no++;
