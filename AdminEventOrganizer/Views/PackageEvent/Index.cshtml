@@ -73,7 +73,16 @@
                             <th scope="row">@no</th>
                             <td>@item.PackageName</td>
                             <td>@item.BasePrice.ToString("C0")</td>
-                            <td>@item.Status</td>
+                            <td>
+                                @if (item.Status == "Aktif")
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Nonaktif</span>
+                                }
+                            </td>
                             <td class="d-flex">
                                 <div class="me-2">
                                     <a class="btn btn-info btn-sm" asp-action="Detail" asp-route-id="@item.PackageEventId">

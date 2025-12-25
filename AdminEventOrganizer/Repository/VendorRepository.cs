@@ -74,5 +74,57 @@ namespace AdminEventOrganizer.Repository
                 Status = status
             });
         }
+
+        public async Task<IEnumerable<VendorModel>> GetAvailableVendors()
+        {
+            using var conn = _context.CreateConnection();
+            var sql = "SELECT * FROM Vendor WHERE Status = 'available'";
+            return await conn.QueryAsync<VendorModel>(sql);
+        }
+
+        public async Task<IEnumerable<VendorConfirmationModel>> GetByOrderId(Guid orderId)
+        {
+            var sql = @"
+                SELECT vc.*, v.CompanyName AS VendorName
+                FROM VendorConfirmation vc
+                INNER JOIN Vendor v ON vc.VendorId = v.VendorId
+                WHERE vc.OrderId = @OrderId
+                ORDER BY vc.CreatedAt DESC";
+
+            using var conn = _context.CreateConnection();
+            return await conn.QueryAsync<VendorConfirmationModel>(sql, new { OrderId = orderId });
+        }
+
+        public async Task SendVendorRequest(Guid orderId, Guid vendorId)
+        {
+            var sql = @"
+        INSERT INTO VendorConfirmation
+        (
+            VendorConfirmationId,
+            OrderId,
+            VendorId,
+            ActualPrice,
+            VendorStatus,
+            CreatedAt
+        )
+        VALUES
+        (
+            NEWID(),
+            @OrderId,
+            @VendorId,
+            0,
+            'pending_vendor',
+            GETDATE()
+        )";
+
+            using var conn = _context.CreateConnection();
+            await conn.ExecuteAsync(sql, new
+            {
+                OrderId = orderId,
+                VendorId = vendorId
+            });
+        }
+
+
     }
 }
