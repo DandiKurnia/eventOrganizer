@@ -12,6 +12,12 @@ namespace Models
         public string Status { get; set; } = string.Empty;
         public string? ThumbnailUrl { get; set; }
 
+        // 🔥 untuk CREATE / EDIT
+        public List<Guid> SelectedCategoryIds { get; set; } = new();
+
+        // 🔥 untuk DETAIL / preload edit
+        public List<PackageCategoryModel>? Categories { get; set; }
+
 
         public List<PackagePhoto> Photos { get; set; } = new();
 

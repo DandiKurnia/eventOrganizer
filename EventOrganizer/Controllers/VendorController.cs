@@ -9,11 +9,14 @@ namespace EventOrganizer.Controllers
     {
 
         private readonly IVendor _vendorRepository;
+        private readonly ICategory _categoryRepository;
 
-        public VendorController(IVendor vendorRepository)
+        public VendorController(IVendor vendorRepository, ICategory categoryRepository)
         {
             _vendorRepository = vendorRepository;
+            _categoryRepository = categoryRepository;
         }
+
 
         public async Task<IActionResult> Index()
         {
@@ -39,34 +42,87 @@ namespace EventOrganizer.Controllers
             return View(vendor);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var userId = Guid.Parse(HttpContext.Session.GetString("UserId"));
+
+            var vendor = new VendorModel
+            {
+                UserId = userId,
+                Email = HttpContext.Session.GetString("Email") // atau ambil dari repo Users
+            };
+
+            ViewBag.Categories = await _categoryRepository.GetAll();
+            return View(vendor);
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(VendorModel model)
         {
-            // Ambil UserId dari session
-            var userIdString = HttpContext.Session.GetString("UserId");
-            var userId = Guid.Parse(userIdString);
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Set UserId agar vendor terhubung ke user
-                model.UserId = userId;
-
-                // Simpan ke database lewat repository
-                await _vendorRepository.Add(model); // Pastikan Add(VendorModel) sudah ada di repository
-
-                TempData["SuccessMessage"] = "Data vendor berhasil disimpan!";
-                return RedirectToAction("Index");
+                ViewBag.Categories = await _categoryRepository.GetAll();
+                return View(model);
             }
 
-            // Kalau validasi gagal, tetap di halaman Create
-            return View(model);
+            await _vendorRepository.Add(model);
+
+            TempData["SuccessMessage"] = "Profil vendor berhasil dibuat";
+            return RedirectToAction("Index");
         }
+
+
+        public async Task<IActionResult> Edit()
+        {
+            var userId = Guid.Parse(HttpContext.Session.GetString("UserId"));
+            var vendor = await _vendorRepository.GetVendorByUserId(userId);
+
+            if (vendor == null)
+                return RedirectToAction("Create");
+
+            var categories = await _categoryRepository.GetAll();
+            var vendorCategories = await _vendorRepository.GetVendorCategories(vendor.VendorId);
+
+            vendor.SelectedCategoryIds = vendorCategories
+                .Select(c => c.CategoryId)
+                .ToList();
+
+            ViewBag.Categories = categories;
+            ViewBag.SelectedCategories = vendorCategories;
+            return View(vendor);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(VendorModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Categories = await _categoryRepository.GetAll();
+                return View(model);
+            }
+
+            // 🔹 update vendor
+            await _vendorRepository.UpdateVendorInfo(model);
+
+            // 🔹 update phone (USER)
+            await _vendorRepository.UpdateUserPhone(model.UserId, model.PhoneNumber);
+
+            // 🔹 update kategori
+            await _vendorRepository.AddVendorCategories(
+                model.VendorId,
+                model.SelectedCategoryIds
+            );
+
+            TempData["SuccessMessage"] = "Profil vendor berhasil diperbarui";
+            return RedirectToAction("Index");
+        }
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

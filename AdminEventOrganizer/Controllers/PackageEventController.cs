@@ -1,5 +1,4 @@
 ﻿using AdminEventOrganizer.Interface;
-using AdminEventOrganizer.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -9,15 +8,21 @@ namespace AdminEventOrganizer.Controllers
     {
         private readonly IPackageEvent _packageEventRepository;
         private readonly IPackagePhoto _packagePhotoRepository;
+        private readonly ICategory _categoryRepository; // 🔥 CATEGORY
 
         public PackageEventController(
             IPackageEvent packageEventRepository,
-            IPackagePhoto packagePhotoRepository)
+            IPackagePhoto packagePhotoRepository,
+            ICategory categoryRepository)
         {
             _packageEventRepository = packageEventRepository;
             _packagePhotoRepository = packagePhotoRepository;
+            _categoryRepository = categoryRepository;
         }
 
+        // =====================================================
+        // INDEX
+        // =====================================================
         [HttpGet]
         public async Task<IActionResult> Index(string? search, int page = 1)
         {
@@ -36,7 +41,9 @@ namespace AdminEventOrganizer.Controllers
             var totalItems = packages.Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            var data = packages.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var data = packages.Skip((page - 1) * pageSize)
+                               .Take(pageSize)
+                               .ToList();
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
@@ -45,71 +52,91 @@ namespace AdminEventOrganizer.Controllers
             return View(data);
         }
 
-
-
-
-
-        public IActionResult Create()
+        // =====================================================
+        // CREATE (GET)
+        // =====================================================
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Categories = await _categoryRepository.GetAll(); // 🔥 CATEGORY
             return View();
         }
 
+        // =====================================================
+        // CREATE (POST)
+        // =====================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PackageEventModel model, List<IFormFile> PhotoFiles)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var addedPackage = await _packageEventRepository.Add(model);
-                string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                if (!Directory.Exists(uploadFolder))
-                    Directory.CreateDirectory(uploadFolder);
-
-                // 3️⃣ Simpan file dan catat URL-nya
-                var photos = new List<PackagePhoto>();
-
-                foreach (var file in PhotoFiles)
-                {
-                    if (file != null && file.Length > 0)
-                    {
-                        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                        string filePath = Path.Combine(uploadFolder, uniqueFileName);
-
-                        // Simpan file ke server
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(stream);
-                        }
-
-                        byte[] fileData;
-                        using (var ms = new MemoryStream()) { await file.CopyToAsync(ms); fileData = ms.ToArray(); }
-
-                        var contentType = file.ContentType;
-                        // Simpan path ke database (relatif ke wwwroot)
-                        photos.Add(new PackagePhoto
-                        {
-                            PhotoId = Guid.NewGuid(),
-                            PackageEventId = addedPackage.PackageEventId,
-                            PhotoUrl = $"/uploads/{uniqueFileName}",  // nanti bisa ditampilkan langsung di <img src="">
-                            CreatedAt = DateTime.Now,
-                            Foto = fileData,
-                            FotoContentType = contentType,
-                        });
-                    }
-                }
-
-                if (photos.Any())
-                    await _packagePhotoRepository.AddRange(photos);
-
-                TempData["SuccessMessage"] = "Paket Event berhasil ditambahkan!";
-                return RedirectToAction(nameof(Index));
+                ViewBag.Categories = await _categoryRepository.GetAll();
+                return View(model);
             }
 
-            return View(model);
+            // 1️⃣ SIMPAN PACKAGE
+            var addedPackage = await _packageEventRepository.Add(model);
+
+            // 🔥 SIMPAN RELASI CATEGORY
+            if (model.SelectedCategoryIds.Any())
+            {
+                await _packageEventRepository.UpdateCategories(
+                    addedPackage.PackageEventId,
+                    model.SelectedCategoryIds
+                );
+            }
+
+            // 2️⃣ UPLOAD FOTO (KODE KAMU TIDAK DIUBAH)
+            string uploadFolder = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot", "uploads");
+
+            if (!Directory.Exists(uploadFolder))
+                Directory.CreateDirectory(uploadFolder);
+
+            var photos = new List<PackagePhoto>();
+
+            foreach (var file in PhotoFiles)
+            {
+                if (file != null && file.Length > 0)
+                {
+                    string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    string filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    byte[] fileData;
+                    using (var ms = new MemoryStream())
+                    {
+                        await file.CopyToAsync(ms);
+                        fileData = ms.ToArray();
+                    }
+
+                    photos.Add(new PackagePhoto
+                    {
+                        PhotoId = Guid.NewGuid(),
+                        PackageEventId = addedPackage.PackageEventId,
+                        PhotoUrl = $"/uploads/{uniqueFileName}",
+                        Foto = fileData,
+                        FotoContentType = file.ContentType,
+                        CreatedAt = DateTime.Now
+                    });
+                }
+            }
+
+            if (photos.Any())
+                await _packagePhotoRepository.AddRange(photos);
+
+            TempData["SuccessMessage"] = "Paket Event berhasil ditambahkan!";
+            return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
+        // =====================================================
+        // DETAIL
+        // =====================================================
         public async Task<IActionResult> Detail(Guid id)
         {
             var package = await _packageEventRepository.GetById(id);
@@ -119,34 +146,43 @@ namespace AdminEventOrganizer.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Ambil semua foto dari repository foto
-            var photos = await _packagePhotoRepository.GetByPackageId(id);
-            package.Photos = photos.ToList();
+            package.Photos = (await _packagePhotoRepository.GetByPackageId(id)).ToList();
+            package.Categories = (await _packageEventRepository.GetCategories(id)).ToList(); // 🔥 CATEGORY
 
             return View(package);
         }
 
-        [HttpGet]
+        // =====================================================
+        // EDIT (GET)
+        // =====================================================
         public async Task<IActionResult> Edit(Guid id)
         {
             var package = await _packageEventRepository.GetById(id);
-            if (package == null)
-            {
-                TempData["ErrorMessage"] = "Data tidak ditemukan!";
-                return RedirectToAction(nameof(Index));
-            }
+            if (package == null) return NotFound();
 
-            var photos = await _packagePhotoRepository.GetByPackageId(id);
-            package.Photos = photos.ToList();
+            package.Photos = (await _packagePhotoRepository.GetByPackageId(id)).ToList();
+
+            var selected = await _packageEventRepository.GetCategories(id);
+            package.SelectedCategoryIds = selected.Select(x => x.CategoryId).ToList();
+
+            ViewBag.Categories = await _categoryRepository.GetAll();
+            ViewBag.SelectedCategories = selected;
+
             return View(package);
         }
 
+        // =====================================================
+        // EDIT (POST)
+        // =====================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, PackageEventModel model, List<IFormFile> PhotoFiles)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.Categories = await _categoryRepository.GetAll();
                 return View(model);
+            }
 
             var existing = await _packageEventRepository.GetById(id);
             if (existing == null)
@@ -155,17 +191,27 @@ namespace AdminEventOrganizer.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Update data utama
+            // UPDATE PACKAGE
             existing.PackageName = model.PackageName;
             existing.Description = model.Description;
             existing.BasePrice = model.BasePrice;
             existing.Status = model.Status;
+
             await _packageEventRepository.Update(existing);
 
-            // Upload foto baru jika ada
+            // 🔥 UPDATE CATEGORY
+            await _packageEventRepository.UpdateCategories(
+                existing.PackageEventId,
+                model.SelectedCategoryIds
+            );
+
+            // UPLOAD FOTO BARU (KODE KAMU)
             if (PhotoFiles != null && PhotoFiles.Any())
             {
-                string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                string uploadFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot", "uploads");
+
                 if (!Directory.Exists(uploadFolder))
                     Directory.CreateDirectory(uploadFolder);
 
@@ -176,7 +222,6 @@ namespace AdminEventOrganizer.Controllers
                     string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                     string filePath = Path.Combine(uploadFolder, uniqueFileName);
 
-                    // 1️⃣ SIMPAN FILE KE FOLDER
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -186,10 +231,9 @@ namespace AdminEventOrganizer.Controllers
                     using (var ms = new MemoryStream())
                     using (var input = file.OpenReadStream())
                     {
-                        await input.CopyToAsync(ms);   // baca stream dari awal
+                        await input.CopyToAsync(ms);
                         fileData = ms.ToArray();
                     }
-
 
                     photos.Add(new PackagePhoto
                     {
@@ -203,47 +247,48 @@ namespace AdminEventOrganizer.Controllers
                 }
 
                 await _packagePhotoRepository.AddRange(photos);
-
             }
 
-
             TempData["SuccessMessage"] = "Paket event berhasil diperbarui!";
-            return RedirectToAction(nameof(Index), new { id });
+            return RedirectToAction(nameof(Index));
         }
 
+        // =====================================================
+        // DELETE FOTO
+        // =====================================================
         [HttpPost]
         public async Task<IActionResult> DeletePhoto(Guid photoId, Guid packageEventId)
         {
-            // hapus satu foto
             await _packagePhotoRepository.DeletePhoto(photoId);
             TempData["SuccessMessage"] = "Foto berhasil dihapus!";
             return RedirectToAction(nameof(Edit), new { id = packageEventId });
         }
 
+        // =====================================================
+        // DELETE PACKAGE
+        // =====================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
-                // Ambil semua foto terkait package
                 var photos = await _packagePhotoRepository.GetByPackageId(id);
+                string uploadFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot", "uploads");
 
-                // Hapus file fisik di wwwroot/uploads
-                string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                 foreach (var photo in photos)
                 {
-                    string filePath = Path.Combine(uploadFolder, Path.GetFileName(photo.PhotoUrl));
+                    string filePath = Path.Combine(
+                        uploadFolder,
+                        Path.GetFileName(photo.PhotoUrl));
+
                     if (System.IO.File.Exists(filePath))
-                    {
                         System.IO.File.Delete(filePath);
-                    }
                 }
 
-                // Hapus semua data foto di database
                 await _packagePhotoRepository.DeleteByPackageId(id);
-
-                // Hapus data package
                 await _packageEventRepository.Delete(id);
 
                 TempData["SuccessMessage"] = "Paket event dan semua fotonya berhasil dihapus!";
@@ -255,7 +300,5 @@ namespace AdminEventOrganizer.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-
     }
 }

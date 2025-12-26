@@ -1,47 +1,115 @@
-﻿@{
-    ViewData["Title"] = "Crater Data Vendor";
+﻿@model Models.VendorModel
+@using Models
+
+@{
+    var categories = ViewBag.Categories as IEnumerable<CategoryModel>
+                     ?? new List<CategoryModel>();
 }
 
-@model Models.VendorModel
-<div class="row">
-    <div class="col-xl">
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Data Vendor</h5>
+<div class="card">
+    <div class="card-header">
+        <h5>Buat Profil Vendor</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+
+            <!-- WAJIB -->
+            <input type="hidden" asp-for="UserId" />
+
+            <div class="mb-3">
+                <label>Nama Perusahaan</label>
+                <input asp-for="CompanyName" class="form-control" required />
             </div>
-            <div class="card-body">
-                <form asp-action="Create" method="post">
-                    <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Nama Perusahaan</label>
-                        <input type="text" asp-for="CompanyName" class="form-control" placeholder="Nama Perusahaan" required>
-                        <span asp-validation-for="CompanyName" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Kategori</label>
-                        <input type="text" asp-for="Category" class="form-control" placeholder="Kategori" required>
-                        <span asp-validation-for="Category" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Email</label>
-                        <input type="text" asp-for="Email" class="form-control" placeholder="Kategori" required>
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Nomer Telepon</label>
-                        <input type="number" asp-for="Phone" class="form-control" placeholder="Nomer Telepon" required>
-                        <span asp-validation-for="Phone" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="basic-default-fullname">Alamat</label>
-                        <input type="text" asp-for="Address" class="form-control" placeholder="Alamat" required>
-                        <span asp-validation-for="Address" class="text-danger"></span>
-                    </div>
-                    <div class="d-flex justify-content-end mt-2 gap-2">
-                        <a asp-action="Index" class="btn btn-secondary mt-3">Kembali</a>
-                        <button type="submit" class="btn btn-success mt-3">Simpan</button>
-                    </div>
-                </form>
+
+            <!-- 🔒 EMAIL READ ONLY -->
+            <div class="mb-3">
+                <label>Email</label>
+                <input value="@Model.Email"
+                       class="form-control"
+                       disabled />
             </div>
-        </div>
+
+            <div class="mb-3">
+                <label>Alamat</label>
+                <input asp-for="Address" class="form-control" required />
+            </div>
+
+            <!-- 🔥 CATEGORY (JS ADD) -->
+            <div class="mb-3">
+                <label>Kategori Vendor</label>
+                <div class="input-group mb-2">
+                    <select id="categorySelect" class="form-select">
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach (var cat in categories)
+                        {
+                            <option value="@cat.CategoryId">@cat.CategoryName</option>
+                        }
+                    </select>
+                    <button type="button" class="btn btn-primary" onclick="addCategory()">
+                        Add
+                    </button>
+                </div>
+            </div>
+
+            <!-- badge -->
+            <div id="selectedCategories" class="d-flex flex-wrap gap-2"></div>
+
+            <!-- hidden input -->
+            <div id="hiddenInputs"></div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-secondary">Kembali</a>
+                <button class="btn btn-success">Simpan</button>
+            </div>
+        </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const selected = new Map();
+
+        function addCategory() {
+            const select = document.getElementById("categorySelect");
+            const id = select.value;
+            const name = select.options[select.selectedIndex].text;
+
+            if (!id || selected.has(id)) return;
+
+            selected.set(id, name);
+            render();
+        }
+
+        function removeCategory(id) {
+            selected.delete(id);
+            render();
+        }
+
+        function render() {
+            const badgeContainer = document.getElementById("selectedCategories");
+            const hiddenContainer = document.getElementById("hiddenInputs");
+
+            badgeContainer.innerHTML = "";
+            hiddenContainer.innerHTML = "";
+
+            selected.forEach((name, id) => {
+                const badge = document.createElement("span");
+                badge.className = "badge bg-primary d-flex align-items-center gap-1";
+                badge.innerHTML = `
+                    ${name}
+                    <button type="button"
+                            class="btn-close btn-close-white btn-sm"
+                            onclick="removeCategory('${id}')"></button>
+                `;
+                badgeContainer.appendChild(badge);
+
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "SelectedCategoryIds";
+                input.value = id;
+                hiddenContainer.appendChild(input);
+            });
+        }
+    </script>
+}

@@ -19,10 +19,24 @@ namespace EventOrganizer.Repository
 
         public async Task<IEnumerable<VendorModel>> Get()
         {
-            var sql = "SELECT * FROM Vendor";
-            using var connection = context.CreateConnection();
-            return await connection.QueryAsync<VendorModel>(sql);
+            const string sql = @"
+        SELECT 
+            v.VendorId,
+            v.UserId,
+            v.CompanyName,
+            u.Email,
+            u.PhoneNumber,
+            v.Status,
+            v.Address,
+            v.CreatedAt
+        FROM Vendor v
+        LEFT JOIN Users u ON v.UserId = u.UserId
+        ORDER BY v.CreatedAt DESC";
+
+            using var conn = context.CreateConnection();
+            return await conn.QueryAsync<VendorModel>(sql);
         }
+
 
         public async Task<VendorModel> GetById(Guid vendorId)
         {
@@ -31,20 +45,65 @@ namespace EventOrganizer.Repository
             return await connection.QueryFirstOrDefaultAsync<VendorModel>(sql, new { VendorId = vendorId });
         }
 
-        public async Task<VendorModel> GetVendorByUserId(Guid userId)
+        public async Task<VendorModel?> GetVendorByUserId(Guid userId)
         {
-            var sql = "SELECT * FROM Vendor WHERE UserId = @UserId";
-            using var connection = context.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<VendorModel>(sql, new { UserId = userId });
+            const string sql = @"
+        SELECT 
+            v.VendorId,
+            v.UserId,
+            v.CompanyName,
+            u.Email,
+            u.PhoneNumber,
+            v.Status,
+            v.Address,
+            v.CreatedAt
+        FROM Vendor v
+        LEFT JOIN Users u ON v.UserId = u.UserId
+        WHERE v.UserId = @UserId";
+
+            using var conn = context.CreateConnection();
+            return await conn.QueryFirstOrDefaultAsync<VendorModel>(sql, new { UserId = userId });
         }
+
 
         public async Task Add(VendorModel vendor)
         {
-            var sql = @"INSERT INTO Vendor (VendorId, UserId, CompanyName, Category, Email, Phone, Status, Address, CreatedAt)
-                        VALUES (@VendorId, @UserId, @CompanyName, @Category, @Email, @Phone, @Status, @Address, @CreatedAt)";
-            using var connection = context.CreateConnection();
-            await connection.ExecuteAsync(sql, vendor);
+            using var conn = context.CreateConnection();
+            using var trans = conn.BeginTransaction();
+
+            try
+            {
+                var vendorSql = @"
+        INSERT INTO Vendor (VendorId, UserId, CompanyName, Status, Address, CreatedAt)
+        VALUES (@VendorId, @UserId, @CompanyName, @Status, @Address, GETDATE())";
+
+                await conn.ExecuteAsync(vendorSql, vendor, trans);
+
+                if (vendor.SelectedCategoryIds.Any())
+                {
+                    var categorySql = @"
+                INSERT INTO VendorCategory (VendorCategoryId, VendorId, CategoryId)
+                VALUES (NEWID(), @VendorId, @CategoryId)";
+
+                    foreach (var categoryId in vendor.SelectedCategoryIds)
+                    {
+                        await conn.ExecuteAsync(categorySql, new
+                        {
+                            VendorId = vendor.VendorId,
+                            CategoryId = categoryId
+                        }, trans);
+                    }
+                }
+
+                trans.Commit();
+            }
+            catch
+            {
+                trans.Rollback();
+                throw;
+            }
         }
+
 
         public async Task UpdateStatus(Guid vendorId, string status)
         {
@@ -113,6 +172,89 @@ namespace EventOrganizer.Repository
             var sql = "SELECT * FROM Vendor WHERE Status = 'available'";
             return await conn.QueryAsync<VendorModel>(sql);
         }
+
+        public async Task<IEnumerable<VendorCategoryModel>> GetVendorCategories(Guid vendorId)
+        {
+            var sql = @"
+        SELECT 
+            vc.VendorCategoryId,
+            vc.VendorId,
+            vc.CategoryId,
+            c.CategoryName
+        FROM VendorCategory vc
+        INNER JOIN Category c ON vc.CategoryId = c.CategoryId
+        WHERE vc.VendorId = @VendorId";
+
+            using var conn = context.CreateConnection();
+            return await conn.QueryAsync<VendorCategoryModel>(sql, new { VendorId = vendorId });
+        }
+
+        public async Task AddVendorCategories(Guid vendorId, List<Guid> categoryIds)
+        {
+            using var conn = context.CreateConnection();
+            conn.Open(); // 🔥 WAJIB
+
+            using var trans = conn.BeginTransaction();
+
+            try
+            {
+                // 🔥 hapus dulu kategori lama (untuk edit)
+                var deleteSql = "DELETE FROM VendorCategory WHERE VendorId = @VendorId";
+                await conn.ExecuteAsync(deleteSql, new { VendorId = vendorId }, trans);
+
+                // 🔥 insert ulang
+                var insertSql = @"
+            INSERT INTO VendorCategory (VendorCategoryId, VendorId, CategoryId)
+            VALUES (NEWID(), @VendorId, @CategoryId)";
+
+                foreach (var categoryId in categoryIds)
+                {
+                    await conn.ExecuteAsync(insertSql, new
+                    {
+                        VendorId = vendorId,
+                        CategoryId = categoryId
+                    }, trans);
+                }
+
+                trans.Commit();
+            }
+            catch
+            {
+                trans.Rollback();
+                throw;
+            }
+        }
+
+        public async Task UpdateVendorInfo(VendorModel model)
+        {
+            const string sql = @"
+        UPDATE Vendor
+        SET CompanyName = @CompanyName,
+            Address = @Address
+        WHERE VendorId = @VendorId";
+
+            using var conn = context.CreateConnection();
+            await conn.ExecuteAsync(sql, model);
+        }
+
+        public async Task UpdateUserPhone(Guid userId, string? phoneNumber)
+        {
+            const string sql = @"
+        UPDATE Users
+        SET PhoneNumber = @PhoneNumber
+        WHERE UserId = @UserId";
+
+            using var conn = context.CreateConnection();
+            await conn.ExecuteAsync(sql, new
+            {
+                UserId = userId,
+                PhoneNumber = phoneNumber
+            });
+        }
+
+
+
+
 
 
     }

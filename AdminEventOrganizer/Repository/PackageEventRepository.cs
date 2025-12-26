@@ -78,6 +78,64 @@ namespace AdminEventOrganizer.Repository
             await connection.ExecuteAsync(sql, new { Id = id });
         }
 
+        public async Task<IEnumerable<PackageCategoryModel>> GetCategories(Guid packageEventId)
+        {
+            const string sql = @"
+        SELECT 
+            pc.PackageCategoryId,
+            pc.PackageEventId,
+            pc.CategoryId,
+            c.CategoryName
+        FROM PackageCategory pc
+        INNER JOIN Category c ON pc.CategoryId = c.CategoryId
+        WHERE pc.PackageEventId = @PackageEventId";
+
+            using var conn = context.CreateConnection();
+            return await conn.QueryAsync<PackageCategoryModel>(
+                sql, new { PackageEventId = packageEventId });
+        }
+
+        public async Task UpdateCategories(Guid packageEventId, List<Guid> categoryIds)
+        {
+            using var conn = context.CreateConnection();
+            conn.Open();
+            using var trans = conn.BeginTransaction();
+
+            try
+            {
+                // hapus lama
+                await conn.ExecuteAsync(
+                    "DELETE FROM PackageCategory WHERE PackageEventId = @PackageEventId",
+                    new { PackageEventId = packageEventId },
+                    trans
+                );
+
+                // insert baru
+                const string insertSql = @"
+            INSERT INTO PackageCategory
+            (PackageCategoryId, PackageEventId, CategoryId)
+            VALUES (NEWID(), @PackageEventId, @CategoryId)";
+
+                foreach (var categoryId in categoryIds)
+                {
+                    await conn.ExecuteAsync(insertSql, new
+                    {
+                        PackageEventId = packageEventId,
+                        CategoryId = categoryId
+                    }, trans);
+                }
+
+                trans.Commit();
+            }
+            catch
+            {
+                trans.Rollback();
+                throw;
+            }
+        }
+
+
+
 
 
     }

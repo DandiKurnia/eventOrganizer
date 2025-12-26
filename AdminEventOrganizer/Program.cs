@@ -22,6 +22,7 @@ builder.Services.AddTransient<IUser, UserRepository>();
 builder.Services.AddTransient<IPackagePhoto, PackagePhotoRepository>();
 builder.Services.AddTransient<IOrder, OrderRepository>();
 builder.Services.AddTransient<IDashboard, DashboardRepository>();
+builder.Services.AddTransient<ICategory, CategoryRepository>();
 
 var app = builder.Build();
 

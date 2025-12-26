@@ -82,4 +82,3 @@ D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Ev
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\EventOrganizer\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\EventOrganizer\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\EventOrganizer\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
-D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\EventOrganizer\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -1,39 +1,120 @@
 ﻿@model Models.PackageEventModel
+@using Models
+
 @{
     ViewData["Title"] = "Detail Paket Event";
 }
 
-<h2>Detail Paket Event</h2>
-<hr />
+<div class="card">
+    <h5 class="card-header">Detail Paket Event</h5>
 
-<div class="card mb-3 p-3">
-    <h4>@Model.PackageName</h4>
+    <div class="card-body">
 
-    <p><strong>Deskripsi</strong></p>
-    <p>@Html.Raw(Model.Description.Replace("\n", "<br/>"))</p>
+        <!-- INFORMASI PAKET -->
+        <h6>Informasi Paket</h6>
 
-    <p><strong>Harga Dasar:</strong> @Model.BasePrice.ToString("C0")</p>
-    <p><strong>Status:</strong> @Model.Status</p>
-</div>
+        <table class="table table-bordered mb-4">
+            <tr>
+                <th width="30%">Nama Paket</th>
+                <td>@Model.PackageName</td>
+            </tr>
 
-<h4>Foto Paket</h4>
-@if (Model.Photos != null && Model.Photos.Any())
-{
-    <div class="d-flex flex-wrap gap-2 mb-3">
-        @foreach (var photo in Model.Photos)
+            <tr>
+                <th>Harga</th>
+                <td>@Model.BasePrice.ToString("C0")</td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>
+                    <span class="badge bg-info text-dark">
+                        @Model.Status
+                    </span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Kategori Paket</th>
+                <td>
+                    @if (Model.Categories != null && Model.Categories.Any())
+                    {
+                        foreach (var c in Model.Categories)
+                        {
+                            <span class="badge bg-primary me-1 mb-1">
+                                @c.CategoryName
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
+            </tr>
+        </table>
+
+        <hr />
+
+        <!-- DESKRIPSI -->
+        <h6>Deskripsi Paket</h6>
+        <div class="border rounded p-3 mb-4" style="white-space:pre-line;">
+            @(string.IsNullOrWhiteSpace(Model.Description)
+                        ? "-"
+                        : Html.Raw(Model.Description))
+        </div>
+
+        <hr />
+
+        <!-- FOTO PAKET -->
+        <h6>Foto Paket</h6>
+
+        @if (Model.Photos != null && Model.Photos.Any())
         {
-            <img src="@Url.Action("getFile", "File", new { id = photo.PhotoId })"
-                 class="img-thumbnail"
-                 width="150" height="150" />
+            <div class="row g-3 mb-4">
+                @foreach (var photo in Model.Photos)
+                {
+                    <div class="col-6 col-md-3">
+                        <div class="card shadow-sm h-100">
+                            <img src="@Url.Action("getFile", "File", new { id = photo.PhotoId })"
+                                 class="card-img-top"
+                                 style="height:160px;object-fit:cover;cursor:pointer"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#photoModal@photo.PhotoId" />
 
-            @* <img src="@photo.PhotoUrl" class="img-thumbnail" width="150" height="150" style="object-fit:cover;" /> *@
+                        </div>
+                    </div>
+
+                    <!-- MODAL PREVIEW -->
+                    <div class="modal fade" id="photoModal@photo.PhotoId" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-body p-0">
+                                    <img src="@Url.Action("getFile", "File", new { id = photo.PhotoId })"
+                                         class="img-fluid w-100" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         }
-    </div>
-}
-else
-{
-    <p class="text-muted">Belum ada foto untuk paket ini.</p>
-}
+        else
+        {
+            <p class="text-muted">Belum ada foto paket.</p>
+        }
 
-<a asp-action="Index" class="btn btn-secondary">Kembali</a>
-<a asp-action="Edit" asp-route-id="@Model.PackageEventId" class="btn btn-warning">Edit</a>
+        <!-- ACTION -->
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">
+                ← Kembali
+            </a>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.PackageEventId"
+               class="btn btn-warning">
+                <i class="bx bxs-edit"></i> Edit
+            </a>
+        </div>
+
+    </div>
+</div>

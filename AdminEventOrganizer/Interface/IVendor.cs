@@ -13,6 +13,7 @@ namespace AdminEventOrganizer.Interface
         Task<IEnumerable<VendorConfirmationModel>> GetByOrderId(Guid orderId);
 
         Task SendVendorRequest(Guid orderId, Guid vendorId);
+        Task<IEnumerable<VendorCategoryModel>> GetVendorCategories(Guid vendorId);
 
     }
 

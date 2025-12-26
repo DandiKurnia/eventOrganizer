@@ -21,7 +21,6 @@ namespace AdminEventOrganizer.Repository
             v.VendorId,
             v.UserId,
             v.CompanyName,
-            v.Category,
             u.Email,
             u.PhoneNumber,
             v.Status,
@@ -44,7 +43,6 @@ namespace AdminEventOrganizer.Repository
                     v.VendorId,
                     v.UserId,
                     v.CompanyName,
-                    v.Category,
                     u.Email,
                     u.PhoneNumber,
                     v.Status,
@@ -124,6 +122,28 @@ namespace AdminEventOrganizer.Repository
                 VendorId = vendorId
             });
         }
+
+        public async Task<IEnumerable<VendorCategoryModel>> GetVendorCategories(Guid vendorId)
+        {
+            const string sql = @"
+        SELECT 
+            vc.VendorCategoryId,
+            vc.VendorId,
+            vc.CategoryId,
+            c.CategoryName
+        FROM VendorCategory vc
+        INNER JOIN Category c 
+            ON vc.CategoryId = c.CategoryId
+        WHERE vc.VendorId = @VendorId
+        ORDER BY c.CategoryName";
+
+            using var connection = _context.CreateConnection();
+            return await connection.QueryAsync<VendorCategoryModel>(sql, new
+            {
+                VendorId = vendorId
+            });
+        }
+
 
 
     }

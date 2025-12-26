@@ -1,12 +1,37 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\eventorganizer\\views\\vendor\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|solutionrelative:eventorganizer\\views\\vendor\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Vendor\\Create.cshtml",
+              "RelativeDocumentMoniker": "EventOrganizer\\Views\\Vendor\\Create.cshtml",
+              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Vendor\\Create.cshtml",
+              "RelativeToolTip": "EventOrganizer\\Views\\Vendor\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-25T18:14:30.952Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

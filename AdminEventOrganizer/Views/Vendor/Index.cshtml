@@ -59,7 +59,6 @@
                             <td>@item.CompanyName</td>
                             <td>@item.Email</td>
                             <td>@(string.IsNullOrEmpty(item.PhoneNumber) ? "-" : item.PhoneNumber)</td>
-                            <td>@item.Category</td>
                             <td>@item.Status</td>
                             <td>
                                 <a asp-action="Detail" asp-route-id="@item.VendorId" class="btn btn-info btn-sm">

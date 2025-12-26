@@ -24,7 +24,6 @@ namespace AdminEventOrganizer.Controllers
                 search = search.ToLower();
                 vendors = vendors.Where(v =>
                     v.CompanyName.ToLower().Contains(search) ||
-                    (v.Category ?? "").ToLower().Contains(search) ||
                     (v.Status ?? "").ToLower().Contains(search));
             }
 
@@ -52,6 +51,11 @@ namespace AdminEventOrganizer.Controllers
                 TempData["ErrorMessage"] = "Vendor tidak ditemukan.";
                 return RedirectToAction(nameof(Index));
             }
+
+            // 🔥 AMBIL KATEGORI VENDOR
+            var categories = await _vendorRepository.GetVendorCategories(id);
+            ViewBag.VendorCategories = categories;
+
             return View(vendor);
         }
 

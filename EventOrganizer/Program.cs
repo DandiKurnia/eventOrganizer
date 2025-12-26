@@ -23,6 +23,7 @@ builder.Services.AddTransient<IOrder, OrderRepository>();
 builder.Services.AddTransient<IPackageEvent, PackageEventRepository>();
 builder.Services.AddTransient<IVendorConfirmation, VendorConfirmationRepository>();
 builder.Services.AddTransient<IPackagePhoto, PackagePhotoRepository>();
+builder.Services.AddTransient<ICategory, CategoryRepository>();
 
 var app = builder.Build();
 
