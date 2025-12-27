@@ -74,13 +74,13 @@
                             <td>@item.PackageName</td>
                             <td>@item.BasePrice.ToString("C0")</td>
                             <td>
-                                @if (item.Status == "Active")
+                                @if (item.Status == "available")
                                 {
-                                    <span class="badge bg-success">Aktif</span>
+                                    <span class="badge bg-success">available</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-danger">Nonaktif</span>
+                                    <span class="badge bg-danger">unavailable</span>
                                 }
                             </td>
                             <td class="d-flex">

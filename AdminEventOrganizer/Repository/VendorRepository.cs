@@ -93,35 +93,70 @@ namespace AdminEventOrganizer.Repository
             return await conn.QueryAsync<VendorConfirmationModel>(sql, new { OrderId = orderId });
         }
 
-        public async Task SendVendorRequest(Guid orderId, Guid vendorId)
+        public async Task<bool> HasAvailableVendorByPackage(Guid packageEventId, Guid orderId)
         {
             var sql = @"
-        INSERT INTO VendorConfirmation
-        (
-            VendorConfirmationId,
-            OrderId,
-            VendorId,
-            ActualPrice,
-            VendorStatus,
-            CreatedAt
-        )
-        VALUES
-        (
-            NEWID(),
-            @OrderId,
-            @VendorId,
-            0,
-            'pending_vendor',
-            GETDATE()
-        )";
+    SELECT COUNT(DISTINCT v.VendorId)
+    FROM Vendor v
+    JOIN VendorCategory vc ON v.VendorId = vc.VendorId
+    JOIN PackageCategory pc ON vc.CategoryId = pc.CategoryId
+    WHERE pc.PackageEventId = @PackageEventId
+      AND LOWER(v.Status) = 'available'
+      AND NOT EXISTS (
+          SELECT 1 FROM VendorConfirmation vc2
+          WHERE vc2.OrderId = @OrderId
+            AND vc2.VendorId = v.VendorId
+      )";
+
+            using var conn = _context.CreateConnection();
+            var count = await conn.ExecuteScalarAsync<int>(sql, new
+            {
+                PackageEventId = packageEventId,
+                OrderId = orderId
+            });
+
+            return count > 0;
+        }
+
+
+
+        public async Task SendVendorRequestByPackage(Guid orderId, Guid packageEventId)
+        {
+            if (!await HasAvailableVendorByPackage(packageEventId, orderId))
+                throw new InvalidOperationException(
+                    "Tidak ada vendor tersedia sesuai kategori paket."
+                );
+
+            var sql = @"
+    INSERT INTO VendorConfirmation
+        (VendorConfirmationId, OrderId, VendorId, ActualPrice, VendorStatus, CreatedAt)
+    SELECT DISTINCT
+        NEWID(),
+        @OrderId,
+        v.VendorId,
+        0,
+        'pending_vendor',
+        GETDATE()
+    FROM Vendor v
+    JOIN VendorCategory vc ON v.VendorId = vc.VendorId
+    JOIN PackageCategory pc ON vc.CategoryId = pc.CategoryId
+    WHERE pc.PackageEventId = @PackageEventId
+      AND LOWER(v.Status) = 'available'
+      AND NOT EXISTS (
+          SELECT 1 FROM VendorConfirmation vc2
+          WHERE vc2.OrderId = @OrderId
+            AND vc2.VendorId = v.VendorId
+      );";
 
             using var conn = _context.CreateConnection();
             await conn.ExecuteAsync(sql, new
             {
                 OrderId = orderId,
-                VendorId = vendorId
+                PackageEventId = packageEventId
             });
         }
+
+
 
         public async Task<IEnumerable<VendorCategoryModel>> GetVendorCategories(Guid vendorId)
         {

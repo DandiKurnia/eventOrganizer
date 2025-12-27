@@ -80,12 +80,22 @@ namespace AdminEventOrganizer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendVendor(Guid orderId, Guid vendorId)
+        public async Task<IActionResult> SendVendor(Guid orderId, Guid packageEventId)
         {
-            await _vendorRepo.SendVendorRequest(orderId, vendorId);
-            TempData["SuccessMessage"] = "Request berhasil dikirim ke vendor";
+            try
+            {
+                await _vendorRepo.SendVendorRequestByPackage(orderId, packageEventId);
+                TempData["SuccessMessage"] =
+                    "Request berhasil dikirim ke semua vendor yang sesuai kategori.";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
             return RedirectToAction(nameof(Edit), new { id = orderId });
         }
+
 
 
     }

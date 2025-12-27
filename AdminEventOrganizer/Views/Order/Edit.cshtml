@@ -22,6 +22,15 @@
             </div>
             TempData.Remove("SuccessMessage");
         }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
     </container>
 
     <div class="card-body">
@@ -97,24 +106,14 @@
 
         <form asp-action="SendVendor" method="post">
             <input type="hidden" name="orderId" value="@Model.OrderId" />
+            <input type="hidden" name="packageEventId" value="@Model.PackageEventId" />
 
-            <div class="input-group mb-3 w-50">
-                <select name="vendorId" class="form-select" required>
-                    <option value="">-- Pilih Vendor --</option>
-
-                    @foreach (var vendor in ViewBag.AvailableVendors)
-                    {
-                        <option value="@vendor.VendorId">
-                            @vendor.CompanyName (@vendor.Email)
-                        </option>
-                    }
-                </select>
-
-                <button type="submit" class="btn btn-warning">
-                    <i class="bx bx-send"></i> Kirim Request
-                </button>
-            </div>
+            <button type="submit" class="btn btn-warning">
+                <i class="bx bx-send"></i>
+                Kirim Request ke Semua Vendor Sesuai Kategori
+            </button>
         </form>
+
 
         <hr />
 
