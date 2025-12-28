@@ -253,6 +253,58 @@ namespace EventOrganizer.Repository
         }
 
 
+        public async Task<VendorDashboardViewModel> GetVendorDashboard(Guid vendorId)
+        {
+            using var conn = context.CreateConnection();
+
+            var sql = @"
+    SELECT
+        (SELECT COUNT(*) 
+         FROM VendorConfirmation 
+         WHERE VendorId = @VendorId) AS TotalOrders,
+
+        (SELECT COUNT(*) 
+         FROM VendorConfirmation 
+         WHERE VendorId = @VendorId
+         AND VendorStatus = 'waiting') AS WaitingConfirmation,
+
+        (SELECT COUNT(*) 
+         FROM VendorConfirmation 
+         WHERE VendorId = @VendorId
+         AND VendorStatus = 'confirmed') AS AcceptedOrders,
+
+        (SELECT COUNT(*) 
+         FROM VendorConfirmation 
+         WHERE VendorId = @VendorId
+         AND VendorStatus IN ('rejected','closed')) AS RejectedOrders,
+
+        (SELECT ISNULL(SUM(ActualPrice),0)
+         FROM VendorConfirmation
+         WHERE VendorId = @VendorId
+         AND VendorStatus = 'confirmed') AS TotalRevenue,
+
+        (SELECT ISNULL(SUM(ActualPrice),0)
+         FROM VendorConfirmation
+         WHERE VendorId = @VendorId
+         AND VendorStatus = 'confirmed'
+         AND MONTH(CreatedAt) = MONTH(GETDATE())
+         AND YEAR(CreatedAt) = YEAR(GETDATE())) AS MonthlyRevenue,
+
+        (SELECT COUNT(*)
+         FROM VendorConfirmation vc
+         JOIN Orders o ON vc.OrderId = o.OrderId
+         WHERE vc.VendorId = @VendorId
+         AND o.EventDate BETWEEN GETDATE() AND DATEADD(DAY,7,GETDATE())) AS UpcomingEvents,
+
+        (SELECT Status 
+         FROM Vendor 
+         WHERE VendorId = @VendorId) AS VendorStatus
+    ";
+
+            return await conn.QuerySingleAsync<VendorDashboardViewModel>(
+                sql, new { VendorId = vendorId }
+            );
+        }
 
 
 

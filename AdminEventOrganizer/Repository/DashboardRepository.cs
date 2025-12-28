@@ -30,11 +30,11 @@ namespace AdminEventOrganizer.Repository
              WHERE Status = 'vendor confirmation') AS VendorConfirmation,
 
             (SELECT COUNT(*) FROM Orders
-             WHERE Status = 'booking_dikonfirmasi') AS BookingConfirmed,
+             WHERE Status = 'booking confirmed') AS BookingConfirmed,
 
             (SELECT ISNULL(SUM(ActualPrice),0)
              FROM VendorConfirmation
-             WHERE VendorStatus = 'booking confirmed') AS TotalRevenue,
+             WHERE VendorStatus = 'confirmed') AS TotalRevenue,
 
             (SELECT COUNT(*) FROM Vendor
              WHERE Status = 'available') AS ActiveVendors,

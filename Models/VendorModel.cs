@@ -29,4 +29,20 @@ namespace Models
         public string Status { get; set; } = string.Empty;
     }
 
+    public class VendorDashboardViewModel
+    {
+        public int TotalOrders { get; set; }
+        public int WaitingConfirmation { get; set; }
+        public int AcceptedOrders { get; set; }
+        public int RejectedOrders { get; set; }
+
+        public decimal TotalRevenue { get; set; }
+        public decimal MonthlyRevenue { get; set; }
+
+        public int UpcomingEvents { get; set; }
+        public string VendorStatus { get; set; } = string.Empty;
+    }
+
+
+
 }

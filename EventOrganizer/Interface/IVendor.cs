@@ -20,6 +20,8 @@ namespace EventOrganizer.Interface
 
         Task<IEnumerable<VendorModel>> GetAvailableVendors();
 
+        Task<VendorDashboardViewModel> GetVendorDashboard(Guid vendorId);
+
 
     }
 }

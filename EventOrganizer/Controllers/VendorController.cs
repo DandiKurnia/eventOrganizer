@@ -25,27 +25,25 @@ namespace EventOrganizer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Ambil UserId dari session
             var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString))
+                return RedirectToAction("Login", "Auth");
 
             var userId = Guid.Parse(userIdString);
 
-            // Cek apakah vendor untuk user ini sudah ada
             var vendor = await _vendorRepository.GetVendorByUserId(userId);
-
             if (vendor == null)
             {
                 TempData["AlertDataMessage"] = "Silakan lengkapi data vendor Anda terlebih dahulu!";
-                // buat model kosong agar View aman
-                vendor = new VendorModel
-                {
-                    CompanyName = "Vendor",
-                    Status = "Belum Tersedia",
-                    VendorId = Guid.Empty
-                };
+                return RedirectToAction("Create");
             }
-            return View(vendor);
+
+            // 🔥 DASHBOARD DATA
+            var dashboard = await _vendorRepository.GetVendorDashboard(vendor.VendorId);
+
+            return View(dashboard); // Views/Vendor/Index.cshtml
         }
+
 
         public async Task<IActionResult> Create()
         {
