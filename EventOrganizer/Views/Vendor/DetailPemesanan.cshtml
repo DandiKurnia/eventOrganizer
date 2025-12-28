@@ -1,0 +1,163 @@
+﻿@model Models.VendorConfirmationModel
+
+@{
+    ViewData["Title"] = "Detail Pemesanan Vendor";
+}
+
+<div class="card">
+    <h5 class="card-header">Detail Pemesanan Vendor</h5>
+
+    <div class="card-body">
+
+        <!-- INFORMASI PEMESANAN -->
+        <h6>Informasi Pemesanan</h6>
+
+        <table class="table table-bordered mb-4">
+            <tr>
+                <th width="30%">Vendor</th>
+                <td>@Model.VendorName</td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>
+                    @if (Model.VendorStatus == "pending_vendor")
+                    {
+                        <span class="badge bg-warning text-dark">
+                            Pending Vendor
+                        </span>
+                    }
+                    else if (Model.VendorStatus == "accepted")
+                    {
+                        <span class="badge bg-success">
+                            Diterima
+                        </span>
+                    }
+                    else if (Model.VendorStatus == "rejected")
+                    {
+                        <span class="badge bg-danger">
+                            Ditolak
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            @Model.VendorStatus
+                        </span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th width="30%">Hubungin Staff</th>
+                <td>
+                    <a href="wa.me/6289603098131" class="text-success">Hubungi Staff via Whatsapp.</a>
+                </td>
+            </tr>
+        </table>
+
+        <h6>Detail Paket & Permintaan</h6>
+
+        <table class="table table-bordered mb-4">
+            <tr>
+                <th width="30%">Nama Paket</th>
+                <td>@Model.PackageName</td>
+            </tr>
+
+            <tr>
+                <th>Harga Paket</th>
+                <td>
+                    <strong>
+                        Rp @Model.BasePrice.ToString("N0")
+                    </strong>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Tanggal Event</th>
+                <td>@Model.EventDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+
+            <tr>
+                <th>Catatan Order</th>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(Model.AdditionalRequest))
+                    {
+                        <span class="text-muted">Tidak ada catatan.</span>
+                    }
+                    else
+                    {
+                        @Model.AdditionalRequest
+                    }
+                </td>
+            </tr>
+        </table>
+
+
+        <hr />
+
+        @if (Model.VendorStatus == "pending_vendor")
+        {
+            <!-- FORM KONFIRMASI -->
+            <h6>Konfirmasi Vendor</h6>
+
+            <form asp-action="Accept" method="post" class="mb-3">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="vendorConfirmationId"
+                       value="@Model.VendorConfirmationId" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">
+                        Harga Penawaran
+                    </label>
+                    <input type="number"
+                           name="actualPrice"
+                           class="form-control"
+                           placeholder="Masukkan harga penawaran"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">
+                        Catatan
+                    </label>
+                    <textarea name="notes"
+                          class="form-control"
+                          rows="3"
+                          placeholder="Catatan tambahan (opsional)">
+                    </textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit"
+                            class="btn btn-success">
+                        <i class="bx bx-check"></i> Terima
+                    </button>
+                </div>
+            </form>
+
+            <form asp-action="Reject"
+                  method="post"
+                  onsubmit="return confirm('Yakin ingin menolak pemesanan ini?');">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="vendorConfirmationId"
+                       value="@Model.VendorConfirmationId" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    <i class="bx bx-x"></i> Tolak
+                </button>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-info mb-0">
+                Pemesanan sudah diproses dan tidak dapat diubah.
+            </div>
+        }
+
+    </div>
+</div>

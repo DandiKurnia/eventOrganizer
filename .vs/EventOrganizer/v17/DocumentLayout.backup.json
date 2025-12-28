@@ -28,7 +28,7 @@
               "RelativeDocumentMoniker": "AdminEventOrganizer\\Views\\PackageEvent\\Detail.cshtml",
               "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Views\\PackageEvent\\Detail.cshtml",
               "RelativeToolTip": "AdminEventOrganizer\\Views\\PackageEvent\\Detail.cshtml",
-              "ViewState": "AgIAAFcAAAAAAAAAAADwv3gAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-12-26T17:43:20.531Z",
               "EditorCaption": ""
@@ -43,8 +43,7 @@
               "RelativeToolTip": "AdminEventOrganizer\\Views\\Vendor\\Detail.cshtml",
               "ViewState": "AgIAAGAAAAAAAAAAAAAAAHMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-26T17:42:40.708Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-26T17:42:40.708Z"
             }
           ]
         }
