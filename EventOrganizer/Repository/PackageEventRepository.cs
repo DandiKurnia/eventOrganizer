@@ -20,23 +20,24 @@ namespace EventOrganizer.Repository
             return await connection.QuerySingleOrDefaultAsync<PackageEventModel>(sql, new { PackageEventId = id });
         }
 
-        public async Task<IEnumerable<PackageEventModel>> Get()
+        public async Task<IEnumerable<PackageEventModel>> Get(string? search, Guid? categoryId)
         {
-            var connection = context.CreateConnection();
-            var sql = "SELECT * FROM eventPackage";
+            var sql = @"
+    SELECT DISTINCT p.*
+    FROM eventPackage p
+    LEFT JOIN PackageCategory pc ON p.PackageEventId = pc.PackageEventId
+    WHERE (@Search IS NULL OR p.PackageName LIKE '%' + @Search + '%')
+      AND (@CategoryId IS NULL OR pc.CategoryId = @CategoryId)
+    ";
 
-            try
-            {
-                var result = await connection.QueryAsync<PackageEventModel>(sql);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error fetching vendor data: {ex.Message}", ex);
-
-            }
-
+            using var conn = context.CreateConnection();
+            return await conn.QueryAsync<PackageEventModel>(
+                sql,
+                new { Search = search, CategoryId = categoryId }
+            );
         }
+
+
 
     }
 }

@@ -10,39 +10,43 @@ namespace EventOrganizer.Controllers
         private readonly IPackageEvent _packageEventRepository;
         private readonly IPackagePhoto _packagePhotoRepository;
         private readonly IOrder _orderRepo;
+        private readonly ICategory _categoryRepo;
 
 
-        public CustomerController(IPackageEvent packageEventRepository, IOrder orderRepo, IPackagePhoto packagePhotoRepository)
+        public CustomerController(
+            IPackageEvent packageEventRepository,
+            IOrder orderRepo,
+            IPackagePhoto packagePhotoRepository,
+            ICategory categoryRepo)
         {
             _packageEventRepository = packageEventRepository;
             _orderRepo = orderRepo;
             _packagePhotoRepository = packagePhotoRepository;
+            _categoryRepo = categoryRepo;
         }
 
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string? search, Guid? category)
         {
-            var packages = await _packageEventRepository.Get();
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                packages = packages
-                    .Where(p => p.PackageName.Contains(search, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
+            var packages = await _packageEventRepository.Get(search, category);
+            var categories = await _categoryRepo.GetAll();
 
             foreach (var package in packages)
             {
                 var photos = await _packagePhotoRepository.GetByPackageId(package.PackageEventId);
+                var first = photos.FirstOrDefault();
 
-                var firstPhoto = photos.FirstOrDefault();
-                if (firstPhoto != null)
-                {
-                    package.ThumbnailUrl = Url.Action("getFile", "File", new { id = firstPhoto.PhotoId });
-                }
+                package.ThumbnailUrl = first != null
+                    ? Url.Action("getFile", "File", new { id = first.PhotoId })
+                    : null;
             }
+
+            ViewBag.Categories = categories;
+            ViewBag.SelectedCategory = category;
 
             return View(packages);
         }
+
+
 
 
         public async Task<IActionResult> Detail(Guid id)

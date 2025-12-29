@@ -147,7 +147,7 @@ namespace AdminEventOrganizer.Controllers
             }
 
             package.Photos = (await _packagePhotoRepository.GetByPackageId(id)).ToList();
-            package.Categories = (await _packageEventRepository.GetCategories(id)).ToList(); // 🔥 CATEGORY
+            package.Categories = (await _packageEventRepository.GetCategories(id)).ToList();
 
             return View(package);
         }

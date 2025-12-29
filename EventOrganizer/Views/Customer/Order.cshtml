@@ -20,20 +20,29 @@
             <div class="col-md-4 mb-3">
                 <select name="status" class="form-select" onchange="this.form.submit()">
                     <option value="all">Semua Status</option>
-                    <option value="booking confirmed" selected="@(ViewBag.Status == "booking confirmed")">Booking Confirmed</option>
-                    <option value="vendor confirmation" selected="@(ViewBag.Status == "vendor confirmation")">Vendor Confirmation</option>
-                    <option value="waiting validation" selected="@(ViewBag.Status == "waiting validation")">Waiting Validation</option>
+                    <option value="booking_confirmed" selected="@(ViewBag.Status == "booking_confirmed")">Booking Confirmed</option>
+                    <option value="vendor_confirmation" selected="@(ViewBag.Status == "vendor_confirmation")">Vendor Confirmation</option>
+                    <option value="waiting_validation" selected="@(ViewBag.Status == "waiting_validation")">Waiting Validation</option>
                     <option value="consultation" selected="@(ViewBag.Status == "consultation")">Consultation</option>
                 </select>
             </div>
         </div>
     </form>
 
+        @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        TempData.Remove("SuccessMessage");
+    }
+
     <div class="order-list">
 
         @if (!Model.Any())
         {
-            <div class="text-center text-muted fs-5 py-5">
+            <div class="text-center text-muted fs-5 py-5 mb-lg-5">
                 <i class="bx bx-info-circle"></i> Tidak ada pesanan ditemukan.
             </div>
         }
@@ -56,10 +65,10 @@
                             @{
                                 string badgeClass = item.Status switch
                                 {
-                                    "waiting validation" => "bg-warning text-dark",
+                                    "waiting_validation" => "bg-warning text-dark",
                                     "consultation" => "bg-info text-dark",
-                                    "vendor confirmation" => "bg-primary",
-                                    "confirmed" => "bg-success",
+                                    "vendor_confirmation" => "bg-primary",
+                                    "booking confirmed" => "bg-success",
                                     "cancelled" => "bg-danger",
                                     _ => "bg-secondary"
                                 };

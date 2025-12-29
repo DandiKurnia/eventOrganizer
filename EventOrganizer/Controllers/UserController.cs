@@ -136,7 +136,7 @@ namespace EventOrganizer.Controllers
                         return RedirectToAction("Index", "Staff");
 
                     default:
-                        TempData["ErrorMessage"] = "Role tidak dikenal. Hubungi administrator.";
+                        TempData["ErrorMessage"] = "Email atau password salah!";
                         return View();
                 }
             }

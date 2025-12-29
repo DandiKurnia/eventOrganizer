@@ -71,10 +71,35 @@ namespace EventOrganizer.Repository
 
         public async Task<OrderModel?> GetById(Guid orderId)
         {
-            var sql = "SELECT * FROM Orders WHERE OrderId = @OrderId";
+            var sql = @"
+    SELECT
+        o.OrderId,
+        o.UserId,
+        o.PackageEventId,
+        o.AdditionalRequest,
+        o.EventDate,
+        o.Status,
+        o.CreatedAt,
+        o.ConfirmClient,
+
+        u.Name        AS ClientName,
+        u.Email       AS ClientEmail,
+        u.PhoneNumber AS ClientPhoneNumber,
+
+        p.PackageName
+    FROM Orders o
+    JOIN Users u ON o.UserId = u.UserId
+    JOIN eventPackage p ON o.PackageEventId = p.PackageEventId
+    WHERE o.OrderId = @OrderId;
+    ";
+
             using var connection = context.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<OrderModel>(sql, new { OrderId = orderId });
+            return await connection.QueryFirstOrDefaultAsync<OrderModel>(
+                sql,
+                new { OrderId = orderId }
+            );
         }
+
 
 
         public async Task Create(OrderModel model)

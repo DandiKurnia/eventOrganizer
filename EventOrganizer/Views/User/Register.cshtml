@@ -153,6 +153,23 @@
                                 <label for="email" class="form-label">Email</label>
                                 <input type="text" asp-for="Email" class="form-control" id="email" placeholder="Enter your email" required />
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="basic-default-fullname">Nomor handphone</label>
+                                <br />
+                                <label class="form-label">contoh 6289603098131</label>
+                                <input type="text"
+                                       asp-for="PhoneNumber"
+                                       id="phoneInput"
+                                       class="form-control"
+                                       placeholder="Nomor Handphone"
+                                       required
+                                       pattern="^[1-9][0-9]*$"
+                                       title="Nomor HP tidak boleh diawali angka 0" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+
+
+                            </div>
 
                             <div class="mb-3 form-password-toggle">
                                 <label class="form-label" for="password">Password</label>
@@ -200,5 +217,17 @@
     <!-- Page JS -->
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script>
+        const phoneInput = document.getElementById("phoneInput");
+
+        phoneInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "");
+
+            if (this.value.startsWith("0")) {
+                this.value = this.value.substring(1);
+            }
+        });
+    </script>
 </body>
 </html>

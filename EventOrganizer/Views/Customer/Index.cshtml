@@ -1,30 +1,12 @@
-﻿@model IEnumerable<Models.PackageEventModel>
+﻿@using Models
+@model IEnumerable<Models.PackageEventModel>
+
 @{
     Layout = "_LayoutCustomer";
 }
 
-<!-- ================= HEADER ================= -->
-<header class="header-section text-center">
-    <div class="container">
-        <h1 class="display-5 fw-bold">Wujudkan Event Sempurna Bersama Kami</h1>
-        <p class="lead text-muted">
-            Pilih paket terbaik untuk momen spesial Anda.
-        </p>
-    </div>
 
-    <div class="shape-divider">
-        <svg xmlns="http://www.w3.org/2000/svg"
-             viewBox="0 0 1200 120"
-             preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,
-                     82.39-16.72,168.19-17.73,250.45-.39
-                     C823.78,31,906.67,72,985.66,92.83
-                     c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35
-                     A600.21,600.21,0,0,0,321.39,56.44Z"
-                  class="shape-fill"></path>
-        </svg>
-    </div>
-</header>
+
 
 <!-- ================= CONTENT ================= -->
 <div class="container py-5">
@@ -39,30 +21,32 @@
     }
 
     <!-- ================= FILTER ================= -->
-    <form method="get" asp-action="Index" class="row g-3 mb-4">
-        <div class="col-md-6">
-            <input type="search"
-                   name="search"
-                   value="@ViewBag.Search"
+    <form method="get" class="row g-2 mb-4">
+
+        <div class="col-md-8">
+            <input type="text" name="search"
                    class="form-control"
-                   placeholder="Cari paket event..." />
+                   placeholder="Cari paket..."
+                   value="@Context.Request.Query["search"]" />
         </div>
 
         <div class="col-md-4">
-            <select name="category" class="form-select">
+            <select name="category"
+                    class="form-select"
+                    onchange="this.form.submit()">
+
                 <option value="">Semua Kategori</option>
-                <option value="Wedding">Wedding</option>
-                <option value="Corporate">Corporate</option>
-                <option value="Birthday">Birthday</option>
-                <option value="Concert">Concert</option>
+
+                @foreach (var c in (IEnumerable<CategoryModel>)ViewBag.Categories)
+                {
+                    <option value="@c.CategoryId"
+                            selected="@(ViewBag.SelectedCategory?.ToString() == c.CategoryId.ToString())">
+                        @c.CategoryName
+                    </option>
+                }
             </select>
         </div>
 
-        <div class="col-md-2">
-            <button class="btn btn-primary w-100">
-                <i class="bx bx-search"></i> Filter
-            </button>
-        </div>
     </form>
 
     <!-- ================= PACKAGE LIST ================= -->
@@ -84,7 +68,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100 shadow-sm package-card">
 
-                        <span class="badge bg-success position-absolute m-3">
+                        <span class="badge position-absolute m-3 @(item.Status == "available" ? "bg-success" : "bg-secondary")">
                             @item.Status
                         </span>
 
@@ -109,11 +93,21 @@
                                 Mulai dari Rp @item.BasePrice.ToString("N0")
                             </p>
 
-                            <a asp-action="Detail"
-                               asp-route-id="@item.PackageEventId"
-                               class="btn btn-primary w-100">
-                                <i class="bx bx-check-circle"></i> Pilih Paket
-                            </a>
+                    @if (item.Status == "available")
+                            {
+                                <a asp-action="Detail"
+                                   asp-route-id="@item.PackageEventId"
+                                   class="btn btn-primary w-100">
+                                    <i class="bx bx-check-circle"></i> Pilih Paket
+                                </a>
+                            } 
+                            else {
+                                <button class="btn btn-secondary w-100" disabled>
+                                    <i class="bx bx-lock accept-policy"></i> Paket Tidak Tersedia
+                                </button>
+                            }
+
+
                         </div>
                     </div>
                 </div>

@@ -28,8 +28,8 @@ namespace EventOrganizer.Repository
             model.UserId = Guid.NewGuid();
             model.Role = "Customer";
 
-            var sql = @"INSERT INTO Users (UserId, Name, Email, PasswordHash, Role, IsActive, CreatedAt)
-                        VALUES (@UserId, @Name, @Email, @PasswordHash, @Role, @IsActive, @CreatedAt)";
+            var sql = @"INSERT INTO Users (UserId, Name, Email, PasswordHash, Role, IsActive, CreatedAt, PhoneNumber)
+                        VALUES (@UserId, @Name, @Email, @PasswordHash, @Role, @IsActive, @CreatedAt, @PhoneNumber)";
             using var connection = _context.CreateConnection();
             await connection.ExecuteAsync(sql, model);
             return model;

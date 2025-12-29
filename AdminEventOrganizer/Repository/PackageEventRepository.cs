@@ -78,22 +78,22 @@ namespace AdminEventOrganizer.Repository
             await connection.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task<IEnumerable<PackageCategoryModel>> GetCategories(Guid packageEventId)
+        public async Task<IEnumerable<CategoryModel>> GetCategories(Guid packageEventId)
         {
-            const string sql = @"
-        SELECT 
-            pc.PackageCategoryId,
-            pc.PackageEventId,
-            pc.CategoryId,
-            c.CategoryName
-        FROM PackageCategory pc
-        INNER JOIN Category c ON pc.CategoryId = c.CategoryId
-        WHERE pc.PackageEventId = @PackageEventId";
+            var sql = @"
+    SELECT c.CategoryId, c.CategoryName, c.CreatedAt
+    FROM PackageCategory pc
+    JOIN Category c ON pc.CategoryId = c.CategoryId
+    WHERE pc.PackageEventId = @PackageEventId
+    ";
 
             using var conn = context.CreateConnection();
-            return await conn.QueryAsync<PackageCategoryModel>(
-                sql, new { PackageEventId = packageEventId });
+            return await conn.QueryAsync<CategoryModel>(
+                sql,
+                new { PackageEventId = packageEventId }
+            );
         }
+
 
         public async Task UpdateCategories(Guid packageEventId, List<Guid> categoryIds)
         {

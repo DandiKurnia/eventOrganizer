@@ -1,55 +1,132 @@
-﻿@model Models.OrderModel
+﻿@using Models
+@model Models.OrderModel
+
 @{
     Layout = "_LayoutCustomer";
+    ViewData["Title"] = "Detail Pesanan";
+
+    var waNumber = Model.ClientPhoneNumber?
+        .Replace(" ", "")
+        .Replace("+", "");
+
+    // 🔥 Mapping status DB → tampilan
+    string statusLabel = Model.Status switch
+    {
+        "waiting_validation" => "Waiting Valid",
+        "consultation" => "Consultation",
+        "vendor_confirmation" => "Vendor Confirmation",
+        "booking_confirmed" => "Booking Confirmed",
+        _ => Model.Status
+    };
+
+    string statusBadge = Model.Status switch
+    {
+        "waiting_validation" => "bg-warning text-dark",
+        "consultation" => "bg-info text-dark",
+        "vendor_confirmation" => "bg-primary",
+        "booking_confirmed" => "bg-success",
+        _ => "bg-secondary"
+    };
 }
 
 <div class="container py-4">
 
-    <a href="/customer/order" class="btn btn-secondary mb-3">← Kembali</a>
+    <a asp-action="Order" class="btn btn-secondary mb-3">
+        ← Kembali
+    </a>
 
-    <div class="card shadow">
+    <div class="card shadow-sm">
+        <h5 class="card-header">Detail Pesanan</h5>
+
         <div class="card-body">
 
-            <h3 class="mb-3">@Model.PackageName</h3>
+            <!-- Informasi Order -->
+            <h6>Informasi Order</h6>
 
-            <h6 class="text-muted">
-                <i class="bx bxs-calendar-event"></i>
-                Tanggal Event: @Model.EventDate.ToString("dd MMMM yyyy")
-            </h6>
+            <table class="table table-bordered mb-4">
+                <tr>
+                    <th width="30%">Nama Client</th>
+                    <td>@Model.ClientName</td>
+                </tr>
 
-            <hr>
+                <tr>
+                    <th>Email Client</th>
+                    <td>@Model.ClientEmail</td>
+                </tr>
 
-            <p>
-                <strong>Catatan Tambahan:</strong><br />
-                @Model.AdditionalRequest
-            </p>
+                <tr>
+                    <th>Paket</th>
+                    <td>@Model.PackageName</td>
+                </tr>
 
-            <p>
-                <strong>Status Pemesanan:</strong>
-                <span class="badge bg-primary">@Model.Status</span>
-            </p>
+                <tr>
+                    <th>Tanggal Event</th>
+                    <td>@Model.EventDate.ToString("dd/MM/yyyy")</td>
+                </tr>
 
-            <p>
-                <strong>Konfirmasi Client:</strong>
-                @if (Model.ConfirmClient == 1)
-                {
-                    <span class="badge bg-success">Sudah Dikonfirmasi</span>
-                }
-                else
-                {
-                    <span class="badge bg-warning text-dark">Belum Dikonfirmasi</span>
-                }
-            </p>
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        <span class="badge @statusBadge">
+                            @statusLabel
+                        </span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Konfirmasi Client</th>
+                    <td>
+                        @if (Model.ConfirmClient == 1)
+                        {
+                            <span class="badge bg-success">Sudah Dikonfirmasi</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Belum Dikonfirmasi</span>
+                        }
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Hubungi Staff</th>
+                    <td>
+                        @if (string.IsNullOrEmpty(Model.ClientPhoneNumber))
+                        {
+                            <span>-</span>
+                        }
+                        else
+                        {
+                            <a href="https://wa.me/6289603098131"
+                               target="_blank"
+                               class="text-decoration-none text-success fw-bold">
+                                Hubungi via WhatsApp
+                            </a>
+                        }
+                    </td>
+                </tr>
+            </table>
+
+            <hr />
+
+            <!-- Permintaan Tambahan -->
+            <h6>Permintaan Tambahan</h6>
+
+            <div class="border rounded p-3 mb-3" style="white-space:pre-line;">
+                @(string.IsNullOrWhiteSpace(Model.AdditionalRequest)
+                                ? "-"
+                                : Model.AdditionalRequest)
+            </div>
 
             @if (Model.ConfirmClient == 0)
             {
                 <form method="post" asp-action="ConfirmClient">
                     <input type="hidden" name="orderId" value="@Model.OrderId" />
-                    <button class="btn btn-success mt-3">
+                    <button class="btn btn-success">
                         <i class="bx bx-check-circle"></i> Konfirmasi Pesanan
                     </button>
                 </form>
             }
+
         </div>
     </div>
 </div>
