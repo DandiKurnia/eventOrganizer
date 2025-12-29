@@ -48,14 +48,17 @@ namespace EventOrganizer.Controllers
         public async Task<IActionResult> Detail(Guid id)
         {
             var package = await _packageEventRepository.GetById(id);
-
             if (package == null)
                 return NotFound();
+            var photos = await _packagePhotoRepository.GetByPackageId(id);
+
+
+            package.Photos = photos?.ToList() ?? new List<PackagePhoto>();
 
             return View(package);
         }
 
-        // 🔥 SIMPAN ORDER
+
         [HttpPost]
         public async Task<IActionResult> OrderPackage(Guid packageEventId, DateTime eventDate, string additionalRequest)
         {

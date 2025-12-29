@@ -1,84 +1,167 @@
 ﻿@model Models.PackageEventModel
-
 @{
     Layout = "_LayoutCustomer";
 }
 
-
 <div class="container py-5">
-    <h1>@Model.PackageName</h1>
 
-    <div class="row">
-        <div class="col-md-6">
-            <img src="@(Model.Photos?.FirstOrDefault()?.PhotoUrl ?? "/img/no-image.png")"
-                 class="img-fluid rounded" />
+    <!-- ===== HEADER ===== -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold display-6">@Model.PackageName</h1>
+        <p class="text-muted small">Detail Paket Event</p>
+    </div>
+
+    <div class="row gx-5 align-items-start mb-5">
+
+        <!-- ===== LEFT : IMAGE ===== -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+
+                        @if (Model.Photos?.Any() == true)
+                        {
+                            var index = 0;
+                            foreach (var photo in Model.Photos)
+                            {
+                                <div class="carousel-item @(index == 0 ? "active" : "")">
+                                    <img src="@Url.Action("GetFile", "File", new { id = photo.PhotoId })"
+                                         class="d-block w-100 package-carousel-img"
+                                         alt="Foto Paket" />
+                                </div>
+                                index++;
+                            }
+                        }
+                        else
+                        {
+                            <div class="carousel-item active">
+                                <img src="/img/no-image.png"
+                                     class="d-block w-100 package-carousel-img" />
+                            </div>
+                        }
+                    </div>
+
+                    @if (Model.Photos?.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button"
+                                data-bs-target="#packageCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+
+                        <button class="carousel-control-next" type="button"
+                                data-bs-target="#packageCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    }
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-6">
-            <h3>Harga: Rp @Model.BasePrice.ToString("N0")</h3>
+        <!-- ===== RIGHT : ACTION ===== -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 sticky-top action-card zindex-1">
+                <div class="card-body p-4">
 
-            <p>@Model.Description</p>
+                    <p class="text-uppercase text-muted small mb-1">
+                        Harga Paket
+                    </p>
 
-            <button type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalCenter">
-                Pesan Sekarang
-            </button>
+                    <h2 class="fw-bold text-primary mb-3">
+                        Rp @Model.BasePrice.ToString("N0")
+                    </h2>
+
+                    <button class="btn btn-primary btn-lg w-100 rounded-pill"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalCenter">
+                        <i class="bx bx-cart me-1"></i> Pesan Sekarang
+                    </button>
+
+                    <p class="text-center text-muted small mt-3">
+                        Konfirmasi jadwal & detail setelah pemesanan
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <hr />
+    <!-- ===== DESCRIPTION ===== -->
+    <div class="row">
+        <div class="col-lg-10">
 
-    <h3>Foto Lainnya</h3>
-    <div class="d-flex gap-2 flex-wrap">
-        @foreach (var photo in Model.Photos)
-        {
-            <img src="@photo.PhotoUrl" width="150" class="rounded" />
-        }
+            <h4 class="fw-bold mb-3">Deskripsi Paket</h4>
+
+            <p class="text-muted package-desc">
+                @Html.Raw("<p>" +
+                Model.Description?
+                .Replace("\r\n", "</p><p>")
+                .Replace("\n", "</p><p>")
+                + "</p>")
+
+            </p>
+
+        </div>
     </div>
 </div>
 
-@* MODAL FORM ORDER *@
+
+<!-- ===== MODAL PESAN ===== -->
 <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
+
             <form asp-action="OrderPackage" method="post">
+
                 <div class="modal-header">
-                    <h5 class="modal-title">Pemesanan Paket @Model.PackageName</h5>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">
+                        Pemesanan Paket @Model.PackageName
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    
-                    <div class="row">
-                        <div class="col mb-3">
-                            <label class="form-label">Tanggal Event</label>
-                            <input type="date" name="eventDate" class="form-control" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col mb-3">
-                            <input type="hidden" name="packageEventId" value="@Model.PackageEventId" />
 
-                            <label>Permintaan Tambahan</label>
-                            <textarea rows="7" name="additionalRequest" class="form-control" required></textarea>
-                        </div>
+                    <input type="hidden"
+                           name="packageEventId"
+                           value="@Model.PackageEventId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Tanggal Event</label>
+                        <input type="date"
+                               name="eventDate"
+                               class="form-control"
+                               required
+                               min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Permintaan Tambahan</label>
+                        <textarea name="additionalRequest"
+                                  rows="4"
+                                  class="form-control"
+                                  placeholder="Contoh: konsep rustic, 200 tamu, dll"
+                                  required></textarea>
+                    </div>
+
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        Close
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Batal
                     </button>
 
-                    <button type="submit" class="btn btn-primary">
-                        Pesan Sekarang
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Kirim Pesanan
                     </button>
                 </div>
 
             </form>
+
         </div>
     </div>
 </div>
-
 

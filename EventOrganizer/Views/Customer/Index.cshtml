@@ -1,112 +1,123 @@
 ﻿@model IEnumerable<Models.PackageEventModel>
-
-
 @{
     Layout = "_LayoutCustomer";
 }
 
-
-
-<header class="header-section">
+<!-- ================= HEADER ================= -->
+<header class="header-section text-center">
     <div class="container">
-        <h1 class="display-4">Wujudkan Event Sempurna Bersama Kami</h1>
-        <p class="lead">
-            Jadikan setiap acara tak terlupakan dengan pilihan paket eksklusif
-            kami.
+        <h1 class="display-5 fw-bold">Wujudkan Event Sempurna Bersama Kami</h1>
+        <p class="lead text-muted">
+            Pilih paket terbaik untuk momen spesial Anda.
         </p>
     </div>
+
     <div class="shape-divider">
-        <svg data-name="Layer 1"
-             xmlns="http://www.w3.org/2000/svg"
+        <svg xmlns="http://www.w3.org/2000/svg"
              viewBox="0 0 1200 120"
              preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,
+                     82.39-16.72,168.19-17.73,250.45-.39
+                     C823.78,31,906.67,72,985.66,92.83
+                     c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35
+                     A600.21,600.21,0,0,0,321.39,56.44Z"
                   class="shape-fill"></path>
         </svg>
     </div>
 </header>
-@* End Header *@
+
+<!-- ================= CONTENT ================= -->
 <div class="container py-5">
+
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible" role="alert">
+        <div class="alert alert-success alert-dismissible fade show">
             @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         TempData.Remove("SuccessMessage");
     }
-    <div class="row mb-4">
-        <div class="col-md-6 mb-3">
-            <form method="get" asp-action="Index" class="d-flex">
-                <input type="search"
-                       name="search"
-                       class="form-control"
-                       placeholder="Cari paket..."
-                       value="@ViewBag.Search"
-                       aria-label="Search" />
-            </form>
 
+    <!-- ================= FILTER ================= -->
+    <form method="get" asp-action="Index" class="row g-3 mb-4">
+        <div class="col-md-6">
+            <input type="search"
+                   name="search"
+                   value="@ViewBag.Search"
+                   class="form-control"
+                   placeholder="Cari paket event..." />
         </div>
-        <div class="col-md-4 mb-3">
-            <select class="form-select" aria-label="Pilih Kategori">
-                <option selected>Pilih Kategori</option>
-                <option value="1">Wedding</option>
-                <option value="2">Corporate</option>
-                <option value="3">Birthday</option>
-                <option value="4">Concert</option>
+
+        <div class="col-md-4">
+            <select name="category" class="form-select">
+                <option value="">Semua Kategori</option>
+                <option value="Wedding">Wedding</option>
+                <option value="Corporate">Corporate</option>
+                <option value="Birthday">Birthday</option>
+                <option value="Concert">Concert</option>
             </select>
         </div>
-    </div>
 
-    <div class="container py-5">
-        <h2 class="text-center mb-4">Our Event Gallery</h2>
-        <div class="row g-4 mb-5">
-            <div id="package-container" class="row g-4">
-                @if (!Model.Any())
-                {
-                    <p class="text-center text-muted fs-5 py-5">Tidak ada paket ditemukan.</p>
-                }
-                else
-                {
-                    foreach (var item in Model)
-                    {
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card h-100">
-                                <div class="card-label">@item.Status</div>
-
-                                <img src="@(item.ThumbnailUrl ?? "/img/no-image.png")"
-                                     class="card-img-top"
-                                     alt="@item.PackageName" />
-
-                                <div class="card-body">
-                                    <h5 class="card-title">@item.PackageName</h5>
-
-                                    <div class="d-block h-25 mb-2">
-                                        <p class="card-text">
-                                            @item.Description.Substring(0, Math.Min(100, item.Description.Length))...
-                                        </p>
-                                    </div>
-
-                                    <p class="card-price mb-3">Mulai dari Rp @item.BasePrice.ToString("N0")</p>
-
-                                    <a class="btn btn-primary w-100"
-                                       asp-action="Detail"
-                                       asp-route-id="@item.PackageEventId">
-                                        <i class="bx bx-check-circle"></i> Pilih Paket
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-
-                }
-            </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                <i class="bx bx-search"></i> Filter
+            </button>
         </div>
-    </div>
+    </form>
 
-    <!-- No Results Message -->
-    <div id="no-results" class="no-results">
-        <i class="bi bi-emoji-frown fs-1"></i>
-        <p>Tidak ada paket ditemukan. Coba pencarian atau filter lain.</p>
+    <!-- ================= PACKAGE LIST ================= -->
+    <h2 class="text-center mb-4">Our Event Packages</h2>
+
+    <div class="row g-4">
+
+        @if (!Model.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bx bx-package fs-1 mb-3"></i>
+                <p class="fs-5">Tidak ada paket ditemukan</p>
+            </div>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm package-card">
+
+                        <span class="badge bg-success position-absolute m-3">
+                            @item.Status
+                        </span>
+
+                        <img src="@(string.IsNullOrEmpty(item.ThumbnailUrl)
+                                                                 ? "/img/no-image.png"
+                                                                 : item.ThumbnailUrl)"
+                                                                                     class="card-img-top package-img"
+                                                                                     alt="@item.PackageName" />
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.PackageName</h5>
+
+                            <p class="card-text text-muted flex-grow-1">
+                                @(string.IsNullOrEmpty(item.Description)
+                                                        ? "Deskripsi belum tersedia."
+                                                        : item.Description.Length > 120
+                                                        ? item.Description.Substring(0, 120) + "..."
+                                                        : item.Description)
+                    </p>
+
+                            <p class="fw-bold text-primary mb-3">
+                                Mulai dari Rp @item.BasePrice.ToString("N0")
+                            </p>
+
+                            <a asp-action="Detail"
+                               asp-route-id="@item.PackageEventId"
+                               class="btn btn-primary w-100">
+                                <i class="bx bx-check-circle"></i> Pilih Paket
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                }
+        }
     </div>
 </div>
