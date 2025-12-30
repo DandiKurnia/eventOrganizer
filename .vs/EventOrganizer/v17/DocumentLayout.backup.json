@@ -3,24 +3,20 @@
   "WorkspaceRootPath": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\admineventorganizer\\views\\order\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|solutionrelative:admineventorganizer\\views\\order\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\eventorganizer\\views\\customer\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|solutionrelative:eventorganizer\\views\\customer\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\admineventorganizer\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|solutionrelative:admineventorganizer\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\eventorganizer\\views\\shared\\_layoutcustomer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|solutionrelative:eventorganizer\\views\\shared\\_layoutcustomer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\admineventorganizer\\repository\\vendorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|solutionrelative:admineventorganizer\\repository\\vendorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\eventorganizer\\views\\customer\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|solutionrelative:eventorganizer\\views\\customer\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\admineventorganizer\\interface\\ivendor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6E51B575-8F3E-4286-B69D-20938093B3A9}|AdminEventOrganizer\\AdminEventOrganizer.csproj|solutionrelative:admineventorganizer\\interface\\ivendor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6D17F78A-78B4-4163-8F17-86CB52923E0A}|Models\\Models.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\models\\vendorconfirmationmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6D17F78A-78B4-4163-8F17-86CB52923E0A}|Models\\Models.csproj|solutionrelative:models\\vendorconfirmationmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|d:\\gunadarma\\semester\\semester_5\\tugas\\analisisdata\\projecttwo\\eventorganizer\\eventorganizer\\views\\customer\\order.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3200E041-2923-4D0C-A0F5-EE355849E5D5}|EventOrganizer\\EventOrganizer.csproj|solutionrelative:eventorganizer\\views\\customer\\order.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,72 +26,56 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Edit.cshtml",
-              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Views\\Order\\Edit.cshtml",
-              "RelativeDocumentMoniker": "AdminEventOrganizer\\Views\\Order\\Edit.cshtml",
-              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Views\\Order\\Edit.cshtml",
-              "RelativeToolTip": "AdminEventOrganizer\\Views\\Order\\Edit.cshtml",
-              "ViewState": "AgIAAAwAAAAAAAAAAADwvyAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "_LayoutCustomer.cshtml",
+              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Shared\\_LayoutCustomer.cshtml",
+              "RelativeDocumentMoniker": "EventOrganizer\\Views\\Shared\\_LayoutCustomer.cshtml",
+              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Shared\\_LayoutCustomer.cshtml",
+              "RelativeToolTip": "EventOrganizer\\Views\\Shared\\_LayoutCustomer.cshtml",
+              "ViewState": "AgIAAKsAAAAAAAAAAAAAAMoAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-27T09:33:20.466Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-29T15:57:34.041Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "OrderController.cs",
-              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Controllers\\OrderController.cs",
-              "RelativeDocumentMoniker": "AdminEventOrganizer\\Controllers\\OrderController.cs",
-              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Controllers\\OrderController.cs",
-              "RelativeToolTip": "AdminEventOrganizer\\Controllers\\OrderController.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAowFEAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T09:33:01.648Z",
+              "DocumentIndex": 0,
+              "Title": "Detail.cshtml",
+              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Customer\\Detail.cshtml",
+              "RelativeDocumentMoniker": "EventOrganizer\\Views\\Customer\\Detail.cshtml",
+              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Customer\\Detail.cshtml",
+              "RelativeToolTip": "EventOrganizer\\Views\\Customer\\Detail.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-29T15:56:13.938Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "IVendor.cs",
-              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Interface\\IVendor.cs",
-              "RelativeDocumentMoniker": "AdminEventOrganizer\\Interface\\IVendor.cs",
-              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Interface\\IVendor.cs",
-              "RelativeToolTip": "AdminEventOrganizer\\Interface\\IVendor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T09:32:35.372Z",
-              "EditorCaption": ""
+              "Title": "Order.cshtml",
+              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Customer\\Order.cshtml",
+              "RelativeDocumentMoniker": "EventOrganizer\\Views\\Customer\\Order.cshtml",
+              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Customer\\Order.cshtml",
+              "RelativeToolTip": "EventOrganizer\\Views\\Customer\\Order.cshtml",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAAcAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-29T15:47:55.215Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "VendorRepository.cs",
-              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Repository\\VendorRepository.cs",
-              "RelativeDocumentMoniker": "AdminEventOrganizer\\Repository\\VendorRepository.cs",
-              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\AdminEventOrganizer\\Repository\\VendorRepository.cs",
-              "RelativeToolTip": "AdminEventOrganizer\\Repository\\VendorRepository.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAAAIwJ0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T09:32:22.935Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "VendorConfirmationModel.cs",
-              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\Models\\VendorConfirmationModel.cs",
-              "RelativeDocumentMoniker": "Models\\VendorConfirmationModel.cs",
-              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\Models\\VendorConfirmationModel.cs",
-              "RelativeToolTip": "Models\\VendorConfirmationModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-27T09:31:57.194Z",
-              "EditorCaption": ""
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Customer\\Index.cshtml",
+              "RelativeDocumentMoniker": "EventOrganizer\\Views\\Customer\\Index.cshtml",
+              "ToolTip": "D:\\Gunadarma\\SEMESTER\\semester_5\\tugas\\analisisData\\projectTwo\\EventOrganizer\\EventOrganizer\\Views\\Customer\\Index.cshtml",
+              "RelativeToolTip": "EventOrganizer\\Views\\Customer\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEYAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-29T15:41:51.326Z"
             }
           ]
         }

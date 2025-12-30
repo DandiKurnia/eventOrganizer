@@ -1,0 +1,85 @@
+﻿@using Models
+@model Models.OrderModel
+
+@{
+    ViewData["Title"] = "Detail Pesanan";
+
+    var waNumber = Model.ClientPhoneNumber?
+        .Replace(" ", "")
+        .Replace("+", "");
+}
+
+<div class="card">
+    <h5 class="card-header">Detail Pesanan</h5>
+
+    <div class="card-body">
+
+        <!-- Informasi Order -->
+        <h6>Informasi Order</h6>
+
+        <table class="table table-bordered mb-4">
+            <tr>
+                <th>Nama Client</th>
+                <td>@Model.ClientName</td>
+            </tr>
+
+            <tr>
+                <th>Email Client</th>
+                <td>@Model.ClientEmail</td>
+            </tr>
+
+            <tr>
+                <th>Nomer Client</th>
+                <td>
+                    @if (string.IsNullOrEmpty(Model.ClientPhoneNumber))
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        <a href="https://wa.me/@waNumber"
+                           target="_blank"
+                           class="text-decoration-none text-success fw-bold link-underline-opacity-0 link-underline-opacity-100-hover">
+                            Hubungi via WhatsApp
+                        </a>
+                    }
+                </td>
+            </tr>
+
+            <tr>
+                <th>Paket</th>
+                <td>@Model.PackageName</td>
+            </tr>
+
+            <tr>
+                <th>Tanggal Event</th>
+                <td>@Model.EventDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>
+                    <span class="badge bg-info text-dark">
+                        @Model.Status
+                    </span>
+                </td>
+            </tr>
+        </table>
+
+        <hr />
+
+        <!-- Permintaan Tambahan -->
+        <h6>Permintaan Tambahan</h6>
+
+        <div class="border rounded p-3 mb-3" style="white-space:pre-line;">
+            @(string.IsNullOrWhiteSpace(Model.AdditionalRequest)
+                        ? "-"
+                        : Model.AdditionalRequest)
+        </div>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            ← Kembali
+        </a>
+
+    </div>
+</div>

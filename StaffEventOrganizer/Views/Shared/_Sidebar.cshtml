@@ -61,17 +61,31 @@
     <ul class="menu-inner py-1">
         @if (Context.Session.GetString("Role") == "Staff")
         {
-            <li class="menu-item @(currentPage == "/dashboard/index" ? "active" : "")">
-                <a asp-controller="Staff" asp-action="Index" class="menu-link">
+            <li class="menu-item @(currentPage.StartsWith("/dashboard") ? "active" : "")">
+                <a asp-controller="Dashboard" asp-action="Index" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-home-circle"></i>
                     <div data-i18n="Dashboard">Dashboard</div>
                 </a>
             </li>
 
-            <li class="menu-item @(currentPage.StartsWith("/staff/pemesanan") ? "active" : "")">
-                <a href="/staff/pemesanan" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-book"></i>
-                    <div data-i18n="Pemesanan">Pemesanan</div>
+            <li class="menu-item @(currentPage.StartsWith("/category") ? "active" : "")">
+                <a asp-controller="Category" asp-action="Index" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-tag"></i>
+                    <div data-i18n="Category">Category</div>
+                </a>
+            </li>
+
+            <li class="menu-item @(currentPage.StartsWith("/packageevent") ? "active" : "")">
+                <a asp-controller="PackageEvent" asp-action="Index" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-box"></i>
+                    <div data-i18n="Package Event">Package Event</div>
+                </a>
+            </li>
+
+            <li class="menu-item @(currentPage.StartsWith("/order") ? "active" : "")">
+                <a asp-controller="Order" asp-action="Index" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-list-ul"></i>
+                    <div data-i18n="Order">Order</div>
                 </a>
             </li>
         }

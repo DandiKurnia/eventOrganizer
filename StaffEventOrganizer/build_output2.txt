@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Models -> D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\Models\bin\Debug\net8.0\Models.dll
+  StaffEventOrganizer -> D:\Gunadarma\SEMESTER\semester_5\tugas\analisisData\projectTwo\EventOrganizer\StaffEventOrganizer\bin\Debug\net8.0\StaffEventOrganizer.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.14
+
+Workload updates are available. Run `dotnet workload list` for more information.

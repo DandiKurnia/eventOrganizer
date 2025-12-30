@@ -1,0 +1,155 @@
+﻿@model Models.PackageEventModel
+@using Models
+
+@{
+    ViewData["Title"] = "Create Paket";
+    var categories = ViewBag.Categories as IEnumerable<CategoryModel> ?? new List<CategoryModel>();
+}
+
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Create Paket Event</h5>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label>Nama Paket</label>
+                        <input asp-for="PackageName" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Harga Mulai</label>
+                        <input asp-for="BasePrice" type="number" class="form-control" required />
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label>Status</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Deskripsi Paket</label>
+                        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                    </div>
+
+                    <!-- 🔥 CATEGORY -->
+                    <div class="mb-3">
+                        <label>Kategori Paket</label>
+                        <div class="input-group mb-2">
+                            <select id="categorySelect" class="form-select">
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach (var cat in categories)
+                                {
+                                    <option value="@cat.CategoryId">@cat.CategoryName</option>
+                                }
+                            </select>
+                            <button type="button" class="btn btn-primary" onclick="addCategory()">Add</button>
+                        </div>
+
+                        <div id="selectedCategories" class="d-flex flex-wrap gap-2"></div>
+                        <div id="hiddenInputs"></div>
+                    </div>
+
+                    <!-- FOTO -->
+                    <div class="mb-3">
+                        <label>Photo</label>
+                        <input type="file" id="photoInput" name="PhotoFiles" class="form-control" multiple accept="image/*" />
+                        <small class="text-muted">Bisa pilih banyak foto</small>
+                    </div>
+
+                    <div id="photoPreview" class="d-flex flex-wrap gap-2 border rounded p-3">
+                        <p class="text-muted" id="previewPlaceholder">Belum ada foto dipilih.</p>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <a asp-action="Index" class="btn btn-secondary">Kembali</a>
+                        <button class="btn btn-success">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        /* ===== CATEGORY ===== */
+        const selected = new Map();
+
+        function addCategory() {
+            const select = document.getElementById("categorySelect");
+            const id = select.value;
+            const name = select.options[select.selectedIndex].text;
+            if (!id || selected.has(id)) return;
+            selected.set(id, name);
+            renderCategory();
+        }
+
+        function removeCategory(id) {
+            selected.delete(id);
+            renderCategory();
+        }
+
+        function renderCategory() {
+            const badge = document.getElementById("selectedCategories");
+            const hidden = document.getElementById("hiddenInputs");
+            badge.innerHTML = "";
+            hidden.innerHTML = "";
+
+            selected.forEach((name, id) => {
+                badge.innerHTML += `
+                    <span class="badge bg-primary">
+                        ${name}
+                        <button type="button" class="btn-close btn-close-white btn-sm ms-1"
+                            onclick="removeCategory('${id}')"></button>
+                    </span>
+                `;
+                hidden.innerHTML += `<input type="hidden" name="SelectedCategoryIds" value="${id}" />`;
+            });
+        }
+
+        /* ===== PHOTO PREVIEW (KODE KAMU) ===== */
+        const photoInput = document.getElementById('photoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        const placeholder = document.getElementById('previewPlaceholder');
+        let selectedFiles = [];
+
+        photoInput.addEventListener('change', e => {
+            selectedFiles = [...selectedFiles, ...Array.from(e.target.files)];
+            updatePreview();
+        });
+
+        function updatePreview() {
+            photoPreview.innerHTML = '';
+            if (!selectedFiles.length) return photoPreview.appendChild(placeholder);
+            selectedFiles.forEach((file, i) => {
+                const r = new FileReader();
+                r.onload = e => {
+                    photoPreview.innerHTML += `
+                        <div class="position-relative">
+                            <img src="${e.target.result}" class="img-thumbnail" style="width:150px;height:150px;object-fit:cover">
+                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                                onclick="removePhoto(${i})">&times;</button>
+                        </div>`;
+                };
+                r.readAsDataURL(file);
+            });
+        }
+
+        function removePhoto(i) {
+            selectedFiles.splice(i, 1);
+            const dt = new DataTransfer();
+            selectedFiles.forEach(f => dt.items.add(f));
+            photoInput.files = dt.files;
+            updatePreview();
+        }
+    </script>
+}

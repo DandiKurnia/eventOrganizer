@@ -1,0 +1,179 @@
+@using Models
+@model Models.OrderModel
+
+@{
+    ViewData["Title"] = "Edit Pemesanan";
+
+    var vendors = ViewBag.AvailableVendors as IEnumerable<VendorModel>
+                  ?? new List<VendorModel>();
+
+    var vendorConfirms = ViewBag.VendorConfirmations as IEnumerable<VendorConfirmationModel>
+                         ?? new List<VendorConfirmationModel>();
+}
+
+<div class="card">
+    <h5 class="card-header">Edit Pemesanan</h5>
+    <container class="px-4">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            TempData.Remove("SuccessMessage");
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+    </container>
+
+    <div class="card-body">
+
+        <!-- Informasi Order -->
+        <h6>Informasi Order</h6>
+        <table class="table table-bordered mb-4">
+            <tr><th>Nama Client</th><td>@Model.ClientName</td></tr>
+            <tr><th>Email Client</th><td>@Model.ClientEmail</td></tr>
+            <tr>
+                <th>Nomer Client</th>
+                <td>
+                    @if (string.IsNullOrEmpty(Model.ClientPhoneNumber))
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        <a href="https://wa.me/@Model.ClientPhoneNumber"
+                           target="_blank"
+                           class="text-decoration-none text-success fw-bold link-underline-opacity-0 link-underline-opacity-100-hover">
+                            Hubungi via WhatsApp
+                        </a>
+                    }
+                </td>
+            </tr>
+            <tr><th>Paket</th><td>@Model.PackageName</td></tr>
+            <tr><th>Tanggal Event</th><td>@Model.EventDate.ToString("dd/MM/yyyy")</td></tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    <form asp-action="UpdateStatus" method="post" class="d-flex align-items-center">
+                        <input type="hidden" name="orderId" value="@Model.OrderId" />
+
+                        <select name="status" class="form-select w-auto">
+
+                            <option value="waiting_validation"
+                                    selected="@(Model.Status == "waiting_validation")">
+                                Waiting Validation
+                            </option>
+
+                            <option value="consultation"
+                                    selected="@(Model.Status == "consultation")">
+                                Consultation
+                            </option>
+
+                            <option value="vendor_confirmation"
+                                    selected="@(Model.Status == "vendor_confirmation")">
+                                Vendor Confirmation
+                            </option>
+
+                            <option value="booking_confirmed"
+                                    selected="@(Model.Status == "booking_confirmed")">
+                                Booking Confirmed
+                            </option>
+
+                            <option value="cancelled"
+                                    selected="@(Model.Status == "cancelled")">
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                        <button class="btn btn-primary ms-2" type="submit">Update</button>
+                    </form>
+
+
+                </td>
+            </tr>
+        </table>
+
+        <hr />
+
+        <!-- Kirim Request ke Vendor -->
+        <h6>Kirim Request ke Vendor</h6>
+
+        <form asp-action="SendVendor" method="post">
+            <input type="hidden" name="orderId" value="@Model.OrderId" />
+            <input type="hidden" name="packageEventId" value="@Model.PackageEventId" />
+
+            <button type="submit" class="btn btn-warning">
+                <i class="bx bx-send"></i>
+                Kirim Request ke Semua Vendor Sesuai Kategori
+            </button>
+        </form>
+
+
+        <hr />
+
+        <!-- List Vendor yang Sudah dihubungi -->
+        <h6>Vendor Yang Sudah Dikirimi Request</h6>
+
+        @if (!vendorConfirms.Any())
+        {
+            <p class="text-muted">Belum ada vendor yang dikirimi request.</p>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <tr>
+                    <th>Vendor</th>
+                    <th>Harga Vendor</th>
+                    <th>Status</th>
+                    <th>Catatan</th>
+                    <th>Tanggal</th>
+                </tr>
+
+                @foreach (var f in vendorConfirms)
+                {
+                    <tr>
+                        <td>@f.VendorName</td>
+                        <td>@(f.ActualPrice == 0 ? "-" : "Rp " + f.ActualPrice.ToString("N0"))</td>
+
+                        <td>
+                            @switch (f.VendorStatus)
+                            {
+                                case "pending_vendor":
+                                    <span class="badge bg-warning text-dark">Menunggu</span>
+                                    break;
+
+                                case "confirmed":
+                                    <span class="badge bg-success">Diterima</span>
+                                    break;
+
+                                case "vendor_confirmed":
+                                    <span class="badge bg-success">Vendor Dipilih</span>
+                                    break;
+
+                                case "closed":
+                                    <span class="badge bg-secondary">Ditutup</span>
+                                    break;
+
+                                default:
+                                    <span class="badge bg-dark">Tidak Diketahui</span>
+                                    break;
+                            }
+                        </td>
+
+                        <td>@(f.Notes ?? "-")</td>
+                        <td>@f.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+</div>

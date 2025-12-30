@@ -1,8 +1,8 @@
-﻿using AdminEventOrganizer.Interface;
+using StaffEventOrganizer.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-namespace AdminEventOrganizer.Controllers
+namespace StaffEventOrganizer.Controllers
 {
     public class PackageEventController : Controller
     {
@@ -57,7 +57,7 @@ namespace AdminEventOrganizer.Controllers
         // =====================================================
         public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = await _categoryRepository.GetAll(); // 🔥 CATEGORY
+            ViewBag.Categories = await _categoryRepository.GetAll();
             return View();
         }
 
@@ -86,7 +86,7 @@ namespace AdminEventOrganizer.Controllers
                 );
             }
 
-            // 2️⃣ UPLOAD FOTO (KODE KAMU TIDAK DIUBAH)
+            // 2️⃣ UPLOAD FOTO
             string uploadFolder = Path.Combine(
                 Directory.GetCurrentDirectory(),
                 "wwwroot", "uploads");
@@ -205,7 +205,7 @@ namespace AdminEventOrganizer.Controllers
                 model.SelectedCategoryIds
             );
 
-            // UPLOAD FOTO BARU (KODE KAMU)
+            // UPLOAD FOTO BARU
             if (PhotoFiles != null && PhotoFiles.Any())
             {
                 string uploadFolder = Path.Combine(

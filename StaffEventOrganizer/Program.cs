@@ -26,6 +26,12 @@ builder.Services.Configure<RouteOptions>(options =>
 // DI
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddTransient<IUser, UserRepository>();
+builder.Services.AddTransient<ICategory, CategoryRepository>();
+builder.Services.AddTransient<IPackageEvent, PackageEventRepository>();
+builder.Services.AddTransient<IPackagePhoto, PackagePhotoRepository>();
+builder.Services.AddTransient<IOrder, OrderRepository>();
+builder.Services.AddTransient<IDashboard, DashboardRepository>();
+builder.Services.AddTransient<IVendor, VendorRepository>();
 
 var app = builder.Build();
 
