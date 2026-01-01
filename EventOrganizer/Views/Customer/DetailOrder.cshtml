@@ -76,14 +76,23 @@
                 <tr>
                     <th>Konfirmasi Client</th>
                     <td>
-                        @if (Model.ConfirmClient == 1)
+                        @if (Model.Status == "cancelled")
                         {
-                            <span class="badge bg-success">Sudah Dikonfirmasi</span>
+                            <span class="badge bg-danger">Cancelled</span>
+
                         }
                         else
                         {
-                            <span class="badge bg-warning text-dark">Belum Dikonfirmasi</span>
+                            @if (Model.ConfirmClient == 1)
+                            {
+                                <span class="badge bg-success">Sudah Dikonfirmasi</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Belum Dikonfirmasi</span>
+                            }
                         }
+
                     </td>
                 </tr>
 
@@ -117,15 +126,21 @@
                                 : Model.AdditionalRequest)
             </div>
 
-            @if (Model.ConfirmClient == 0)
+            @if (Model.Status != "cancelled")
             {
-                <form method="post" asp-action="ConfirmClient">
-                    <input type="hidden" name="orderId" value="@Model.OrderId" />
-                    <button class="btn btn-success">
-                        <i class="bx bx-check-circle"></i> Konfirmasi Pesanan
-                    </button>
-                </form>
+                @if (Model.ConfirmClient == 0)
+                {
+                    <form method="post" asp-action="ConfirmClient">
+                        <input type="hidden" name="orderId" value="@Model.OrderId" />
+                        <button class="btn btn-success">
+                            <i class="bx bx-check-circle"></i> Konfirmasi Pesanan
+                        </button>
+                    </form>
+                }
             }
+
+
+
 
         </div>
     </div>

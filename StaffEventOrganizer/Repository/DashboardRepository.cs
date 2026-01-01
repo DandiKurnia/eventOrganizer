@@ -24,13 +24,13 @@ namespace StaffEventOrganizer.Repository
             (SELECT COUNT(*) FROM Orders) AS TotalOrders,
 
             (SELECT COUNT(*) FROM Orders
-             WHERE Status = 'waiting validation') AS WaitingValidation,
+             WHERE Status = 'waiting_validation') AS WaitingValidation,
 
             (SELECT COUNT(*) FROM Orders
-             WHERE Status = 'vendor confirmation') AS VendorConfirmation,
+             WHERE Status = 'vendor_confirmation') AS VendorConfirmation,
 
             (SELECT COUNT(*) FROM Orders
-             WHERE Status = 'booking confirmed') AS BookingConfirmed,
+             WHERE Status = 'booking_confirmed') AS BookingConfirmed,
 
             (SELECT ISNULL(SUM(ActualPrice),0)
              FROM VendorConfirmation

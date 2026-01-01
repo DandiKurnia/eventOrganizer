@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Models.LandingPageViewModel
+@{
     Layout = null;
 }
 
@@ -116,20 +117,44 @@
             }
 
         .pricing-card {
-            border: 1px solid #eee;
-            transition: all 0.3s;
+            border: 2px solid #eee;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            overflow: hidden;
         }
 
             .pricing-card:hover {
                 border-color: var(--primary-color);
-                box-shadow: 0 0 30px rgba(0,0,0,0.1);
+                box-shadow: 0 10px 40px rgba(105, 108, 255, 0.2);
+                transform: translateY(-5px);
             }
 
             .pricing-card .card-header {
                 background-color: var(--primary-color);
                 color: var(--white);
                 font-weight: 700;
+                padding: 1.25rem;
+                font-size: 1.5rem;
             }
+
+            .pricing-card .card-body {
+                padding: 2rem;
+            }
+
+            .pricing-card .price {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin: 1rem 0;
+            }
+
+            .pricing-card .btn {
+                transition: all 0.3s ease;
+            }
+
+                .pricing-card .btn:hover {
+                    transform: scale(1.05);
+                }
 
         .footer {
             background-color: var(--dark-gray);
@@ -205,7 +230,6 @@
                     <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
                     <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
                     <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
                 <a href="/login" class="btn btn-primary">Book Now</a>
             </div>
@@ -219,7 +243,6 @@
                 <div class="col-lg-8">
                     <h1>Make Your Event Unforgettable</h1>
                     <p>Kami membantu Anda mewujudkan acara impian dengan sempurna.</p>
-                    <a href="#contact" class="btn btn-primary btn-lg">Mulai Sekarang</a>
                 </div>
             </div>
         </div>
@@ -326,51 +349,39 @@
         <div class="container">
             <h2 class="text-center section-title text-heading">Pricing</h2>
             <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <div class="card pricing-card text-center">
-                        <div class="card-header">Basic</div>
-                        <div class="card-body">
-                            <h5 class="card-title">$199</h5>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li>Up to 50 guests</li>
-                                <li>Event consultation</li>
-                                <li>Day-of coordination</li>
-                                <li>-</li>
-                            </ul>
-                            <a href="#" class="btn btn-outline-primary">Choose Plan</a>
+                @if (Model.ActivePackages != null && Model.ActivePackages.Any())
+                {
+                    @foreach (var package in Model.ActivePackages)
+                    {
+                        <div class="col-lg-4 mb-4">
+                            <div class="card pricing-card text-center h-100">
+                                <div class="card-header">@package.PackageName</div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="price">Rp @package.BasePrice.ToString("N0")</div>
+                                    <p class="card-text text-muted mb-4">
+                                        @(string.IsNullOrEmpty(package.Description)
+                                                                        ? "Deskripsi belum tersedia."
+                                                                        : package.Description.Length > 120
+                                                                        ? package.Description.Substring(0, 120) + "..."
+                                                                        : package.Description)
+                                        </p>
+                                    <div class="mt-auto">
+                                        <a href="/login" class="btn btn-primary w-100">Choose Plan</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info text-center" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No active packages available at the moment. Please check back later!
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card pricing-card text-center">
-                        <div class="card-header">Premium</div>
-                        <div class="card-body">
-                            <h5 class="card-title">$499</h5>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li>Up to 150 guests</li>
-                                <li>Full event planning</li>
-                                <li>Vendor management</li>
-                                <li>Venue selection</li>
-                            </ul>
-                            <a href="#" class="btn btn-primary">Choose Plan</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card pricing-card text-center">
-                        <div class="card-header">Exclusive</div>
-                        <div class="card-body">
-                            <h5 class="card-title">$999</h5>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li>Unlimited guests</li>
-                                <li>All Premium features</li>
-                                <li>Theming & Decoration</li>
-                                <li>On-site staff</li>
-                            </ul>
-                            <a href="#" class="btn btn-outline-primary">Choose Plan</a>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </section>
@@ -409,32 +420,6 @@
                             <p class="text-muted">Band Manager</p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-5 bg-light fade-in-section">
-        <div class="container">
-            <h2 class="text-center section-title text-heading">Contact Us</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <form>
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email">
-                        </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" rows="5"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Kirim Pesan</button>
-                    </form>
                 </div>
             </div>
         </div>

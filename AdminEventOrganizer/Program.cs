@@ -1,4 +1,4 @@
-using AdminEventOrganizer.DBContext;
+﻿using AdminEventOrganizer.DBContext;
 using AdminEventOrganizer.Interface;
 using AdminEventOrganizer.Middlewares;
 using AdminEventOrganizer.Repository;
@@ -44,28 +44,21 @@ app.UseMiddleware<AuthorizationMiddleware>();
 
 
 app.UseAuthorization();
+app.MapControllers();
 
+// ROOT → /login
 app.MapControllerRoute(
     name: "root",
     pattern: "",
-    defaults: new { controller = "Dashboard", action = "Index" }
+    defaults: new { controller = "User", action = "Login" }
 );
 
+// DEFAULT
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+    pattern: "{controller=User}/{action=Login}/{id?}"
+);
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "/{controller=Pemesanan}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "/{controller=Vendor}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
 app.Run();

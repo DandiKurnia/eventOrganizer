@@ -5,6 +5,7 @@ using Models;
 
 namespace AdminEventOrganizer.Controllers
 {
+    [Route("")]
     public class UserController : Controller
     {
         private readonly IUser _userRepository;
@@ -120,6 +121,7 @@ namespace AdminEventOrganizer.Controllers
             return Logout();
         }
 
+        [HttpGet("user")]
         public async Task<IActionResult> Index(string? search, int page = 1)
         {
             const int pageSize = 10;
@@ -149,13 +151,13 @@ namespace AdminEventOrganizer.Controllers
             return View(data);
         }
 
-        [HttpGet]
+        [HttpGet("user/create")]
         public IActionResult Create()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("user/create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UserModel model)
         {
@@ -187,7 +189,7 @@ namespace AdminEventOrganizer.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("user/edit/{id}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var user = await _userRepository.GetById(id);
@@ -211,7 +213,7 @@ namespace AdminEventOrganizer.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("user/edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditUserViewModel model)
         {

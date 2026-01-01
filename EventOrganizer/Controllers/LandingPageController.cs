@@ -1,12 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EventOrganizer.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace EventOrganizer.Controllers
 {
     public class LandingPageController : Controller
     {
-        public IActionResult Index()
+        private readonly IPackageEvent _packageEventRepo;
+
+        public LandingPageController(IPackageEvent packageEventRepo)
         {
-            return View();
+            _packageEventRepo = packageEventRepo;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var viewModel = new LandingPageViewModel
+            {
+                ActivePackages = (await _packageEventRepo.GetActivePackages()).ToList()
+            };
+
+            return View(viewModel);
         }
     }
 }

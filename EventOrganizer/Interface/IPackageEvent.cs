@@ -6,6 +6,7 @@ namespace EventOrganizer.Interface
     {
         Task<IEnumerable<PackageEventModel>> Get(string? search, Guid? categoryId);
         Task<PackageEventModel?> GetById(Guid id);
+        Task<IEnumerable<PackageEventModel>> GetActivePackages();
     }
 
 }

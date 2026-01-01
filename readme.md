@@ -1,216 +1,256 @@
-# 📘 EventOrganizer – AI Development Guide (.NET)
+---
 
-## 🎯 Tujuan README
+## 🗄 Database Schema Reference (WAJIB DIPATUHI AI)
 
-README ini dibuat sebagai **panduan untuk AI / developer assistant** agar memahami:
-
-- Struktur solution
-- Arsitektur yang digunakan
-- Permasalahan utama
-- Aturan saat membuat fitur CRUD di **StaffEventOrganizer**
-
-Target utama:
-
-> Membuat fitur CRUD di project **StaffEventOrganizer** yang **setara dengan AdminEventOrganizer**,  
-> dengan tetap menggunakan **shared Models, Interface, dan Repository pattern**.
+Bagian ini menjelaskan **struktur tabel dan kolom database** yang digunakan pada project **EventOrganizer**.  
+AI **WAJIB** menggunakan schema ini saat membuat:
+- Model
+- Query Dapper
+- Repository
+- ViewModel
+- Mapping data ke UI
 
 ---
 
-## 🏗 Struktur Solution
+## 📂 Table: Category
+
+Digunakan untuk:
+
+- Kategori paket event
+- Kategori vendor
+- Services di landing page
+
+| Column Name  | Type             | Description   |
+| ------------ | ---------------- | ------------- |
+| CategoryId   | UNIQUEIDENTIFIER | Primary Key   |
+| CategoryName | NVARCHAR         | Nama kategori |
+| CreatedAt    | DATETIME         | Waktu dibuat  |
+
+---
+
+## 📦 Table: eventPackage
+
+Digunakan untuk:
+
+- Pricing di Landing Page
+- Package Event (Admin & Staff)
+- Relasi Order
+
+| Column Name    | Type             | Description       |
+| -------------- | ---------------- | ----------------- |
+| PackageEventId | UNIQUEIDENTIFIER | Primary Key       |
+| PackageName    | NVARCHAR         | Nama paket        |
+| Description    | NVARCHAR(MAX)    | Deskripsi paket   |
+| BasePrice      | DECIMAL          | Harga paket       |
+| Status         | NVARCHAR         | Active / Inactive |
+| MainPhotoId    | UNIQUEIDENTIFIER | Foto utama paket  |
+
+📌 **Catatan AI**
+
+- Untuk Landing Page → tampilkan hanya `Status = 'Active'`
+- Sorting default → `BasePrice ASC`
+
+---
+
+## 🛒 Table: Orders
+
+Digunakan untuk:
+
+- Booking client
+- Dashboard
+- Order management
+
+| Column Name       | Type             | Description                     |
+| ----------------- | ---------------- | ------------------------------- |
+| OrderId           | UNIQUEIDENTIFIER | Primary Key                     |
+| UserId            | UNIQUEIDENTIFIER | Client                          |
+| PackageEventId    | UNIQUEIDENTIFIER | Paket yang dipilih              |
+| AdditionalRequest | NVARCHAR(MAX)    | Permintaan tambahan             |
+| EventDate         | DATETIME         | Tanggal event                   |
+| Status            | NVARCHAR         | Pending / Confirmed / Cancelled |
+| CreatedAt         | DATETIME         | Tanggal order                   |
+| ConfirmClient     | BIT              | Konfirmasi client               |
+
+---
+
+## 🔗 Table: PackageCategory
+
+Relasi **Many-to-Many**:
+
+- eventPackage ↔ Category
+
+| Column Name       | Type             | Description       |
+| ----------------- | ---------------- | ----------------- |
+| PackageCategoryId | UNIQUEIDENTIFIER | Primary Key       |
+| PackageEventId    | UNIQUEIDENTIFIER | FK → eventPackage |
+| CategoryId        | UNIQUEIDENTIFIER | FK → Category     |
+
+📌 Digunakan untuk:
+
+- Menampilkan kategori di detail paket
+- Filter paket berdasarkan kategori
+
+---
+
+## 🖼 Table: PackagePhoto
+
+Digunakan untuk:
+
+- Gallery
+- Detail Package
+- Slider / Carousel
+
+| Column Name     | Type             | Description         |
+| --------------- | ---------------- | ------------------- |
+| PhotoId         | UNIQUEIDENTIFIER | Primary Key         |
+| PackageEventId  | UNIQUEIDENTIFIER | FK → eventPackage   |
+| PhotoUrl        | NVARCHAR         | URL foto (jika ada) |
+| Foto            | VARBINARY(MAX)   | File foto           |
+| FotoContentType | NVARCHAR         | MIME type           |
+| CreatedAt       | DATETIME         | Upload time         |
+
+---
+
+## 👤 Table: Users
+
+Digunakan untuk:
+
+- Client
+- Admin
+- Staff
+- Vendor (via relasi)
+
+| Column Name  | Type             | Description                     |
+| ------------ | ---------------- | ------------------------------- |
+| UserId       | UNIQUEIDENTIFIER | Primary Key                     |
+| Name         | NVARCHAR         | Nama user                       |
+| Email        | NVARCHAR         | Email                           |
+| PasswordHash | NVARCHAR         | Password hash                   |
+| Role         | NVARCHAR         | Admin / Staff / Client / Vendor |
+| PhoneNumber  | NVARCHAR         | Nomor HP                        |
+| IsActive     | BIT              | Status user                     |
+| CreatedAt    | DATETIME         | Waktu daftar                    |
+
+---
+
+## 🏢 Table: Vendor
+
+Digunakan untuk:
+
+- Data vendor
+- Relasi ke order
+- Vendor confirmation
+
+| Column Name | Type             | Description       |
+| ----------- | ---------------- | ----------------- |
+| VendorId    | UNIQUEIDENTIFIER | Primary Key       |
+| UserId      | UNIQUEIDENTIFIER | FK → Users        |
+| CompanyName | NVARCHAR         | Nama perusahaan   |
+| Address     | NVARCHAR         | Alamat            |
+| Status      | NVARCHAR         | Active / Inactive |
+| CreatedAt   | DATETIME         | Tanggal dibuat    |
+
+---
+
+## 🔗 Table: VendorCategory
+
+Relasi **Vendor ↔ Category**
+
+| Column Name      | Type             | Description   |
+| ---------------- | ---------------- | ------------- |
+| VendorCategoryId | UNIQUEIDENTIFIER | Primary Key   |
+| VendorId         | UNIQUEIDENTIFIER | FK → Vendor   |
+| CategoryId       | UNIQUEIDENTIFIER | FK → Category |
+
+---
+
+## ✅ Table: VendorConfirmation
+
+Digunakan untuk:
+
+- Vendor menerima / menolak order
+- Harga final vendor
+
+| Column Name          | Type             | Description                   |
+| -------------------- | ---------------- | ----------------------------- |
+| VendorConfirmationId | UNIQUEIDENTIFIER | Primary Key                   |
+| OrderId              | UNIQUEIDENTIFIER | FK → Orders                   |
+| VendorId             | UNIQUEIDENTIFIER | FK → Vendor                   |
+| ActualPrice          | DECIMAL          | Harga final vendor            |
+| Notes                | NVARCHAR(MAX)    | Catatan vendor                |
+| VendorStatus         | NVARCHAR         | Pending / Accepted / Rejected |
+| CreatedAt            | DATETIME         | Tanggal konfirmasi            |
+
+---
+
+## 🤖 AI Development Rules (DATABASE)
+
+- Gunakan **foreign key logic** sesuai tabel di atas
+- Jangan menambah kolom tanpa instruksi
+- Semua query harus **explicit column mapping**
+- Hindari `SELECT *`
+- Gunakan JOIN sesuai relasi tabel
+
+---
+
+---
+
+🤖 AI Prompt – UI Improvement (AdminEventOrganizer)
+
+Prompt:
+
+Anda adalah AI Frontend Engineer yang berpengalaman dalam ASP.NET Core MVC, Razor View, Bootstrap 5, dan UI/UX profesional.
+
+Saya memiliki dua project:
+
+AdminEventOrganizer
 
 EventOrganizer
-│
-├── AdminEventOrganizer # Admin area (FULL CRUD – reference utama)
-├── StaffEventOrganizer # Staff area (CRUD harus dibuat di sini)
-├── EventOrganizer # Client / customer web
-├── Models # Shared Models & ViewModels
-│
-├── EventOrganizer.sln
 
-yaml
-Copy code
+Tugas Anda adalah:
 
----
+Mengubah tampilan (UI/UX) tabel pada halaman Index di project AdminEventOrganizer
 
-## ⚙️ Tech Stack
+Tampilan harus menyerupai halaman Vendor/Index pada project EventOrganizer
 
-- ASP.NET Core MVC
-- .NET
-- Dapper
-- SQL Server
-- Razor View
-- Dependency Injection
-- Repository Pattern
+⚠️ Aturan Penting (WAJIB DIIKUTI):
 
----
+JANGAN mengubah, menghapus, atau menambah column
 
-## 🧠 Arsitektur Aplikasi
+JANGAN mengubah nama property Model
 
-Pola arsitektur yang digunakan:
+JANGAN mengubah Controller, Query, Repository, atau Logic Backend
 
-Controller
-↓
-Interface (IRepository)
-↓
-Repository (Dapper)
-↓
-Database
+HANYA mengubah bagian View (.cshtml)
 
-markdown
-Copy code
+Struktur data dan binding @model harus tetap sama
 
-### 📌 Shared Layer
+🎨 Yang boleh diubah:
 
-- Semua **Entity & ViewModel** berada di:
-  /Models
+Layout visual tabel
 
-yaml
-Copy code
+Penggunaan Bootstrap (card, badge, icon, spacing)
 
-- **TIDAK BOLEH** menduplikasi model di AdminEventOrganizer atau StaffEventOrganizer
+Styling (hover, alignment, warna, font)
 
----
+Penempatan tombol action agar lebih rapi
 
-## 🚨 Permasalahan Utama
+🎯 Target tampilan:
 
-Project **StaffEventOrganizer**:
+Clean
 
-- Belum memiliki CRUD lengkap
-- Harus memiliki **fitur yang sama** dengan **AdminEventOrganizer**
-- Namun:
-- Akses & UI disesuaikan untuk **role staff**
-- Logic bisnis tetap konsisten
+Profesional
 
----
+Konsisten dengan UI di project EventOrganizer
 
-## 📋 Fitur yang WAJIB Ada di StaffEventOrganizer
+Mudah dibaca dan nyaman untuk admin
 
-Fitur berikut **SUDAH ADA** di AdminEventOrganizer dan harus direplikasi:
+📌 Output yang saya inginkan:
 
-### 1️⃣ Dashboard
+Full code View (Index.cshtml)
 
-- Total order
-- Booking confirmed
-- Summary data (read-only)
+Siap langsung dipakai (copy–paste)
 
-### 2️⃣ Category
+Tanpa placeholder fiktif
 
-- View category
-- CRUD (opsional, sesuai role staff)
-
-### 3️⃣ Package Event
-
-- View package
-- Detail package
-- Kategori paket
-- Foto paket
-- Harga & status
-
-### 4️⃣ Order
-
-- View order
-- Detail order
-- Event date
-- Additional request
-- Status order
-
----
-
-## 🧱 Aturan Pengembangan (WAJIB DIIKUTI)
-
-### ❌ DILARANG
-
-- ❌ Mengakses database langsung dari Controller
-- ❌ Menulis SQL di Controller
-- ❌ Menduplikasi Model di StaffEventOrganizer
-- ❌ Mengubah struktur Models tanpa kebutuhan jelas
-
-### ✅ WAJIB
-
-- ✅ Gunakan **Models/** (shared)
-- ✅ Gunakan **Interface + Repository**
-- ✅ Ikuti struktur dan query dari AdminEventOrganizer
-- ✅ Gunakan Dependency Injection
-- ✅ Konsisten dengan naming & folder structure
-
----
-
-## 📂 Struktur Ideal StaffEventOrganizer
-
-StaffEventOrganizer
-│
-├── Controllers
-│ ├── DashboardController.cs
-│ ├── CategoryController.cs
-│ ├── PackageEventController.cs
-│ ├── OrderController.cs
-│
-├── Interface
-│ ├── ICategory.cs
-│ ├── IPackageEvent.cs
-│ ├── IOrder.cs
-│
-├── Repository
-│ ├── CategoryRepository.cs
-│ ├── PackageEventRepository.cs
-│ ├── OrderRepository.cs
-│
-├── Views
-│ ├── Dashboard
-│ ├── Category
-│ ├── PackageEvent
-│ ├── Order
-
-yaml
-Copy code
-
----
-
-## 🔁 Workflow Pembuatan CRUD (UNTUK AI)
-
-Setiap pembuatan fitur **HARUS mengikuti alur ini**:
-
-1. Cek fitur di **AdminEventOrganizer**
-2. Analisis:
-   - Controller
-   - Interface
-   - Repository
-   - Query SQL
-3. Gunakan **Model yang sama** dari `/Models`
-4. Buat versi **StaffEventOrganizer**
-5. Sesuaikan:
-   - Hak akses
-   - Tampilan UI
-   - Action yang diizinkan
-
----
-
-## 🧪 Contoh Prompt ke AI
-
-Buatkan CRUD Package Event di StaffEventOrganizer.
-Ikuti struktur AdminEventOrganizer.
-Gunakan Models yang sudah ada.
-Lengkapi Controller, Interface, Repository, dan View.
-Gunakan Dapper dan Repository Pattern.
-
-yaml
-Copy code
-
----
-
-## 🎯 Output yang Diharapkan
-
-- Code clean & konsisten
-- Compile tanpa error
-- Mengikuti arsitektur existing
-- Mudah dikembangkan
-- Tidak breaking change
-
----
-
-## 📝 Catatan Akhir
-
-- Admin = full access
-- Staff = operational access
-- Semua logic bisnis harus **selaras**
-- AdminEventOrganizer adalah **reference utama**
+Ingat: Fokus hanya pada tampilan, bukan data.

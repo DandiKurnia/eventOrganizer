@@ -11,22 +11,17 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var path = context.Request.Path.ToString().ToLower();
+            var path = context.Request.Path.Value?.ToLower() ?? "";
             var userId = context.Session.GetString("UserId");
-            var role = context.Session.GetString("Role");
 
-            // Izinkan halaman login dan register
-            if (path.Contains("/login") || path.Contains("/register"))
+            if (path == "/" ||
+                path.StartsWith("/login") ||
+                path.StartsWith("/register") ||
+                path.StartsWith("/landingpage"))
             {
                 await _next(context);
                 return;
             }
-            //if (path.StartsWith("/"))
-            //{
-            //    await _next(context);
-            //    return;
-            //}
-
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -36,5 +31,6 @@
 
             await _next(context);
         }
+
     }
 }

@@ -37,7 +37,18 @@ namespace EventOrganizer.Repository
             );
         }
 
+        public async Task<IEnumerable<PackageEventModel>> GetActivePackages()
+        {
+            var sql = @"
+    SELECT TOP 3 PackageEventId, PackageName, Description, BasePrice, Status, MainPhotoId
+    FROM eventPackage
+    WHERE Status = 'available'
+    ORDER BY BasePrice DESC
+";
 
 
+            using var connection = context.CreateConnection();
+            return await connection.QueryAsync<PackageEventModel>(sql);
+        }
     }
 }
