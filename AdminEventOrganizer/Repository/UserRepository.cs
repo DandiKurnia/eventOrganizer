@@ -47,7 +47,7 @@ namespace AdminEventOrganizer.Repository
 
         public async Task<IEnumerable<UserModel>> GetAllUsers()
         {
-            var sql = "SELECT * FROM Users ORDER BY CreatedAt ASC"; // terbaru di atas
+            var sql = "SELECT * FROM Users WHERE Role != 'Customer' ORDER BY CreatedAt ASC";
             using var connection = _context.CreateConnection();
             return await connection.QueryAsync<UserModel>(sql);
         }

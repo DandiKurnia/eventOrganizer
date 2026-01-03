@@ -14,8 +14,7 @@
             var path = context.Request.Path.Value?.ToLower() ?? "";
             var userId = context.Session.GetString("UserId");
 
-            if (path == "/" ||
-                path.StartsWith("/login") ||
+            if (path.StartsWith("/login") ||
                 path.StartsWith("/register") ||
                 path.StartsWith("/landingpage"))
             {

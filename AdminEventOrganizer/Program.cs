@@ -46,13 +46,6 @@ app.UseMiddleware<AuthorizationMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
-// ROOT → /login
-app.MapControllerRoute(
-    name: "root",
-    pattern: "",
-    defaults: new { controller = "User", action = "Login" }
-);
-
 // DEFAULT
 app.MapControllerRoute(
     name: "default",

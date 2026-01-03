@@ -4,138 +4,379 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="row">
+<div class="container-fluid">
+    <h2 class="mb-4">Dashboard Admin Event Organizer</h2>
 
-    <!-- HERO CARD -->
-    <div class="col-lg-8 mb-4 order-0">
-        <div class="card">
-            <div class="d-flex align-items-end row">
-                <div class="col-sm-7">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">Dashboard Overview 🎯</h5>
-                        <p class="mb-4">
-                            Total <span class="fw-bold">@Model.TotalOrders</span> order tercatat.
-                            <br />
-                            <span class="fw-bold">@Model.BookingConfirmed</span> booking telah dikonfirmasi.
-                        </p>
-                        <a asp-controller="Order" asp-action="Index"
-                           class="btn btn-sm btn-outline-primary">
-                            Lihat Semua Order
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @ViewBag.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- KPI Cards - Order Statistics -->
+    <div class="row">
+        <!-- Total Orders -->
+                <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-start border-primary border-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-muted">Total Orders</h6>
+                            <h2 class="mb-0 text-primary">@Model.TotalOrders</h2>
+                        </div>
+                        <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-primary">
+                                <i class="bi bi-hourglass fs-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="text-muted">Total orders</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Waiting Validation -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-start border-warning border-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-muted">Waiting Validation</h6>
+                            <h2 class="mb-0 text-warning">@Model.WaitingValidation</h2>
+                        </div>
+                        <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-warning">
+                                <i class="bi bi-clock fs-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                    @if (Model.WaitingValidation > 0)
+                    {
+                        <small class="text-danger fw-semibold">
+                            <i class="bi bi-exclamation-circle"></i> Perlu tindakan
+                        </small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">Tidak ada pending</small>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendor Confirmation -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-start border-info border-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-muted">Vendor Confirmation</h6>
+                            <h2 class="mb-0 text-info">@Model.VendorConfirmation</h2>
+                        </div>
+                        <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-info">
+                                <i class="bi bi-hourglass fs-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="text-muted">Sedang diproses vendor</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Confirmed -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-start border-success border-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-muted">Booking Confirmed</h6>
+                            <h2 class="mb-0 text-success">@Model.BookingConfirmed</h2>
+                        </div>
+                        <div class="avatar">
+                            <span class="avatar-initial rounded bg-label-success">
+                                <i class="bi bi-check-circle fs-3"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <small class="text-muted">Order selesai</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue, Vendors, Upcoming Events -->
+    <div class="row">
+        <!-- Total Revenue -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Total Revenue</h6>
+                    <h3 class="text-success">Rp @Model.TotalRevenue.ToString("N0")</h3>
+                    <p class="text-muted small mb-0">From confirmed vendors</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Vendors -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Active Vendors</h6>
+                    <h3>@Model.ActiveVendors <span class="text-muted small">/ @Model.TotalVendors</span></h3>
+                    <p class="text-muted small mb-0">Available vendors</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">Upcoming Events</h6>
+                    <h3>@Model.UpcomingEvents</h3>
+                    <p class="text-muted small mb-0">Next 7 days</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor & Package Statistics -->
+    <div class="row">
+        <!-- Vendor Status Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Vendor Statistics</h5>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-info rounded-pill p-2 me-2">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Pending</small>
+                                    <h5 class="mb-0">@Model.VendorPendingConfirmation</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-success rounded-pill p-2 me-2">
+                                    <i class="bi bi-check2"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Accepted</small>
+                                    <h5 class="mb-0">@Model.VendorAccepted</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-danger rounded-pill p-2 me-2">
+                                    <i class="bi bi-x-circle"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Rejected</small>
+                                    <h5 class="mb-0">@Model.VendorRejected</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-primary rounded-pill p-2 me-2">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Total Vendors</small>
+                                    <h5 class="mb-0">@Model.TotalVendors</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Package Statistics Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Package & Category Statistics</h5>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-primary rounded-pill p-2 me-2">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Total Packages</small>
+                                    <h5 class="mb-0">@Model.TotalPackages</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-success rounded-pill p-2 me-2">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Active</small>
+                                    <h5 class="mb-0">@Model.ActivePackages</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-secondary rounded-pill p-2 me-2">
+                                    <i class="bi bi-x-circle"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Inactive</small>
+                                    <h5 class="mb-0">@Model.InactivePackages</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-info rounded-pill p-2 me-2">
+                                    <i class="bi bi-tags"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Categories</small>
+                                    <h5 class="mb-0">@Model.TotalCategories</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Statistics & Top Categories -->
+    <div class="row">
+        <!-- User Statistics -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">User Statistics</h5>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-primary rounded-pill p-2 me-2">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Total Users</small>
+                                    <h5 class="mb-0">@Model.TotalUsers</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-label-success rounded-pill p-2 me-2">
+                                    <i class="bi bi-person-check"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Active Users</small>
+                                    <h5 class="mb-0">@Model.ActiveUsers</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center">
+                                <div class="badge bg-label-danger rounded p-2 mb-2">
+                                    <i class="bi bi-shield-lock"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Admin</small>
+                                    <h6 class="mb-0">@Model.AdminUsers</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center">
+                                <div class="badge bg-label-warning rounded p-2 mb-2">
+                                    <i class="bi bi-shop"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Vendor</small>
+                                    <h6 class="mb-0">@Model.VendorUsers</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center">
+                                <div class="badge bg-label-info rounded p-2 mb-2">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block">Customer</small>
+                                    <h6 class="mb-0">@Model.CustomerUsers</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Categories -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Top 3 Categories</h5>
+                    @if (Model.TopCategories != null && Model.TopCategories.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var category in Model.TopCategories)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-tag-fill text-primary me-2"></i>
+                                        <span>@category.CategoryName</span>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">@category.UsageCount packages</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No category data available</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Actions</h5>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a asp-controller="Order" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-list-ul"></i> Manage Orders
+                        </a>
+                        <a asp-controller="PackageEvent" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-box-seam"></i> Manage Packages
+                        </a>
+                        <a asp-controller="Vendor" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-building"></i> Manage Vendors
+                        </a>
+                        <a asp-controller="Category" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-tags"></i> Manage Categories
+                        </a>
+                        <a asp-controller="User" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-people"></i> Manage Users
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-5 text-center text-sm-left">
-                    <div class="card-body pb-0 px-0 px-md-4">
-                        <img src="~/assets/img/illustrations/man-with-laptop-light.png"
-                             height="140" alt="Dashboard" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RIGHT TOP CARDS -->
-    <div class="col-lg-4 col-md-4 order-1">
-        <div class="row">
-
-            <!-- TOTAL REVENUE -->
-            <div class="col-lg-6 col-md-12 col-6 d-block h-100">
-                <div class="card">
-                    <div class="card-body">
-                        <span class="fw-semibold d-block mb-1">Total Revenue</span>
-                        <h3 class="card-title mb-2">
-                            Rp @Model.TotalRevenue.ToString("N0")
-                        </h3>
-                        <small class="text-muted">Vendor booked</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ACTIVE VENDORS -->
-            <div class="col-lg-6 col-md-12 col-6">
-                <div class="card">
-                    <div class="card-body">
-                        <span class="fw-semibold d-block mb-1">Vendor Aktif</span>
-                        <h3 class="card-title mb-2">@Model.ActiveVendors</h3>
-                        <small class="text-muted">Siap menerima order</small>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- STATUS ORDER CARDS -->
-    <div class="col-12 col-lg-8 order-2 mb-4">
-        <div class="row">
-
-            <!-- WAITING VALIDATION -->
-            <div class="col-md-4 mb-4">
-                <div class="card border-warning">
-                    <div class="card-body">
-                        <span class="d-block mb-1">Menunggu Validasi</span>
-                        <h3 class="card-title">@Model.WaitingValidation</h3>
-
-                        @if (Model.WaitingValidation > 0)
-                        {
-                            <small class="text-danger fw-semibold">
-                                <i class="bx bx-error"></i> Perlu tindakan
-                            </small>
-                        } else
-                        {
-                            <small class="text-muted">Tidak ada Order</small>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <!-- VENDOR CONFIRMATION -->
-            <div class="col-md-4 mb-4">
-                <div class="card border-info">
-                    <div class="card-body">
-                        <span class="d-block mb-1">Konfirmasi Vendor</span>
-                        <h3 class="card-title">@Model.VendorConfirmation</h3>
-                        <small class="text-muted">Sedang diproses</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BOOKING CONFIRMED -->
-            <div class="col-md-4 mb-4">
-                <div class="card border-success">
-                    <div class="card-body">
-                        <span class="d-block mb-1">Booking Dikonfirmasi</span>
-                        <h3 class="card-title">@Model.BookingConfirmed</h3>
-                        <small class="text-muted">Order selesai</small>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- UPCOMING EVENTS -->
-    <div class="col-12 col-lg-4 order-3 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="mb-2">Upcoming Events</h5>
-                <h3>@Model.UpcomingEvents</h3>
-                <small class="text-muted">
-                    Event dalam 7 hari ke depan
-                </small>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- ORDER STATISTICS -->
-<div class="row">
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h2 class="mb-2">@Model.TotalOrders</h2>
-                <span>Total Orders</span>
             </div>
         </div>
     </div>

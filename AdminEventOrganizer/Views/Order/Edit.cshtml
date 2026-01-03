@@ -64,8 +64,8 @@
 
                         <select name="status" class="form-select w-auto">
 
-                            <option value="waiting_validation"
-                                    selected="@(Model.Status == "waiting_validation")">
+                            <option value="waiting validation"
+                                    selected="@(Model.Status == "waiting validation")">
                                 Waiting Validation
                             </option>
 
@@ -74,15 +74,15 @@
                                 Consultation
                             </option>
 
-                            <option value="vendor_confirmation"
-                                    selected="@(Model.Status == "vendor_confirmation")">
+                            <option value="vendor confirmation"
+                                    selected="@(Model.Status == "vendor confirmation")">
                                 Vendor Confirmation
                             </option>
 
                             @if (vendorConfirms.Any(v => v.VendorStatus == "confirmed"))
                             {
-                                <option value="booking_confirmed"
-                                        selected="@(Model.Status == "booking_confirmed")">
+                                <option value="booking confirmed"
+                                        selected="@(Model.Status == "booking confirmed")">
                                     Booking Confirmed
                                 </option>
                             }
@@ -107,7 +107,7 @@
 
         <!-- Kirim Request ke Vendor -->
         <h6>Kirim Request ke Vendor</h6>
-        @if (Model.Status == "booking_confirmed" || Model.Status == "cancelled")
+        @if (Model.Status == "booking confirmed" || Model.Status == "cancelled")
         {
             <div class="alert alert-info">
                 Tidak dapat mengirim request ke vendor karena status order adalah
@@ -166,7 +166,7 @@
                         <td>
                             @switch (f.VendorStatus)
                             {
-                                case "pending_vendor":
+                                case "pending vendor":
                                     <span class="badge bg-warning text-dark">Menunggu</span>
                                     break;
 
@@ -174,7 +174,7 @@
                                     <span class="badge bg-success">Diterima</span>
                                     break;
 
-                                case "vendor_confirmed":
+                                case "vendor confirmed":
                                     <span class="badge bg-success">Vendor Dipilih</span>
                                     break;
 
