@@ -83,9 +83,20 @@ namespace AdminEventOrganizer.Repository
         public async Task<IEnumerable<VendorConfirmationModel>> GetByOrderId(Guid orderId)
         {
             var sql = @"
-                SELECT vc.*, v.CompanyName AS VendorName
+                SELECT
+                    vc.VendorConfirmationId,
+                    vc.OrderId,
+                    vc.VendorId,
+                    vc.ActualPrice,
+                    vc.Notes,
+                    vc.VendorStatus,
+                    vc.CreatedAt,
+
+                    v.CompanyName AS VendorName,
+                    u.PhoneNumber AS VendorPhoneNumber
                 FROM VendorConfirmation vc
-                INNER JOIN Vendor v ON vc.VendorId = v.VendorId
+                JOIN Vendor v ON vc.VendorId = v.VendorId
+                JOIN Users u ON v.UserId = u.UserId
                 WHERE vc.OrderId = @OrderId
                 ORDER BY vc.CreatedAt DESC";
 

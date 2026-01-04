@@ -213,9 +213,9 @@ namespace AdminEventOrganizer.Controllers
         }
 
 
-        [HttpPost("user/edit")]
+        [HttpPost("user/edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditUserViewModel model)
+        public async Task<IActionResult> Edit(Guid id, EditUserViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);

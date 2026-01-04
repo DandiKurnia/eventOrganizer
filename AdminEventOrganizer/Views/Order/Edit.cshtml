@@ -79,7 +79,7 @@
                                 Vendor Confirmation
                             </option>
 
-                            @if (vendorConfirms.Any(v => v.VendorStatus == "confirmed"))
+                            @if (vendorConfirms.Any(v => v.VendorStatus == "booking confirmed"))
                             {
                                 <option value="booking confirmed"
                                         selected="@(Model.Status == "booking confirmed")">
@@ -151,6 +151,7 @@
             <table class="table table-bordered">
                 <tr>
                     <th>Vendor</th>
+                    <th>No. Telepon</th>
                     <th>Harga Vendor</th>
                     <th>Status</th>
                     <th>Catatan</th>
@@ -161,6 +162,20 @@
                 {
                     <tr>
                         <td>@f.VendorName</td>
+                        <td>
+                            @if (string.IsNullOrEmpty(f.VendorPhoneNumber))
+                            {
+                                <span>-</span>
+                            }
+                            else
+                            {
+                                <a href="https://wa.me/@f.VendorPhoneNumber"
+                                   target="_blank"
+                                   class="text-decoration-none text-success fw-bold link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    @f.VendorPhoneNumber
+                                </a>
+                            }
+                        </td>
                         <td>@(f.ActualPrice == 0 ? "-" : "Rp " + f.ActualPrice.ToString("N0"))</td>
 
                         <td>

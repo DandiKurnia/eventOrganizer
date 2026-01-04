@@ -61,10 +61,10 @@ namespace AdminEventOrganizer.Repository
             (SELECT COUNT(*) FROM eventPackage) AS TotalPackages,
 
             (SELECT COUNT(*) FROM eventPackage
-             WHERE Status = 'active') AS ActivePackages,
+             WHERE Status = 'available') AS ActivePackages,
 
             (SELECT COUNT(*) FROM eventPackage
-             WHERE Status = 'inactive') AS InactivePackages,
+             WHERE Status = 'unavailable') AS InactivePackages,
 
             -- Category Statistics
             (SELECT COUNT(*) FROM Category) AS TotalCategories,
