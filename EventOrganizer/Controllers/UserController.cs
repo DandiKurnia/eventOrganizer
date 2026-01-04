@@ -118,6 +118,7 @@ namespace EventOrganizer.Controllers
                 HttpContext.Session.SetString("UserId", user.UserId.ToString());
                 HttpContext.Session.SetString("Role", user.Role);
                 HttpContext.Session.SetString("Username", user.Name);
+                HttpContext.Session.SetString("Email", user.Email);
 
                 _logger.LogInformation($"Login berhasil: {user.Email} dengan role {user.Role}");
 

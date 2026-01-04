@@ -44,11 +44,29 @@
                     <span class="fw-bold">@Model.TotalOrders</span>
                 </p>
 
-                <p class="mb-0">
+                <p class="mb-0 d-flex align-items-center gap-2">
                     Status Vendor:
                     <span class="fw-bold @(Model.VendorStatus == "available" ? "text-success" : "text-danger")">
                         @Model.VendorStatus
                     </span>
+
+                    <form asp-action="ToggleStatus" method="post" class="d-inline">
+                        <input type="hidden" name="vendorId" value="@Model.VendorId" />
+                        @if (Model.VendorStatus == "available")
+                        {
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Yakin ingin menonaktifkan vendor?')">
+                                Nonaktifkan
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-sm btn-outline-success"
+                                    onclick="return confirm('Yakin ingin mengaktifkan vendor?')">
+                                Aktifkan
+                            </button>
+                        }
+                    </form>
                 </p>
             </div>
         </div>

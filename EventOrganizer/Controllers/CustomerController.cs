@@ -81,7 +81,7 @@ namespace EventOrganizer.Controllers
                 PackageEventId = packageEventId,
                 AdditionalRequest = additionalRequest,
                 EventDate = eventDate,
-                Status = "waiting_validation",
+                Status = "waiting validation",
                 CreatedAt = DateTime.Now
             };
 

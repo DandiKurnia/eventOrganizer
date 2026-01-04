@@ -132,10 +132,19 @@ namespace EventOrganizer.Controllers
         public async Task<IActionResult> ToggleStatus(Guid vendorId)
         {
             // Ambil vendor dulu
+            Console.WriteLine($"DEBUG vendorId: {vendorId}");
+
+            if (vendorId == Guid.Empty)
+            {
+                TempData["ErrorMessage"] = "VendorId kosong!";
+                return RedirectToAction("Index");
+            }
+
             var vendor = await _vendorRepository.GetById(vendorId);
+
             if (vendor == null)
             {
-                TempData["Error"] = "Vendor tidak ditemukan!";
+                TempData["ErrorMessage"] = $"Vendor tidak ditemukan! ID: {vendorId}";
                 return RedirectToAction("Index");
             }
 

@@ -42,6 +42,7 @@ namespace EventOrganizer.Repository
         {
             var sql = "SELECT * FROM Vendor WHERE VendorId = @VendorId";
             using var connection = context.CreateConnection();
+            connection.Open();
             return await connection.QueryFirstOrDefaultAsync<VendorModel>(sql, new { VendorId = vendorId });
         }
 
@@ -69,6 +70,7 @@ namespace EventOrganizer.Repository
         public async Task Add(VendorModel vendor)
         {
             using var conn = context.CreateConnection();
+            conn.Open();
             using var trans = conn.BeginTransaction();
 
             try
@@ -109,6 +111,7 @@ namespace EventOrganizer.Repository
         {
             var sql = "UPDATE Vendor SET Status = @Status WHERE VendorId = @VendorId";
             using var connection = context.CreateConnection();
+            connection.Open();
             await connection.ExecuteAsync(sql, new { VendorId = vendorId, Status = status });
         }
 
@@ -256,25 +259,26 @@ namespace EventOrganizer.Repository
         public async Task<VendorDashboardViewModel> GetVendorDashboard(Guid vendorId)
         {
             using var conn = context.CreateConnection();
+            conn.Open();
 
             var sql = @"
     SELECT
-        (SELECT COUNT(*) 
-         FROM VendorConfirmation 
+        (SELECT COUNT(*)
+         FROM VendorConfirmation
          WHERE VendorId = @VendorId) AS TotalOrders,
 
-        (SELECT COUNT(*) 
-         FROM VendorConfirmation 
+        (SELECT COUNT(*)
+         FROM VendorConfirmation
          WHERE VendorId = @VendorId
          AND VendorStatus = 'waiting') AS WaitingConfirmation,
 
-        (SELECT COUNT(*) 
-         FROM VendorConfirmation 
+        (SELECT COUNT(*)
+         FROM VendorConfirmation
          WHERE VendorId = @VendorId
          AND VendorStatus = 'confirmed') AS AcceptedOrders,
 
-        (SELECT COUNT(*) 
-         FROM VendorConfirmation 
+        (SELECT COUNT(*)
+         FROM VendorConfirmation
          WHERE VendorId = @VendorId
          AND VendorStatus IN ('rejected','closed')) AS RejectedOrders,
 
@@ -296,14 +300,19 @@ namespace EventOrganizer.Repository
          WHERE vc.VendorId = @VendorId
          AND o.EventDate BETWEEN GETDATE() AND DATEADD(DAY,7,GETDATE())) AS UpcomingEvents,
 
-        (SELECT Status 
-         FROM Vendor 
+        (SELECT Status
+         FROM Vendor
          WHERE VendorId = @VendorId) AS VendorStatus
     ";
 
-            return await conn.QuerySingleAsync<VendorDashboardViewModel>(
+            var result = await conn.QuerySingleAsync<VendorDashboardViewModel>(
                 sql, new { VendorId = vendorId }
             );
+
+            // Set VendorId secara manual karena tidak di-select dari query
+            result.VendorId = vendorId;
+
+            return result;
         }
 
 
