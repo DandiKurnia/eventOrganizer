@@ -13,6 +13,7 @@
 
         // ===== JOIN RESULT =====
         public string? VendorName { get; set; }
+        public string? VendorPhoneNumber { get; set; }
 
         public string? PackageName { get; set; }
         public decimal BasePrice { get; set; }

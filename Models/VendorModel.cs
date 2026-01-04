@@ -31,6 +31,7 @@ namespace Models
 
     public class VendorDashboardViewModel
     {
+        public Guid VendorId { get; set; }
         public int TotalOrders { get; set; }
         public int WaitingConfirmation { get; set; }
         public int AcceptedOrders { get; set; }
