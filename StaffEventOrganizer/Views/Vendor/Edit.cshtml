@@ -1,0 +1,17 @@
+@model Models.EditVendorStatusViewModel
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="VendorId" />
+
+    <div class="mb-3">
+        <label class="form-label">Status Vendor</label>
+        <select asp-for="Status" class="form-select">
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Update</button>
+</form>

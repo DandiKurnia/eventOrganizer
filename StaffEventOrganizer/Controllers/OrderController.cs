@@ -52,6 +52,10 @@ namespace StaffEventOrganizer.Controllers
             if (order == null)
                 return RedirectToAction(nameof(Index));
 
+            // Ambil vendor confirmation untuk ditampilkan di Detail
+            var confirmations = await _vendorRepo.GetByOrderId(id);
+            ViewBag.VendorConfirmations = confirmations?.ToList() ?? new List<VendorConfirmationModel>();
+
             return View(order);
         }
 

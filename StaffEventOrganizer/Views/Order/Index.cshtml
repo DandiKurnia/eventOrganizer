@@ -5,25 +5,33 @@
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible" role="alert">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     TempData.Remove("SuccessMessage");
 }
 
-<div class="card">
-    <div class="row align-items-center">
-        <div class="col-6">
-            <h5 class="card-header">Pemesanan</h5>
+<div class="card shadow-sm">
+    <!-- HEADER -->
+    <div class="row align-items-center px-3 pt-3">
+        <div class="col-md-6">
+            <h5 class="mb-0">
+                <i class="bx bx-cart me-2"></i> Daftar Pemesanan
+            </h5>
         </div>
 
         <!-- SEARCH -->
-        <div class="col-6 p-3 d-flex justify-content-end">
+        <div class="col-md-6 d-flex justify-content-end">
             <form asp-action="Index" asp-controller="Order" method="get" class="d-flex">
                 <div class="input-group">
-                    <span class="input-group-text"><i class="bx bx-search"></i></span>
-                    <input type="text" name="search" class="form-control" placeholder="Cari nama klien / paket / tanggal"
+                    <span class="input-group-text">
+                        <i class="bx bx-search"></i>
+                    </span>
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Cari nama klien / paket / tanggal"
                            value="@ViewBag.Search" />
                 </div>
                 <button type="submit" class="btn btn-primary ms-2">Cari</button>
@@ -31,65 +39,70 @@
         </div>
     </div>
 
-    <div class="table-responsive text-nowrap">
-        <table class="table">
-            <thead>
-                <tr class="text-nowrap">
-                    <th>No</th>
-                    <th>Nama Client</th>
-                    <th>Tanggal Event</th>
-                    <th>Jenis Paket</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+    <hr />
 
-            <tbody class="table-border-bottom-0">
-                @{
-                    int no = (ViewBag.CurrentPage - 1) * 10 + 1;
-                }
-
-                @if (!Model.Any())
-                {
-                    <tr>
-                        <td colspan="5" class="text-center text-muted p-3">
-                            Tidak ada data ditemukan.
-                        </td>
+    <!-- BODY -->
+    <div class="card-body p-0">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr class="text-nowrap">
+                        <th>No</th>
+                        <th>Nama Client</th>
+                        <th>Tanggal Event</th>
+                        <th>Jenis Paket</th>
+                        <th class="text-center">Action</th>
                     </tr>
-                }
-                else
-                {
-                    foreach (var order in Model)
+                </thead>
+
+                <tbody class="table-border-bottom-0">
+                    @{
+                        int no = (ViewBag.CurrentPage - 1) * 10 + 1;
+                    }
+
+                    @if (!Model.Any())
                     {
                         <tr>
-                            <th scope="row">@no</th>
-                            <td>@order.ClientName</td>
-                            <td>@order.EventDate.ToString("dd/MM/yyyy")</td>
-                            <td>@order.PackageName</td>
-                            <td class="d-flex">
-
-                                <!-- Detail Button -->
-                                <a asp-action="Detail" asp-route-id="@order.OrderId"
-                                   class="btn btn-info btn-sm me-2">
-                                    <i class='bx bxs-show text-white'></i>
-                                </a>
-                                <a asp-action="Edit" asp-route-id="@order.OrderId" class="btn btn-warning btn-sm">
-                                    <i class='bx bxs-edit'></i>
-                                </a>
-
+                            <td colspan="5" class="text-center text-muted p-4">
+                                Tidak ada data ditemukan.
                             </td>
                         </tr>
-                        no++;
                     }
-                }
-            </tbody>
-        </table>
+                    else
+                    {
+                        foreach (var order in Model)
+                        {
+                            <tr>
+                                <td scope="row">@no</td>
+                                <td><strong>@order.ClientName</strong></td>
+                                <td>@order.EventDate.ToString("dd/MM/yyyy")</td>
+                                <td>@order.PackageName</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <!-- Detail Button -->
+                                        <a asp-action="Detail" asp-route-id="@order.OrderId"
+                                           class="btn btn-info btn-sm" title="Detail">
+                                            <i class='bx bxs-show text-white'></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@order.OrderId" class="btn btn-warning btn-sm" title="Edit">
+                                            <i class='bx bxs-edit'></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            no++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- PAGINATION -->
     @if (ViewBag.TotalPages > 1)
     {
         <nav class="mt-3 pb-3">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center mb-0">
 
                 <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
                     <a class="page-link"

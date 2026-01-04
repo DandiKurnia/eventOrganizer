@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Paket";
 }
 
@@ -7,124 +7,132 @@
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible" role="alert">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     TempData.Remove("SuccessMessage");
 }
 
-<div class="card">
-    <div class="row align-items-center">
-        <div class="col-6">
-            <h5 class="card-header">Paket Event</h5>
+<div class="card shadow-sm">
+    <!-- HEADER -->
+    <div class="row align-items-center px-3 pt-3">
+        <div class="col-md-6">
+            <h5 class="mb-0">
+                <i class="bx bx-package me-2"></i> Paket Event
+            </h5>
         </div>
 
-        <div class="col-6 p-3 d-flex justify-content-end">
-            <div class="me-2">
-                <div class="d-flex me-2 justify-content-end">
-                    <!-- 🔍 Form Search -->
-                    <form asp-action="Index" method="get" class="d-flex">
-                        <div class="input-group me-2">
-                            <span class="input-group-text"><i class="tf-icons bx bx-search"></i></span>
-                            <input type="text" name="search" class="form-control" placeholder="Search..."
-                                   value="@ViewBag.Search" />
-                        </div>
-                        <button type="submit" class="btn btn-primary">Cari</button>
-                    </form>
+        <!-- SEARCH & ACTION -->
+        <div class="col-md-6 d-flex justify-content-end">
+             <div class="d-flex">
+                <form asp-action="Index" method="get" class="d-flex me-2">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bx bx-search"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control"
+                               placeholder="Search..."
+                               value="@ViewBag.Search" />
+                    </div>
+                    <button class="btn btn-primary ms-2">Cari</button>
+                </form>
 
-                    <!-- ➕ Tombol Create -->
-                    <a asp-action="Create"
-                       class="btn btn-primary text-uppercase mt-lg-0 ms-2"
-                       id="btn">Tambah</a>
-                </div>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bx bx-plus me-1"></i> Tambah
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- 🧾 Data Table -->
-    <div class="table-responsive text-nowrap">
-        <table class="table">
-            <thead>
-                <tr class="text-nowrap">
-                    <th>No</th>
-                    <th>Nama Paket</th>
-                    <th>Harga</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-                @{
-                    int no = (ViewBag.CurrentPage - 1) * 10 + 1;
-                }
+    <hr />
 
-                @if (!Model.Any())
-                {
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">Data tidak ditemukan</td>
+    <!-- BODY -->
+    <div class="card-body p-0">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr class="text-nowrap">
+                        <th>No</th>
+                        <th>Nama Paket</th>
+                        <th>Harga</th>
+                        <th>Status</th>
+                        <th class="text-center">Action</th>
                     </tr>
-                }
-                else
-                {
-                    @foreach (var item in Model)
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @{
+                        int no = (ViewBag.CurrentPage - 1) * 10 + 1;
+                    }
+
+                    @if (!Model.Any())
                     {
                         <tr>
-                            <th scope="row">@no</th>
-                            <td>@item.PackageName</td>
-                            <td>@item.BasePrice.ToString("C0")</td>
-                            <td>
-                                @if (item.Status == "available")
-                                {
-                                    <span class="badge bg-success">available</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">unavailable</span>
-                                }
-                            </td>
-                            <td class="d-flex">
-                                <div class="me-2">
-                                    <a class="btn btn-info btn-sm" asp-action="Detail" asp-route-id="@item.PackageEventId">
-                                        <i class='bx bxs-show text-white'></i>
-                                    </a>
-                                </div>
-                                <div class="me-2">
-                                    <a asp-action="Edit" asp-route-id="@item.PackageEventId" class="btn btn-warning btn-sm">
-                                        <i class='bx bxs-edit'></i>
-                                    </a>
-                                </div>
-                                <div class="me-2">
-                                    <form asp-action="Delete" method="post" style="display:inline;">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@item.PackageEventId" />
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Yakin ingin menghapus paket ini?');">
-                                            <i class='bx bx-trash'></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                            <td colspan="5" class="text-center text-muted p-4">Data tidak ditemukan</td>
                         </tr>
-                        no++;
                     }
-                }
-            </tbody>
-        </table>
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td scope="row">@no</td>
+                                <td><strong>@item.PackageName</strong></td>
+                                <td>@item.BasePrice.ToString("C0")</td>
+                                <td>
+                                    @if (item.Status == "available")
+                                    {
+                                        <span class="badge bg-success">Available</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Unavailable</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-info btn-sm" asp-action="Detail" asp-route-id="@item.PackageEventId">
+                                            <i class='bx bxs-show text-white'></i>
+                                        </a>
+
+                                        <a asp-action="Edit" asp-route-id="@item.PackageEventId" class="btn btn-warning btn-sm">
+                                            <i class='bx bxs-edit'></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="submitDelete('@item.PackageEventId')">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                    <form id="deleteForm-@item.PackageEventId"
+                                            asp-action="Delete"
+                                            method="post"
+                                            style="display:none;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@item.PackageEventId" />
+                                    </form>
+                                </td>
+                            </tr>
+                            no++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- 📄 Pagination -->
+    <!-- PAGINATION -->
     @if (ViewBag.TotalPages > 1)
     {
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center my-3">
+        <nav aria-label="Page navigation" class="mt-3 pb-3">
+            <ul class="pagination justify-content-center mb-0">
                 @{
                     int currentPage = ViewBag.CurrentPage;
                     int totalPages = ViewBag.TotalPages;
                     string search = ViewBag.Search;
                 }
 
-                <!-- Tombol Previous -->
+                <!-- Previous -->
                 <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                     <a class="page-link"
                        asp-action="Index"
@@ -134,7 +142,7 @@
                     </a>
                 </li>
 
-                <!-- Nomor halaman -->
+                <!-- Pages -->
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <li class="page-item @(i == currentPage ? "active" : "")">
@@ -145,7 +153,7 @@
                     </li>
                 }
 
-                <!-- Tombol Next -->
+                <!-- Next -->
                 <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                     <a class="page-link"
                        asp-action="Index"
@@ -158,3 +166,13 @@
         </nav>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function submitDelete(id) {
+            if (confirm("Yakin ingin menghapus paket ini?")) {
+                document.getElementById(`deleteForm-${id}`).submit();
+            }
+        }
+    </script>
+}

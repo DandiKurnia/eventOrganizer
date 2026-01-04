@@ -1,0 +1,119 @@
+@model Models.VendorModel
+@using Models
+
+@{
+    ViewData["Title"] = "Detail Vendor";
+
+    var vendorCategories = ViewBag.VendorCategories as IEnumerable<VendorCategoryModel>
+                           ?? new List<VendorCategoryModel>();
+
+    var waNumber = Model.PhoneNumber?
+        .Replace(" ", "")
+        .Replace("+", "");
+}
+
+<div class="card">
+    <h5 class="card-header">Detail Vendor</h5>
+
+    <div class="card-body">
+
+        <!-- Informasi Vendor -->
+        <h6>Informasi Vendor</h6>
+
+        <table class="table table-bordered mb-4">
+            <tr>
+                <th width="30%">Nama Perusahaan</th>
+                <td>@Model.CompanyName</td>
+            </tr>
+
+            <tr>
+                <th>Kategori</th>
+                <td>
+                    @if (!vendorCategories.Any())
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                    else
+                    {
+                        foreach (var cat in vendorCategories)
+                        {
+                            <span class="badge bg-primary me-1 mb-1">
+                                @cat.CategoryName
+                            </span>
+                        }
+                    }
+                </td>
+            </tr>
+
+            <tr>
+                <th>Email</th>
+                <td>
+                    @(string.IsNullOrEmpty(Model.Email) ? "-" : Model.Email)
+                </td>
+            </tr>
+
+            <tr>
+                <th>Telepon</th>
+                <td>
+                    @if (string.IsNullOrEmpty(Model.PhoneNumber))
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        <a href="https://wa.me/@waNumber"
+                           target="_blank"
+                           class="text-decoration-none text-success fw-bold link-underline-opacity-0 link-underline-opacity-100-hover">
+                            Hubungi via WhatsApp
+                        </a>
+                    }
+                </td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>
+                    @if (Model.Status?.ToLower() == "available")
+                    {
+                        <span class="badge bg-success">Available</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">
+                            @(string.IsNullOrEmpty(Model.Status) ? "-" : Model.Status)
+                        </span>
+                    }
+                </td>
+            </tr>
+
+            <tr>
+                <th>Tanggal Dibuat</th>
+                <td>@Model.CreatedAt.ToString("dd MMM yyyy, HH:mm")</td>
+            </tr>
+        </table>
+
+        <hr />
+
+        <!-- Alamat -->
+        <h6>Alamat Vendor</h6>
+        <div class="border rounded p-3 mb-4" style="white-space:pre-line;">
+            @(string.IsNullOrWhiteSpace(Model.Address) ? "-" : Model.Address)
+        </div>
+
+        <!-- Action -->
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">
+                ← Kembali
+            </a>
+
+            <div class="d-flex gap-2">
+                <a asp-action="Edit"
+                   asp-route-id="@Model.VendorId"
+                   class="btn btn-warning">
+                    <i class="bx bxs-edit"></i> Edit
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>

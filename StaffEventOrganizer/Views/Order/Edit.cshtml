@@ -67,8 +67,8 @@
 
                         <select name="status" class="form-select w-auto">
 
-                            <option value="waiting_validation"
-                                    selected="@(Model.Status == "waiting_validation")">
+                            <option value="waiting validation"
+                                    selected="@(Model.Status == "waiting validation")">
                                 Waiting Validation
                             </option>
 
@@ -77,13 +77,13 @@
                                 Consultation
                             </option>
 
-                            <option value="vendor_confirmation"
-                                    selected="@(Model.Status == "vendor_confirmation")">
+                            <option value="vendor confirmation"
+                                    selected="@(Model.Status == "vendor confirmation")">
                                 Vendor Confirmation
                             </option>
 
-                            <option value="booking_confirmed"
-                                    selected="@(Model.Status == "booking_confirmed")">
+                            <option value="booking confirmed"
+                                    selected="@(Model.Status == "booking confirmed")">
                                 Booking Confirmed
                             </option>
 
@@ -106,16 +106,35 @@
 
         <!-- Kirim Request ke Vendor -->
         <h6>Kirim Request ke Vendor</h6>
+        @if (Model.Status == "booking confirmed" || Model.Status == "cancelled")
+        {
+            <div class="alert alert-info">
+                Tidak dapat mengirim request ke vendor karena status order adalah
+                "<strong>@Model.Status</strong>".
+            </div>
+        }
+        else if (!vendors.Any())
+        {
+            <div class="alert alert-warning">
+                Tidak ada vendor tersedia untuk kategori paket ini.
+            </div>
+        }
+        else
+        {
+            <p class="text-muted) mb-2">
+                Terdapat <strong>@vendors.Count()</strong> vendor
+                yang sesuai dengan kategori paket ini.
+            </p>
+            <form asp-action="SendVendor" method="post">
+                <input type="hidden" name="orderId" value="@Model.OrderId" />
+                <input type="hidden" name="packageEventId" value="@Model.PackageEventId" />
 
-        <form asp-action="SendVendor" method="post">
-            <input type="hidden" name="orderId" value="@Model.OrderId" />
-            <input type="hidden" name="packageEventId" value="@Model.PackageEventId" />
-
-            <button type="submit" class="btn btn-warning">
-                <i class="bx bx-send"></i>
-                Kirim Request ke Semua Vendor Sesuai Kategori
-            </button>
-        </form>
+                <button type="submit" class="btn btn-warning">
+                    <i class="bx bx-send"></i>
+                    Kirim Request ke Semua Vendor Sesuai Kategori
+                </button>
+            </form>
+        }
 
 
         <hr />
@@ -132,6 +151,7 @@
             <table class="table table-bordered">
                 <tr>
                     <th>Vendor</th>
+                    <th>No. Telepon</th>
                     <th>Harga Vendor</th>
                     <th>Status</th>
                     <th>Catatan</th>
@@ -142,12 +162,26 @@
                 {
                     <tr>
                         <td>@f.VendorName</td>
+                        <td>
+                            @if (string.IsNullOrEmpty(f.VendorPhoneNumber))
+                            {
+                                <span>-</span>
+                            }
+                            else
+                            {
+                                <a href="https://wa.me/@f.VendorPhoneNumber"
+                                   target="_blank"
+                                   class="text-decoration-none text-success fw-bold link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    @f.VendorPhoneNumber
+                                </a>
+                            }
+                        </td>
                         <td>@(f.ActualPrice == 0 ? "-" : "Rp " + f.ActualPrice.ToString("N0"))</td>
 
                         <td>
                             @switch (f.VendorStatus)
                             {
-                                case "pending_vendor":
+                                case "pending vendor":
                                     <span class="badge bg-warning text-dark">Menunggu</span>
                                     break;
 
@@ -155,7 +189,7 @@
                                     <span class="badge bg-success">Diterima</span>
                                     break;
 
-                                case "vendor_confirmed":
+                                case "vendor confirmed":
                                     <span class="badge bg-success">Vendor Dipilih</span>
                                     break;
 

@@ -7,6 +7,9 @@
     var waNumber = Model.ClientPhoneNumber?
         .Replace(" ", "")
         .Replace("+", "");
+
+    var vendorConfirms = ViewBag.VendorConfirmations as IEnumerable<VendorConfirmationModel>
+                         ?? new List<VendorConfirmationModel>();
 }
 
 <div class="card">
@@ -77,7 +80,80 @@
                         : Model.AdditionalRequest)
         </div>
 
-        <a asp-action="Index" class="btn btn-secondary">
+        <hr />
+
+        <!-- List Vendor yang Sudah dihubungi -->
+        <h6>Vendor Yang Sudah Dikirimi Request</h6>
+
+        @if (!vendorConfirms.Any())
+        {
+            <p class="text-muted">Belum ada vendor yang dikirimi request.</p>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <tr>
+                    <th>Vendor</th>
+                    <th>No. Telepon</th>
+                    <th>Harga Vendor</th>
+                    <th>Status</th>
+                    <th>Catatan</th>
+                    <th>Tanggal</th>
+                </tr>
+
+                @foreach (var f in vendorConfirms)
+                {
+                    <tr>
+                        <td>@f.VendorName</td>
+                        <td>
+                            @if (string.IsNullOrEmpty(f.VendorPhoneNumber))
+                            {
+                                <span>-</span>
+                            }
+                            else
+                            {
+                                <a href="https://wa.me/@f.VendorPhoneNumber"
+                                   target="_blank"
+                                   class="text-decoration-none text-success fw-bold link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    @f.VendorPhoneNumber
+                                </a>
+                            }
+                        </td>
+                        <td>@(f.ActualPrice == 0 ? "-" : "Rp " + f.ActualPrice.ToString("N0"))</td>
+
+                        <td>
+                            @switch (f.VendorStatus)
+                            {
+                                case "pending vendor":
+                                    <span class="badge bg-warning text-dark">Menunggu</span>
+                                    break;
+
+                                case "confirmed":
+                                    <span class="badge bg-success">Diterima</span>
+                                    break;
+
+                                case "vendor confirmed":
+                                    <span class="badge bg-success">Vendor Dipilih</span>
+                                    break;
+
+                                case "closed":
+                                    <span class="badge bg-secondary">Ditutup</span>
+                                    break;
+
+                                default:
+                                    <span class="badge bg-dark">Tidak Diketahui</span>
+                                    break;
+                            }
+                        </td>
+
+                        <td>@(f.Notes ?? "-")</td>
+                        <td>@f.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                }
+            </table>
+        }
+
+        <a asp-action="Index" class="btn btn-secondary mt-4">
             ← Kembali
         </a>
 

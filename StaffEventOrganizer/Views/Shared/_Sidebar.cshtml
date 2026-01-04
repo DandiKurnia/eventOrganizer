@@ -75,6 +75,13 @@
                 </a>
             </li>
 
+            <li class="menu-item @(currentPage.StartsWith("/vendor") ? "active" : "")">
+                <a asp-controller="Vendor" asp-action="Index" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-handicap"></i>
+                    <div data-i18n="Vendor">Vendor</div>
+                </a>
+            </li>
+
             <li class="menu-item @(currentPage.StartsWith("/packageevent") ? "active" : "")">
                 <a asp-controller="PackageEvent" asp-action="Index" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-box"></i>
