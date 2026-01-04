@@ -65,10 +65,10 @@ namespace AdminEventOrganizer.Controllers
             if (order == null)
                 return NotFound();
 
-            // 🔥 Ambil vendor available
-            ViewBag.AvailableVendors = await _vendorRepo.GetAvailableVendors();
+            // Ambil vendor yang sesuai dengan kategori paket
+            ViewBag.AvailableVendors = await _vendorRepo.GetAvailableVendorsByPackage(order.PackageEventId, id);
 
-            // 🔥 Ambil vendor confirmation (TIDAK BOLEH NULL)
+            // Ambil vendor confirmation (TIDAK BOLEH NULL)
             var confirmations = await _vendorRepo.GetByOrderId(id);
             ViewBag.VendorConfirmations = confirmations?.ToList() ?? new List<VendorConfirmationModel>();
 

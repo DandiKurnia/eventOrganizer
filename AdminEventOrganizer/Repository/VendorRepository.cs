@@ -129,6 +129,34 @@ namespace AdminEventOrganizer.Repository
             return count > 0;
         }
 
+        public async Task<IEnumerable<VendorModel>> GetAvailableVendorsByPackage(Guid packageEventId, Guid orderId)
+        {
+            var sql = @"
+SELECT DISTINCT
+    v.VendorId,
+    v.CompanyName,
+    c.CategoryName
+FROM PackageCategory pc
+JOIN VendorCategory vc ON pc.CategoryId = vc.CategoryId
+JOIN Vendor v ON vc.VendorId = v.VendorId
+JOIN Category c ON vc.CategoryId = c.CategoryId
+WHERE pc.PackageEventId = @PackageEventId
+  AND LOWER(v.Status) = 'available'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM VendorConfirmation vc2
+      WHERE vc2.OrderId = @OrderId
+        AND vc2.VendorId = v.VendorId
+  )";
+
+            using var conn = _context.CreateConnection();
+            return await conn.QueryAsync<VendorModel>(sql, new
+            {
+                PackageEventId = packageEventId,
+                OrderId = orderId
+            });
+        }
+
 
 
         public async Task SendVendorRequestByPackage(Guid orderId, Guid packageEventId)
@@ -146,7 +174,7 @@ namespace AdminEventOrganizer.Repository
         @OrderId,
         v.VendorId,
         0,
-        'pending_vendor',
+        'pending vendor',
         GETDATE()
     FROM Vendor v
     JOIN VendorCategory vc ON v.VendorId = vc.VendorId

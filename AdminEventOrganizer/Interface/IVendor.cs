@@ -12,6 +12,7 @@ namespace AdminEventOrganizer.Interface
 
         Task<IEnumerable<VendorConfirmationModel>> GetByOrderId(Guid orderId);
         Task<bool> HasAvailableVendorByPackage(Guid packageEventId, Guid orderId);
+        Task<IEnumerable<VendorModel>> GetAvailableVendorsByPackage(Guid packageEventId, Guid orderId);
 
         Task SendVendorRequestByPackage(Guid orderId, Guid packageEventId);
 
