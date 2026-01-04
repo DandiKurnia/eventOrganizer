@@ -416,6 +416,12 @@ Menyimpan kategori layanan.
 - Semua list mendukung pagination
 - Fitur pencarian berdasarkan nama/status
 
+### 7. Notifikasi Email (MailKit)
+
+- Notifikasi otomatis ke vendor saat ada request baru
+- Template email HTML yang responsif
+- Informasi detail event via email
+
 ---
 
 ## Teknologi yang Digunakan
@@ -429,6 +435,7 @@ Menyimpan kategori layanan.
 | Frontend     | Bootstrap 5, Razor Views        |
 | Session      | ASP.NET Core Session            |
 | File Storage | Local Storage (wwwroot/uploads) |
+| Email        | MailKit & MimeKit               |
 
 ### Pattern yang Digunakan:
 
@@ -479,47 +486,7 @@ Menyimpan kategori layanan.
 
 ## Diagram Relasi Database
 
-```
-┌─────────────┐       ┌─────────────────┐       ┌─────────────┐
-│    Users    │       │  PackageEvents  │       │  Categories │
-├─────────────┤       ├─────────────────┤       ├─────────────┤
-│ UserId (PK) │       │PackageEventId(PK)│      │CategoryId(PK)│
-│ Name        │       │ PackageName     │       │ CategoryName│
-│ Email       │       │ Description     │       │ CreatedAt   │
-│ PhoneNumber │       │ BasePrice       │       └──────┬──────┘
-│ PasswordHash│       │ Status          │              │
-│ Role        │       └────────┬────────┘              │
-│ IsActive    │                │                       │
-└──────┬──────┘                │                       │
-       │                       │                       │
-       │              ┌────────┴────────┐              │
-       │              │ PackageCategory │              │
-       │              ├─────────────────┤              │
-       │              │ PackageEventId  │──────────────┘
-       │              │ CategoryId      │
-       │              └─────────────────┘
-       │
-       ├──────────────────────┐
-       │                      │
-       ▼                      ▼
-┌─────────────┐       ┌─────────────┐       ┌─────────────────────┐
-│   Orders    │       │   Vendors   │       │ VendorConfirmations │
-├─────────────┤       ├─────────────┤       ├─────────────────────┤
-│ OrderId(PK) │       │VendorId(PK) │       │VendorConfirmationId │
-│ UserId(FK)  │       │ UserId(FK)  │       │ OrderId(FK)         │
-│PackageEventId│      │ CompanyName │       │ VendorId(FK)        │
-│ EventDate   │       │ Address     │       │ ActualPrice         │
-│ Status      │       │ Status      │       │ Notes               │
-│AdditionalReq│       └──────┬──────┘       │ VendorStatus        │
-└─────────────┘              │              └─────────────────────┘
-                             │
-                    ┌────────┴────────┐
-                    │ VendorCategory  │
-                    ├─────────────────┤
-                    │ VendorId        │
-                    │ CategoryId      │
-                    └─────────────────┘
-```
+![Diagram Relasi Database](assetsReadme/structurDatabase.png)
 
 ---
 
