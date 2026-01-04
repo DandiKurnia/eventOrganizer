@@ -180,7 +180,7 @@ namespace StaffEventOrganizer.Repository
         @OrderId,
         v.VendorId,
         0,
-        'pending_vendor',
+        'pending vendor',
         GETDATE()
     FROM Vendor v
     JOIN VendorCategory vc ON v.VendorId = vc.VendorId

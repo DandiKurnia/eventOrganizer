@@ -2,6 +2,7 @@
 using StaffEventOrganizer.Interface;
 using StaffEventOrganizer.Repository;
 using StaffEventOrganizer.Middlewares;
+using StaffEventOrganizer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddTransient<IPackagePhoto, PackagePhotoRepository>();
 builder.Services.AddTransient<IOrder, OrderRepository>();
 builder.Services.AddTransient<IDashboard, DashboardRepository>();
 builder.Services.AddTransient<IVendor, VendorRepository>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 

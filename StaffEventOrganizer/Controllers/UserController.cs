@@ -80,7 +80,7 @@ namespace StaffEventOrganizer.Controllers
 
                 _logger.LogInformation($"Login berhasil: {user.Email} dengan role {user.Role}");
 
-                TempData["SuccessMessage"] = $"Selamat datang Vendor, {user.Name}!";
+                TempData["SuccessMessage"] = $"Selamat datang Staff, {user.Name}!";
                 return RedirectToAction("Index", "Dashboard");
             }
             catch (Exception ex)
