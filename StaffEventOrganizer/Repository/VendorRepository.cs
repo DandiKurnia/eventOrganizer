@@ -131,6 +131,38 @@ namespace StaffEventOrganizer.Repository
             return count > 0;
         }
 
+        public async Task<IEnumerable<VendorModel>> GetAvailableVendorsByPackage(Guid packageEventId, Guid orderId)
+        {
+            var sql = @"
+            SELECT DISTINCT
+                v.VendorId,
+                v.UserId,
+                v.CompanyName,
+                u.Email,
+                u.PhoneNumber,
+                v.Status,
+                v.Address,
+                v.CreatedAt
+            FROM Vendor v
+            LEFT JOIN Users u ON v.UserId = u.UserId
+            JOIN VendorCategory vc ON v.VendorId = vc.VendorId
+            JOIN PackageCategory pc ON vc.CategoryId = pc.CategoryId
+            WHERE pc.PackageEventId = @PackageEventId
+              AND LOWER(v.Status) = 'available'
+              AND NOT EXISTS (
+                  SELECT 1 FROM VendorConfirmation vc2
+                  WHERE vc2.OrderId = @OrderId
+                    AND vc2.VendorId = v.VendorId
+              )";
+
+            using var conn = _context.CreateConnection();
+            return await conn.QueryAsync<VendorModel>(sql, new
+            {
+                PackageEventId = packageEventId,
+                OrderId = orderId
+            });
+        }
+
 
 
         public async Task SendVendorRequestByPackage(Guid orderId, Guid packageEventId)
