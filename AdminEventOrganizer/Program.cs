@@ -2,6 +2,7 @@
 using AdminEventOrganizer.Interface;
 using AdminEventOrganizer.Middlewares;
 using AdminEventOrganizer.Repository;
+using AdminEventOrganizer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddTransient<IPackagePhoto, PackagePhotoRepository>();
 builder.Services.AddTransient<IOrder, OrderRepository>();
 builder.Services.AddTransient<IDashboard, DashboardRepository>();
 builder.Services.AddTransient<ICategory, CategoryRepository>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 

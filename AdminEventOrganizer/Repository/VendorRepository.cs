@@ -135,10 +135,12 @@ namespace AdminEventOrganizer.Repository
 SELECT DISTINCT
     v.VendorId,
     v.CompanyName,
+    u.Email,
     c.CategoryName
 FROM PackageCategory pc
 JOIN VendorCategory vc ON pc.CategoryId = vc.CategoryId
 JOIN Vendor v ON vc.VendorId = v.VendorId
+JOIN Users u ON v.UserId = u.UserId
 JOIN Category c ON vc.CategoryId = c.CategoryId
 WHERE pc.PackageEventId = @PackageEventId
   AND LOWER(v.Status) = 'available'

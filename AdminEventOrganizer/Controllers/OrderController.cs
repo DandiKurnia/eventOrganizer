@@ -8,11 +8,13 @@ namespace AdminEventOrganizer.Controllers
     {
         private readonly IOrder _orderRepo;
         private readonly IVendor _vendorRepo;
+        private readonly IEmailService _emailService;
 
-        public OrderController(IOrder orderRepository, IVendor vendorRepository)
+        public OrderController(IOrder orderRepository, IVendor vendorRepository, IEmailService emailService)
         {
             _orderRepo = orderRepository;
             _vendorRepo = vendorRepository;
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> Index(string? search, int page = 1)
@@ -88,13 +90,44 @@ namespace AdminEventOrganizer.Controllers
         {
             try
             {
+                // 1. Ambil list vendor yang akan dikirimi request (sebelum insert, agar NOT EXISTS masih valid)
+                // Pastikan GetAvailableVendorsByPackage sudah mengembalikan Email (sudah kita update di Repo)
+                var targetVendors = await _vendorRepo.GetAvailableVendorsByPackage(packageEventId, orderId);
+
+                if (!targetVendors.Any())
+                {
+                    TempData["ErrorMessage"] = "Tidak ada vendor tersedia untuk dikirim request.";
+                    return RedirectToAction(nameof(Edit), new { id = orderId });
+                }
+
+                // 2. Insert ke Database
                 await _vendorRepo.SendVendorRequestByPackage(orderId, packageEventId);
+
+                // 3. Kirim Email ke masing-masing vendor
+                var order = await _orderRepo.GetById(orderId);
+                if (order != null)
+                {
+                    foreach (var vendor in targetVendors)
+                    {
+                        if (!string.IsNullOrEmpty(vendor.Email))
+                        {
+                            await _emailService.SendVendorRequestEmailAsync(
+                                vendor.Email,
+                                vendor.CompanyName,
+                                order.ClientName,
+                                order.PackageName,
+                                order.EventDate
+                            );
+                        }
+                    }
+                }
+
                 TempData["SuccessMessage"] =
-                    "Request berhasil dikirim ke semua vendor yang sesuai kategori.";
+                    $"Request berhasil dikirim dan email notifikasi telah dikirim ke {targetVendors.Count()} vendor.";
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
+                TempData["ErrorMessage"] = "Terjadi kesalahan: " + ex.Message;
             }
 
             return RedirectToAction(nameof(Edit), new { id = orderId });
