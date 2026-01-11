@@ -1,0 +1,43 @@
+# Docker Compose for LXC 515 (App Server)
+# Jalankan di LXC 515 setelah pull images dari Docker Hub
+
+services:
+  eventorganizer:
+    image: ${DOCKER_USERNAME}/eventorganizer:latest
+    container_name: eventorganizer
+    restart: always
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST},1433;Database=EventOrganizerDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+    networks:
+      - app-network
+
+  admin-eventorganizer:
+    image: ${DOCKER_USERNAME}/admin-eo:latest
+    container_name: admin-eventorganizer
+    restart: always
+    ports:
+      - "5002:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST},1433;Database=EventOrganizerDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+    networks:
+      - app-network
+
+  staff-eventorganizer:
+    image: ${DOCKER_USERNAME}/staff-eo:latest
+    container_name: staff-eventorganizer
+    restart: always
+    ports:
+      - "5003:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST},1433;Database=EventOrganizerDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
